@@ -50,6 +50,18 @@ trait BagTrait
         return isset($this->data[$key]) ? $this->data[$key] : $default;
     }
 
+    public function only($keys)
+    {
+        $keys = is_array($keys) ? $keys : func_get_args();
+
+        $results = [];
+        foreach ($keys as $key) {
+            $results[$key] = $this->get($this->transformKey($key));
+        }
+
+        return $results;
+    }
+
     public function set($key, $value)
     {
         $this->data[$this->transformKey($key)] = $this->transformValue($value);

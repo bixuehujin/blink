@@ -13,5 +13,7 @@ class ParamBagTest extends TestCase
         $bag = new ParamBag(['foo' => 'true', 'bar' => 'TRUE']);
         $this->assertTrue($bag->getBoolean('foo'));
         $this->assertTrue($bag->getBoolean('bar'));
+
+        $this->assertEquals(['bar' => 'TRUE'], $bag->only(['bar']));
     }
 }
