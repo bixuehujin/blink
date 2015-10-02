@@ -3,6 +3,7 @@
 namespace blink\http;
 
 use blink\base\Object;
+use blink\support\Json;
 use blink\base\InvalidParamException;
 
 /**
@@ -13,7 +14,12 @@ use blink\base\InvalidParamException;
 class Response extends Object
 {
     public $data;
+
+    /**
+     * @var HeaderBag
+     */
     public $headers;
+
     public $version = '1.0';
 
     public $statusCode = 200;
@@ -87,6 +93,9 @@ class Response extends Object
         511 => 'Network Authentication Required',
     ];
 
+    protected $content;
+    protected $prepared = false;
+
     public function init()
     {
         $this->headers = new HeaderBag();
@@ -115,16 +124,32 @@ class Response extends Object
     }
 
     /**
+     * Prepare the response to ready to send to client.
+     */
+    public function prepare()
+    {
+        if (!$this->prepared) {
+
+            $this->content = $this->data === null ? '' : Json::encode($this->data);
+            if ($this->data !== null) {
+                $this->headers->set('Content-Type', 'application/json');
+            }
+
+            $this->prepared = true;
+        }
+    }
+
+    /**
      * Gets the raw response content.
      *
      * @return string
      */
     public function content()
     {
-        if ($this->data === null) {
-            return '';
+        if (!$this->prepared) {
+            $this->prepare();
         }
 
-        return json_encode($this->data, JSON_UNESCAPED_UNICODE);
+        return $this->content;
     }
 }

@@ -21,7 +21,7 @@ class Application extends ServiceLocator
     public $name = 'blink';
     public $routes = [];
     public $services = [];
-    public $debug = false;
+    public $debug = true;
     public $timezone = 'UTC';
     public $runtimePath;
 
@@ -36,6 +36,8 @@ class Application extends ServiceLocator
             $this->registerServices();
             $this->registerRoutes();
             $this->bootstrapped = true;
+
+            $this->get('log')->info('application started');
         }
 
         return $this;
@@ -91,30 +93,40 @@ class Application extends ServiceLocator
             $this->exec($request, $response);
         } catch (HttpException $e) {
             $response->status($e->statusCode);
-            $response->data = [
-                'code' => $e->statusCode,
-                'message' => $e->getMessage(),
-            ];
+            $response->data = $this->exceptionToArray($e);
         } catch (\Exception $e) {
             $this->get('errorHandler')->handleException($e);
 
             $response->status(500);
-
-            $data = [
-                'code' => $e->getCode(),
-                'message' => get_class($e) . ': ' . $e->getMessage(),
-            ];
-
-            if (!$this->debug) {
-                $data['file'] = $e->getFile();
-                $data['line'] = $e->getLine();
-                $data['trace'] = $e->getTrace();
-            }
-
-            $response->data = $data;
+            $response->data = $this->exceptionToArray($e);
         }
 
+        $response->prepare();
+
         return $response;
+    }
+
+    protected function exceptionToArray(\Exception $exception)
+    {
+        $array = [
+            'name' => get_class($exception),
+            'message' => $exception->getMessage(),
+            'code' => $exception->getCode(),
+        ];
+        if ($exception instanceof HttpException) {
+            $array['status'] = $exception->statusCode;
+        }
+        if ($this->debug) {
+            $array['file'] = $exception->getFile();
+            $array['line'] = $exception->getLine();
+            $array['trace'] = explode("\n", $exception->getTraceAsString());
+        }
+
+        if (($prev = $exception->getPrevious()) !== null) {
+            $array['previous'] = $this->exceptionToArray($prev);
+        }
+
+        return $array;
     }
 
     protected function dispatch($request)
@@ -184,5 +196,13 @@ class Application extends ServiceLocator
         }
 
         return $args;
+    }
+
+    /**
+     * Shutdown the application.
+     */
+    public function shutdown()
+    {
+
     }
 }

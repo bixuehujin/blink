@@ -96,7 +96,7 @@ class LoggerTest extends TestCase
         $app = $this->createApp($func);
         $response = $app->handleRequest(new Request());
 
-        $this->assertEquals(['code', 'message', 'file', 'line', 'trace'], array_keys($response->data));
+        $this->assertEquals(['name', 'message', 'code', 'file', 'line', 'trace'], array_keys($response->data));
     }
 
     public function testHandlerException()
@@ -107,6 +107,6 @@ class LoggerTest extends TestCase
         $app = $this->createApp($func);
         $response = $app->handleRequest(new Request());
 
-        $this->assertEquals(['code', 'message', 'file', 'line', 'trace'], array_keys($response->data));
+        $this->assertEquals(['name', 'message', 'code', 'file', 'line', 'trace'], array_keys($response->data));
     }
 }
