@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hujin
- * Date: 15-9-4
- * Time: 上午3:21
- */
 
 namespace blink;
 

@@ -107,7 +107,7 @@ class Response extends Object
         }
     }
 
-    public function with(array $data)
+    public function with($data)
     {
         $this->data = $data;
 
