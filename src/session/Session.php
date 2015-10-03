@@ -23,7 +23,7 @@ class Session extends Object implements SessionContract
      *
      * @var int
      */
-    public $expires = 3600 * 24 * 15;
+    public $expires = 1296000;
 
     public function init()
     {

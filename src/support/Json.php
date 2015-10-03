@@ -14,8 +14,12 @@ class Json
      * @return string
      * @throws InvalidParamException if there is any encoding error
      */
-    public static function encode($value, $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+    public static function encode($value, $options = null)
     {
+        if ($options === null) {
+            $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
+        }
+
         $json = json_encode($value, $options);
 
         static::handleJsonError(json_last_error());
