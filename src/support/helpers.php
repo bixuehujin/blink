@@ -46,3 +46,23 @@ function app($service = null)
         return Container::$app->get($service);
     }
 }
+
+/**
+ * Helper function to get session service.
+ *
+ * @return \blink\session\Contract
+ */
+function session()
+{
+    return Container::$app->get('session');
+}
+
+/**
+ * Helper function to get auth service.
+ *
+ * @return \blink\auth\Contract
+ */
+function auth()
+{
+    return Container::$app->get('auth');
+}

@@ -33,6 +33,7 @@ class Application extends ServiceLocator
     public function init()
     {
         Container::$app = $this;
+        Container::$instance = new Container();
     }
 
 
