@@ -360,7 +360,7 @@ class Container extends Object
             $dependencies[$index] = $param;
         }
 
-        if (!empty($dependencies) && is_a($class, 'yii\base\Object', true)) {
+        if (!empty($dependencies) && is_a($class, 'blink\base\Object', true)) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             $dependencies = $this->resolveDependencies($dependencies, $reflection);
