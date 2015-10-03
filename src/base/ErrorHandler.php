@@ -22,7 +22,7 @@ class ErrorHandler extends Object
     public function init()
     {
         if (!$this->logger) {
-            $this->logger = Blink::$app->get('log');
+            $this->logger = app('log');
         }
 
         $this->register();

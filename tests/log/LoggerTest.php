@@ -2,7 +2,6 @@
 
 namespace blink\tests\log;
 
-use blink\Blink;
 use blink\base\Exception;
 use blink\log\Logger;
 use blink\tests\TestCase;
@@ -66,7 +65,7 @@ class LoggerTest extends TestCase
 
     protected function createApp($callback = null)
     {
-        $app = Blink::$app = new Application([
+        $app = new Application([
             'services' => [
                 'log' => $this->createLogger($this->logFile)
             ]

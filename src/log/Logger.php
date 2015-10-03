@@ -41,7 +41,7 @@ class Logger extends Object implements LoggerInterface
         $this->monolog = new MonoLogger($this->name);
 
         foreach ($this->targets as &$target) {
-            $target = Blink::createObject($target);
+            $target = make($target);
             $this->monolog->pushHandler($target);
         }
     }

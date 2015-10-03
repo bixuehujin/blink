@@ -95,6 +95,9 @@ use blink\base\InvalidConfigException;
  */
 class Container extends Object
 {
+    public static $instance;
+    public static $app;
+
     /**
      * @var array singleton objects indexed by their types
      */

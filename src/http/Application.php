@@ -3,6 +3,7 @@
 namespace blink\http;
 
 use blink\Blink;
+use blink\di\Container;
 use FastRoute;
 use blink\base\ErrorHandler;
 use blink\di\ServiceLocator;
@@ -27,6 +28,12 @@ class Application extends ServiceLocator
 
     protected $dispatcher;
     protected $bootstrapped = false;
+
+
+    public function init()
+    {
+        Container::$app = $this;
+    }
 
 
     public function bootstrap()

@@ -18,6 +18,9 @@
       "phpunit/phpunit": "~4.0"
     },
     "autoload": {
+      "files": [
+        "src/support/helpers.php"
+      ],
       "psr-4": {
         "blink\\": "src",
         "blink\\tests\\": "tests"

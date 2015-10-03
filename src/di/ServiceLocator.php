@@ -130,7 +130,7 @@ class ServiceLocator extends Object
             if (is_object($definition) && !$definition instanceof Closure) {
                 return $this->_components[$id] = $definition;
             } else {
-                return $this->_components[$id] = Blink::createObject($definition);
+                return $this->_components[$id] = make($definition);
             }
         } elseif ($throwException) {
             throw new InvalidConfigException("Unknown component ID: $id");

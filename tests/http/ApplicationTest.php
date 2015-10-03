@@ -4,7 +4,6 @@ namespace blink\tests\http;
 
 use blink\base\Object;
 use blink\base\ErrorHandler;
-use blink\Blink;
 use blink\http\Application;
 use blink\http\Request;
 use blink\http\Response;
@@ -16,7 +15,7 @@ class ApplicationTest extends TestCase
 {
     protected function createApplication()
     {
-        $application = Blink::$app = new Application();
+        $application = new Application();
         $application
             ->route('GET', '/', function () {
                 return 'hello';
