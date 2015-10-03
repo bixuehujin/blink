@@ -10,10 +10,11 @@ use blink\tests\TestCase;
 class SessionTest extends TestCase
 {
 
-    private  $sessionPath = __DIR__ . '/sessions';
+    private  $sessionPath;
 
     public function setUp()
     {
+        $this->sessionPath = __DIR__ . '/sessions';
         mkdir($this->sessionPath);
 
         parent::setUp();

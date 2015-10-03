@@ -14,7 +14,14 @@ use blink\http\Request;
 
 class LoggerTest extends TestCase
 {
-    protected $logFile = __DIR__ . '/test.log';
+    protected $logFile;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->logFile = __DIR__ . '/test.log';
+    }
 
     public function tearDown()
     {
