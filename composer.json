@@ -1,6 +1,6 @@
 {
-    "name" : "bixuehujin/blink",
-    "description": "A high performance micro web framework",
+    "name" : "blink/blink",
+    "description": "A web framework build for high performance services",
     "keywords": ["framework", "swoole"],
     "authors" : [
         {
