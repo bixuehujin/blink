@@ -73,6 +73,7 @@ class LoggerTest extends TestCase
     protected function createApp($callback = null)
     {
         $app = new Application([
+            'root' => '.',
             'services' => [
                 'log' => $this->createLogger($this->logFile)
             ]

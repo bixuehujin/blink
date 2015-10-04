@@ -15,7 +15,7 @@ class ApplicationTest extends TestCase
 {
     protected function createApplication()
     {
-        $application = new Application();
+        $application = new Application(['root' => '.']);
         $application
             ->route('GET', '/', function () {
                 return 'hello';

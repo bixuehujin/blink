@@ -23,6 +23,7 @@ class AuthTest extends TestCase
     public function createApplication()
     {
         return new Application([
+            'root' => '.',
             'services' => [
                 'session' => [
                     'class' => Session::class,
