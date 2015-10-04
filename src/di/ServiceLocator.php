@@ -7,7 +7,6 @@
 
 namespace blink\di;
 
-use blink\Blink;
 use Closure;
 use blink\core\Object;
 use blink\core\InvalidConfigException;

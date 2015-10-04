@@ -7,7 +7,6 @@
 
 namespace blink\di;
 
-use blink\Blink;
 use blink\core\InvalidConfigException;
 
 /**
@@ -140,10 +139,10 @@ class Instance
         if ($container) {
             return $container->get($this->id);
         }
-        if (Blink::$app && Blink::$app->has($this->id)) {
-            return Blink::$app->get($this->id);
+        if (Container::$app && Container::$app->has($this->id)) {
+            return Container::$app->get($this->id);
         } else {
-            return Blink::$container->get($this->id);
+            return Container::$instance->get($this->id);
         }
     }
 }

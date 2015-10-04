@@ -2,7 +2,6 @@
 
 namespace blink\http;
 
-use blink\Blink;
 use blink\di\Container;
 use FastRoute;
 use blink\core\ErrorHandler;

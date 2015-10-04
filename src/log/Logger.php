@@ -4,7 +4,6 @@ namespace blink\log;
 
 use blink\core\InvalidParamException;
 use blink\core\Object;
-use blink\Blink;
 use blink\di\Instance;
 use Monolog\Formatter\JsonFormatter;
 use Psr\Log\LoggerInterface;

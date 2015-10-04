@@ -2,7 +2,6 @@
 
 namespace blink\server;
 
-use blink\Blink;
 use blink\core\Object;
 use blink\http\Application;
 
@@ -33,17 +32,17 @@ abstract class Server extends Object
             $app = require $this->bootstrap;
         }
 
-        Blink::$app = $app->bootstrap();
+        $app->bootstrap();
     }
 
     public function stopApp()
     {
-        Blink::$app->shutdown();
+        app()->shutdown();
     }
 
     public function handleRequest($request)
     {
-        return Blink::$app->handleRequest($request);
+        return app()->handleRequest($request);
     }
 
     abstract public function run();
