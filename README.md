@@ -1,5 +1,5 @@
-Blink - A web framework brought for long running services
-=========================================================
+Blink - A web framework build for long running services
+=======================================================
 
 [![Build Status](https://travis-ci.org/bixuehujin/blink.svg?branch=master)](https://travis-ci.org/bixuehujin/blink)
 
@@ -11,11 +11,16 @@ requests in plain PHP.
 
 ## Installation
 
-TBD
+Install the latest version with
+
+```bash
+$ composer require bixuehujin/blink
+```
 
 ## Documentation
 
-TBD
+ * [English Documentation](docs/en/README.md)
+ * [简体中文文档](docs/zh-CN/README.md)
 
 ## Participating
 
