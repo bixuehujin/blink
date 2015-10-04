@@ -3,7 +3,7 @@
 namespace blink\server;
 
 use blink\Blink;
-use blink\base\Object;
+use blink\core\Object;
 use blink\http\Application;
 
 /**

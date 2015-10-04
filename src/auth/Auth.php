@@ -2,7 +2,7 @@
 
 namespace blink\auth;
 
-use blink\base\Object;
+use blink\core\Object;
 use blink\auth\Contract as AuthContract;
 
 /**

@@ -1,19 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hujin
- * Date: 15-9-3
- * Time: 下午9:10
- */
 
-namespace blink\base;
+namespace blink\core;
+
 
 /**
- * Class Object
+ * Trait ObjectTrait
  *
- * @package blink\base
+ * @package blink\core
  */
-class Object
+trait ObjectTrait
 {
     public function __construct($config = [])
     {

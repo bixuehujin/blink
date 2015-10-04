@@ -2,7 +2,7 @@
 
 namespace blink\support;
 
-use blink\base\InvalidParamException;
+use blink\core\InvalidParamException;
 
 class Json
 {

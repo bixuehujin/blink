@@ -2,13 +2,13 @@
 
 namespace blink\tests\log;
 
-use blink\base\Exception;
+use blink\core\Exception;
 use blink\log\Logger;
 use blink\tests\TestCase;
 use blink\log\StreamTarget;
 use Psr\Log\LogLevel;
 use blink\http\Application;
-use blink\base\ErrorHandler;
+use blink\core\ErrorHandler;
 use blink\http\Request;
 
 

@@ -2,9 +2,9 @@
 
 namespace blink\http;
 
-use blink\base\Object;
+use blink\core\Object;
 use blink\support\Json;
-use blink\base\InvalidParamException;
+use blink\core\InvalidParamException;
 
 /**
  * Class Response
@@ -130,8 +130,8 @@ class Response extends Object
     {
         if (!$this->prepared) {
 
-            $this->content = $this->data === null ? '' : Json::encode($this->data);
-            if ($this->data !== null) {
+            $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
+            if (!is_string($this->data)) {
                 $this->headers->set('Content-Type', 'application/json');
             }
 

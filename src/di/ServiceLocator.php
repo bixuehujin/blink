@@ -9,8 +9,8 @@ namespace blink\di;
 
 use blink\Blink;
 use Closure;
-use blink\base\Object;
-use blink\base\InvalidConfigException;
+use blink\core\Object;
+use blink\core\InvalidConfigException;
 
 /**
  * ServiceLocator implements a [service locator](http://en.wikipedia.org/wiki/Service_locator_pattern).
@@ -39,7 +39,7 @@ use blink\base\InvalidConfigException;
  * $cache = $locator->get('cache');  // or $locator->cache
  * ```
  *
- * Because [[\yii\base\Module]] extends from ServiceLocator, modules and the application are all service locators.
+ * Because [[\yii\core\Module]] extends from ServiceLocator, modules and the application are all service locators.
  *
  * @property array $components The list of the component definitions or the loaded component instances (ID =>
  * definition or instance).

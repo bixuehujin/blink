@@ -1,6 +1,6 @@
 <?php
 
-namespace blink\base;
+namespace blink\core;
 
 /**
  * ErrorException represents a PHP error.

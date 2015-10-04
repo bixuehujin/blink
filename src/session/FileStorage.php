@@ -2,7 +2,7 @@
 
 namespace blink\session;
 
-use blink\base\InvalidConfigException;
+use blink\core\InvalidConfigException;
 use blink\session\Contract as SessionContract;
 
 /**

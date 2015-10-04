@@ -9,7 +9,7 @@
 namespace blink\log;
 
 
-use blink\base\Object;
+use blink\core\Object;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Formatter\FormatterInterface;
 use Psr\Log\LogLevel;

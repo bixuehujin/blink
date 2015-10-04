@@ -4,8 +4,8 @@ namespace blink\tests\auth;
 
 use blink\auth\Auth;
 use blink\auth\Authenticatable;
-use blink\base\InvalidParamException;
-use blink\base\Object;
+use blink\core\InvalidParamException;
+use blink\core\Object;
 use blink\http\Application;
 use blink\testing\TestCase;
 use blink\session\Session;

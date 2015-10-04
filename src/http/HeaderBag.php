@@ -4,7 +4,7 @@ namespace blink\http;
 
 use Countable;
 use IteratorAggregate;
-use blink\base\Object;
+use blink\core\Object;
 use blink\support\BagTrait;
 
 

@@ -8,8 +8,8 @@
 namespace blink\di;
 
 use ReflectionClass;
-use blink\base\Object;
-use blink\base\InvalidConfigException;
+use blink\core\Object;
+use blink\core\InvalidConfigException;
 
 /**
  * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
@@ -34,7 +34,7 @@ use blink\base\InvalidConfigException;
  * ```php
  * namespace app\models;
  *
- * use yii\base\Object;
+ * use yii\core\Object;
  * use yii\db\Connection;
  * use yii\di\Container;
  *
@@ -360,7 +360,7 @@ class Container extends Object
             $dependencies[$index] = $param;
         }
 
-        if (!empty($dependencies) && is_a($class, 'blink\base\Object', true)) {
+        if (!empty($dependencies) && is_a($class, 'blink\core\Configurable', true)) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             $dependencies = $this->resolveDependencies($dependencies, $reflection);

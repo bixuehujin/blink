@@ -1,11 +1,6 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace blink\base;
+namespace blink\core;
 
 /**
  * UnknownMethodException represents an exception caused by accessing an unknown object method.

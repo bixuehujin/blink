@@ -8,7 +8,7 @@
 namespace blink\di;
 
 use blink\Blink;
-use blink\base\InvalidConfigException;
+use blink\core\InvalidConfigException;
 
 /**
  * Instance represents a reference to a named object in a dependency injection (DI) container or a service locator.

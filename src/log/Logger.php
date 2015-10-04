@@ -2,8 +2,8 @@
 
 namespace blink\log;
 
-use blink\base\InvalidParamException;
-use blink\base\Object;
+use blink\core\InvalidParamException;
+use blink\core\Object;
 use blink\Blink;
 use blink\di\Instance;
 use Monolog\Formatter\JsonFormatter;

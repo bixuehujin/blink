@@ -1,7 +1,7 @@
 <?php
 
 use blink\di\Container;
-use blink\base\InvalidConfigException;
+use blink\core\InvalidConfigException;
 
 /**
  * Shortcut helper function to create object via Object Configuration.

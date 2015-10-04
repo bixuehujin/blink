@@ -1,11 +1,6 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace blink\base;
+namespace blink\core;
 
 /**
  * InvalidParamException represents an exception caused by invalid parameters passed to a method.

@@ -2,7 +2,7 @@
 
 namespace blink\session;
 
-use blink\base\Object;
+use blink\core\Object;
 use blink\support\BagTrait;
 
 /**

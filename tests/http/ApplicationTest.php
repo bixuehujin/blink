@@ -2,8 +2,8 @@
 
 namespace blink\tests\http;
 
-use blink\base\Object;
-use blink\base\ErrorHandler;
+use blink\core\Object;
+use blink\core\ErrorHandler;
 use blink\http\Application;
 use blink\http\Request;
 use blink\http\Response;
@@ -33,7 +33,7 @@ class ApplicationTest extends TestCase
     {
         $request = new Request();
         $response = $this->createApplication()->handleRequest($request);
-        $this->assertEquals('"hello"', $response->content());
+        $this->assertEquals('hello', $response->content());
     }
 
     public function testClosureInjection()

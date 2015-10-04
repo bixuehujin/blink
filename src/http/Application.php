@@ -5,9 +5,9 @@ namespace blink\http;
 use blink\Blink;
 use blink\di\Container;
 use FastRoute;
-use blink\base\ErrorHandler;
+use blink\core\ErrorHandler;
 use blink\di\ServiceLocator;
-use blink\base\HttpException;
+use blink\core\HttpException;
 use blink\log\Logger;
 
 /**
@@ -24,7 +24,8 @@ class Application extends ServiceLocator
     public $services = [];
     public $debug = true;
     public $timezone = 'UTC';
-    public $runtimePath;
+    public $runtime;
+    public $controllerNamespace;
 
     protected $dispatcher;
     protected $bootstrapped = false;
@@ -164,6 +165,10 @@ class Application extends ServiceLocator
         } else if (($pos = strpos($handler, ':')) !== false) {
             $class = substr($handler, 0, $pos);
             $method = substr($handler, $pos + 1);
+
+            if ($class[0] !== '\\' && $this->controllerNamespace) {
+                $class = $this->controllerNamespace . '\\' . $class;
+            }
 
             $reflection = new \ReflectionClass($class);
             $parameters = $reflection->getConstructor()->getParameters();

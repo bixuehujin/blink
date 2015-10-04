@@ -1,8 +1,7 @@
 <?php
 
-namespace blink\base;
+namespace blink\core;
 
-use blink\Blink;
 use Psr\Log\LogLevel;
 
 /**
@@ -83,7 +82,7 @@ class ErrorHandler extends Object
         if (error_reporting() & $code) {
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
-            if (!class_exists('blink\\base\\ErrorException', false)) {
+            if (!class_exists('blink\\core\\ErrorException', false)) {
                 require_once(__DIR__ . '/ErrorException.php');
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
@@ -109,7 +108,7 @@ class ErrorHandler extends Object
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
-        if (!class_exists('blink\\base\\ErrorException', false)) {
+        if (!class_exists('blink\\core\\ErrorException', false)) {
             require_once(__DIR__ . '/ErrorException.php');
         }
 

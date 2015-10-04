@@ -2,8 +2,8 @@
 
 namespace blink\http;
 
-use blink\base\NotSupportedException;
-use blink\base\Object;
+use blink\core\NotSupportedException;
+use blink\core\Object;
 
 /**
  * Class Request
