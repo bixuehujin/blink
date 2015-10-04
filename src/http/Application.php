@@ -2,6 +2,7 @@
 
 namespace blink\http;
 
+use blink\core\InvalidParamException;
 use blink\di\Container;
 use FastRoute;
 use blink\core\ErrorHandler;
@@ -18,7 +19,26 @@ class Application extends ServiceLocator
 {
     const VERSION = '0.1.0 (dev)';
 
+    /**
+     * The name for the application.
+     *
+     * @var string
+     */
     public $name = 'blink';
+    /**
+     * The root path for the application.
+     *
+     * @var string
+     */
+    public $root;
+
+    /**
+     * Available console commands.
+     *
+     * @var string[]
+     */
+    public $commands = [];
+
     public $routes = [];
     public $services = [];
     public $debug = true;
@@ -32,6 +52,10 @@ class Application extends ServiceLocator
 
     public function init()
     {
+        if (!$this->root || !file_exists($this->root)) {
+            throw new InvalidParamException("The param: 'root' is invalid");
+        }
+
         Container::$app = $this;
         Container::$instance = new Container();
     }
@@ -112,6 +136,25 @@ class Application extends ServiceLocator
         $response->prepare();
 
         return $response;
+    }
+
+    public function handleConsole($input, $output)
+    {
+        $app = new \blink\core\console\Application([
+            'name' => 'Blink Command Runner',
+            'version' => self::VERSION,
+            'blink' => $this,
+        ]);
+
+        $commands = array_merge($this->commands, [
+            'blink\console\ServeCommand',
+        ]);
+
+        foreach ($commands as $command) {
+            $app->add(make(['class' => $command, 'blink' => $this]));
+        }
+
+        return $app->run($input, $output);
     }
 
     protected function exceptionToArray(\Exception $exception)
