@@ -2,6 +2,10 @@ Blink - A web framework build for high performance services
 ===========================================================
 
 [![Build Status](https://travis-ci.org/bixuehujin/blink.svg?branch=master)](https://travis-ci.org/bixuehujin/blink)
+[![Latest Stable Version](https://poser.pugx.org/blink/blink/v/stable)](https://packagist.org/packages/blink/blink)
+[![Total Downloads](https://poser.pugx.org/blink/blink/downloads)](https://packagist.org/packages/blink/blink)
+[![Latest Unstable Version](https://poser.pugx.org/blink/blink/v/unstable)](https://packagist.org/packages/blink/blink)
+[![License](https://poser.pugx.org/blink/blink/license)](https://packagist.org/packages/blink/blink)
 
 Blink is micro web framework with expressive, elegant APIs, which inspired much by Yii2 and Laravel. And the most
 importantly, Blink is designed for long running services. Unlike other frameworks, Blink does't requires php-fpm or
