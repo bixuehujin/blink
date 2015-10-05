@@ -9,23 +9,23 @@
         }
     ],
     "require": {
-      "php": ">=5.5.0",
-      "ext-swoole": ">=1.7.19",
-      "nikic/fast-route": "0.6.*",
-      "monolog/monolog": "~1.0",
-      "symfony/console": "^2.7"
+        "php": ">=5.5.0",
+        "ext-swoole": ">=1.7.19",
+        "nikic/fast-route": "0.6.*",
+        "monolog/monolog": "~1.0",
+        "symfony/console": "^2.7"
     },
     "require-dev": {
-      "phpunit/phpunit": "~4.0"
+        "phpunit/phpunit": "~4.0"
     },
     "autoload": {
-      "files": [
-        "src/support/helpers.php"
-      ],
-      "psr-4": {
-        "blink\\": "src",
-        "blink\\tests\\": "tests"
-      }
+        "files": [
+            "src/support/helpers.php"
+        ],
+        "psr-4": {
+            "blink\\": "src",
+            "blink\\tests\\": "tests"
+        }
     },
     "minimum-stability": "stable",
     "config": {
