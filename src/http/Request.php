@@ -2,6 +2,7 @@
 
 namespace blink\http;
 
+use blink\auth\Authenticatable;
 use blink\core\NotSupportedException;
 use blink\core\Object;
 
@@ -39,6 +40,18 @@ class Request extends Object
     public $queryString = '';
 
     public $method = 'GET';
+
+    /**
+     * The name of a header field that stores the session id, or a callable that will returns the session id.
+     *
+     * The following is the signature of the callable:
+     *
+     * ```
+     * string function (Request $request);
+     * ```
+     * @var string|callable
+     */
+    public $sessionId = 'X-Session-Id';
 
     private $_params;
 
@@ -269,5 +282,34 @@ class Request extends Object
         $keys = is_array($keys) ? $keys : func_get_args();
 
         return array_replace_recursive($this->params->only($keys), $this->body->only($keys));
+    }
+
+    private $_user = false;
+
+    /**
+     * Gets the authenticated user for this request.
+     *
+     * @return \blink\auth\Authenticatable|null
+     */
+    public function user()
+    {
+        if ($this->_user === false) {
+            $sessionId = is_callable($this->sessionId) ?
+                call_user_func($this->sessionId, $this) : $this->headers->first($this->sessionId);
+
+            $this->_user = auth()->who($sessionId);
+        }
+
+        return $this->_user;
+    }
+
+    /**
+     * Returns the whether the request is a guest request.
+     *
+     * @return bool
+     */
+    public function guest()
+    {
+        return $this->user() === null;
     }
 }
