@@ -88,14 +88,16 @@ class SwServer extends Server
 
     protected function prepareRequest($request)
     {
-        return new Request([
+        $config = [
             'protocol' => $request->server['server_protocol'],
             'method' => $request->server['request_method'],
             'path' => $request->server['request_uri'],
             'headers' => $request->header,
             'params' => isset($request->get) ? $request->get : [],
             'content' => $request->rawcontent()
-        ]);
+        ];
+
+        return app()->makeRequest($config);
     }
 
     public function onRequest($request, $response)

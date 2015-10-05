@@ -45,6 +45,7 @@ class Application extends ServiceLocator
     public $timezone = 'UTC';
     public $runtime;
     public $controllerNamespace;
+    public $request = [];
 
     protected $dispatcher;
     protected $bootstrapped = false;
@@ -115,6 +116,13 @@ class Application extends ServiceLocator
         $this->routes[] = [$method, $route, $handler];
 
         return $this;
+    }
+
+    public function makeRequest($config = [])
+    {
+        $config = $config + $this->request + ['class' => Request::class];
+
+        return make($config);
     }
 
     public function handleRequest($request)
