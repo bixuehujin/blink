@@ -53,7 +53,7 @@ abstract class Target extends Object implements HandlerInterface
 
     public function isHandling(array $message)
     {
-        return $this->getUnderlyingHandler()->isHandling($message);
+        return $this->enabled && $this->getUnderlyingHandler()->isHandling($message);
     }
 
     public function handle(array $message)
