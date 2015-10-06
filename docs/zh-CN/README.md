@@ -13,7 +13,7 @@ Blink 中文文档
 -------
 
 * [路由与控制器](2-1-routing-and-controllers.md)
-* [请求处理](2-3-request-handling.md)
+* [请求处理](2-2-request-handling.md)
 
 
 核心组件
