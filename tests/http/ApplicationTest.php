@@ -47,7 +47,9 @@ class ApplicationTest extends TestCase
     {
         $request = new Request(['path' => '/10/multi/20']);
         $response = $this->createApplication()->handleRequest($request);
+
         $this->assertEquals(200, $response->content());
+        $this->assertEquals('bar', $request->params->get('foo'));
     }
 }
 
@@ -56,6 +58,7 @@ class TestController extends Object
 {
     public function __construct(Request $request, $config = [])
     {
+        $request->params->set('foo', 'bar');
 
         parent::__construct($config);
     }

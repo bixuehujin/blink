@@ -40,12 +40,28 @@ class Application extends ServiceLocator
     public $commands = [];
 
     public $routes = [];
+
+    /**
+     * Application service definitions.
+     *
+     * @var array
+     */
     public $services = [];
+
+    /**
+     * Specify the services that need to be refreshed after request.
+     *
+     * @var array
+     */
+    public $refresh = ['request', 'response'];
+
     public $debug = true;
+
     public $timezone = 'UTC';
+
     public $runtime;
+
     public $controllerNamespace;
-    public $request = [];
 
     protected $dispatcher;
     protected $bootstrapped = false;
@@ -57,6 +73,7 @@ class Application extends ServiceLocator
             throw new InvalidParamException("The param: 'root' is invalid");
         }
 
+        $this->services += $this->defaultServices();
         Container::$app = $this;
         Container::$instance = new Container();
     }
@@ -83,9 +100,7 @@ class Application extends ServiceLocator
 
     protected function registerServices()
     {
-        $services = $this->services + $this->defaultServices();
-
-        foreach ($services as $id => $definition) {
+        foreach ($this->services as $id => $definition) {
             $this->bind($id, $definition);
         }
     }
@@ -108,6 +123,12 @@ class Application extends ServiceLocator
             'log' => [
                 'class' => Logger::class,
             ],
+            'request' => [
+                'class' => Request::class,
+            ],
+            'response' => [
+                'class' => Response::class,
+            ],
         ];
     }
 
@@ -120,14 +141,18 @@ class Application extends ServiceLocator
 
     public function makeRequest($config = [])
     {
-        $config = $config + $this->request + ['class' => Request::class];
+        $request = $this->get('request');
 
-        return make($config);
+        foreach ($config as $name => $value) {
+            $request->$name = $value;
+        }
+
+        return $request;
     }
 
     public function handleRequest($request)
     {
-        $response = new Response();
+        $response = $this->get('response');
 
         try {
             $this->exec($request, $response);
@@ -143,7 +168,17 @@ class Application extends ServiceLocator
 
         $response->prepare();
 
+        $this->afterRequest();
+
         return $response;
+    }
+
+    protected function afterRequest()
+    {
+        foreach($this->refresh as $id) {
+            $this->unbind($id);
+            $this->bind($id, $this->services[$id]);
+        }
     }
 
     public function handleConsole($input, $output)

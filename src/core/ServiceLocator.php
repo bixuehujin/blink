@@ -1,6 +1,7 @@
 <?php
 
 namespace blink\core;
+
 use blink\di\Container;
 
 /**
@@ -10,14 +11,6 @@ use blink\di\Container;
  */
 class ServiceLocator extends Object
 {
-    /**
-     * Array of singleton services.
-     *
-     * @var array
-     */
-    public $singleton = [];
-
-
     /**
      * Bind a service definition to this service locator.
      *
@@ -37,11 +30,7 @@ class ServiceLocator extends Object
             throw new InvalidConfigException("The configuration for the \"$id\" service must contain a \"class\" element.");
         }
 
-        if (in_array($id, $this->singleton)) {
-            $container->setSingleton($id, $definition);
-        } else {
-            $container->set($id, $definition);
-        }
+        $container->setSingleton($id, $definition);
     }
 
     public function unbind($id)
