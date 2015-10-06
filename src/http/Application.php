@@ -3,10 +3,10 @@
 namespace blink\http;
 
 use blink\core\InvalidParamException;
+use blink\core\ServiceLocator;
 use blink\di\Container;
 use FastRoute;
 use blink\core\ErrorHandler;
-use blink\di\ServiceLocator;
 use blink\core\HttpException;
 use blink\log\Logger;
 
@@ -86,7 +86,7 @@ class Application extends ServiceLocator
         $services = $this->services + $this->defaultServices();
 
         foreach ($services as $id => $definition) {
-            $this->set($id, $definition);
+            $this->bind($id, $definition);
         }
     }
 
