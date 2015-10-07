@@ -31,7 +31,7 @@ composer create-project --prefer-dist -s dev blink/seed your-app
 
 ## Documentation
 
- * [English Documentation](docs/en/README.md)
+ * [English Documentation](docs/en/README.md)(Not Ready Yet)
  * [简体中文文档](docs/zh-CN/README.md)
 
 ## Participating
@@ -43,3 +43,8 @@ You may participate in the following ways:
 * [Report issues or Start a design discussion](https://github.com/bixuehujin/blink/issues)
 * Develop features or write documentation via [Pull Requests](https://github.com/bixuehujin/blink/pulls)
 
+
+License
+-------
+
+This is a open sourced software under the MIT license.

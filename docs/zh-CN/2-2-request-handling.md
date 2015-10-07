@@ -23,7 +23,7 @@ class Controller extends Object
 }
 ```
 
-更多有用的方法请参考 `\blink\http\Request` 的实现源码及注释。
+更多有用的方法请参考 `\blink\http\Request` 的[源代码及注释](src/http/Request.php)。
 
 
 返回数据
