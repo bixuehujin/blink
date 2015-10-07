@@ -245,7 +245,7 @@ class Application extends ServiceLocator
 
         if (is_callable($handler)) {
             $data = $this->call($handler, $args);
-        } else if (($pos = strpos($handler, ':')) !== false) {
+        } else if (($pos = strpos($handler, '@')) !== false) {
             $class = substr($handler, 0, $pos);
             $method = substr($handler, $pos + 1);
 

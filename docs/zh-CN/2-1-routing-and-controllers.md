@@ -67,11 +67,11 @@ return [
 控制器
 -----
 
-控制器函数除了上文中使用的匿名函数，更常见的是使用类的方法。我们使用 `ClassName:method` 这样的语法指定类方法作为控制器函数，如：
+控制器函数除了上文中使用的匿名函数，更常见的是使用类的方法。我们使用 `ClassName@method` 这样的语法指定类方法作为控制器函数，如：
 
 ```php
 return [
-    ['GET', '/', '/app/http/controllers/IndexController:index']
+    ['GET', '/', '/app/http/controllers/IndexController@index']
 ];
 ```
 
@@ -88,7 +88,7 @@ return [
 src/http/routes.php
 ```php
 return [
-    ['GET', '/', 'IndexController:index']
+    ['GET', '/', 'IndexController@index']
 ];
 ```
 

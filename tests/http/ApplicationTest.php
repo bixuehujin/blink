@@ -23,7 +23,7 @@ class ApplicationTest extends TestCase
             ->route('GET', '/{a}/plus/{b}', function ($a, $b, Request $request) {
                 return $a + $b;
             })
-            ->route('GET', '/{a}/multi/{b}', 'blink\tests\http\TestController:compute')
+            ->route('GET', '/{a}/multi/{b}', 'blink\tests\http\TestController@compute')
             ->bootstrap();
 
         return $application;
