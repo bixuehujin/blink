@@ -29,24 +29,35 @@ class ApplicationTest extends TestCase
         return $application;
     }
 
+    protected function createRequest($app, $path = '/')
+    {
+        $request = $app->get('request');
+        $request->path = $path;
+
+        return $request;
+    }
+
     public function testSimple()
     {
-        $request = new Request();
-        $response = $this->createApplication()->handleRequest($request);
+        $app = $this->createApplication();
+
+        $response = $app->handleRequest($this->createRequest($app));
         $this->assertEquals('hello', $response->content());
     }
 
     public function testClosureInjection()
     {
-        $request = new Request(['path' => '/10/plus/20']);
-        $response = $this->createApplication()->handleRequest($request);
+        $app = $this->createApplication();
+
+        $response = $app->handleRequest($this->createRequest($app, '/10/plus/20'));
         $this->assertEquals(30, $response->content());
     }
 
     public function testClassInjection()
     {
-        $request = new Request(['path' => '/10/multi/20']);
-        $response = $this->createApplication()->handleRequest($request);
+        $app = $this->createApplication();
+
+        $response = $app->handleRequest($request = $this->createRequest($app, '/10/multi/20'));
 
         $this->assertEquals(200, $response->content());
         $this->assertEquals('bar', $request->params->get('foo'));
