@@ -1,5 +1,7 @@
 <?php
 /**
+ * This file is modified from Yii framework 2 project.
+ *
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -95,8 +97,13 @@ use blink\core\InvalidConfigException;
  */
 class Container extends Object
 {
+    /**
+     * @var static
+     */
     public static $instance;
     public static $app;
+
+
 
     /**
      * @var array singleton objects indexed by their types
@@ -106,6 +113,11 @@ class Container extends Object
      * @var array object definitions indexed by their types
      */
     private $_definitions = [];
+
+    /**
+     * @var array type aliases indexed by alias.
+     */
+    private $_aliases = [];
     /**
      * @var array constructor parameters indexed by object types
      */
@@ -120,6 +132,27 @@ class Container extends Object
      */
     private $_dependencies = [];
 
+    /**
+     * Bind aliases for specified type.
+     *
+     * @param $type
+     * @param $alias
+     */
+    public function alias($type, $alias)
+    {
+        $this->_aliases[$alias] = $type;
+    }
+
+    /**
+     * Returns the real type of a alias.
+     *
+     * @param $alias
+     * @return string The real type name
+     */
+    public function getAlias($alias)
+    {
+        return isset($this->_aliases[$alias]) ? $this->_aliases[$alias] : $alias;
+    }
 
     /**
      * Returns an instance of the requested class.
@@ -143,6 +176,8 @@ class Container extends Object
      */
     public function get($class, $params = [], $config = [])
     {
+        $class = $this->getAlias($class);
+
         if (isset($this->_singletons[$class])) {
             // singleton
             return $this->_singletons[$class];
@@ -245,9 +280,22 @@ class Container extends Object
      */
     public function set($class, $definition = [], array $params = [])
     {
-        $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
-        $this->_params[$class] = $params;
-        unset($this->_singletons[$class]);
+        $normalizedDefinition = $this->normalizeDefinition($class, $definition);
+
+        if (is_array($normalizedDefinition)) {
+            $concrete = $normalizedDefinition['class'];
+        } else {
+            $concrete = $class;
+        }
+
+        if ($class !== $concrete) {
+            $this->alias($concrete, $class);
+        }
+
+        $this->_definitions[$concrete] = $normalizedDefinition;
+        $this->_params[$concrete] = $params;
+        unset($this->_singletons[$concrete]);
+
         return $this;
     }
 
@@ -266,9 +314,22 @@ class Container extends Object
      */
     public function setSingleton($class, $definition = [], array $params = [])
     {
-        $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
-        $this->_params[$class] = $params;
-        $this->_singletons[$class] = null;
+        $normalizedDefinition = $this->normalizeDefinition($class, $definition);
+
+        if (is_array($normalizedDefinition)) {
+            $concrete = $normalizedDefinition['class'];
+        } else {
+            $concrete = $class;
+        }
+
+        if ($class !== $concrete) {
+            $this->alias($concrete, $class);
+        }
+
+        $this->_definitions[$concrete] = $normalizedDefinition;
+        $this->_params[$concrete] = $params;
+        $this->_singletons[$concrete] = null;
+
         return $this;
     }
 
@@ -280,7 +341,7 @@ class Container extends Object
      */
     public function has($class)
     {
-        return isset($this->_definitions[$class]);
+        return isset($this->_definitions[$this->getAlias($class)]);
     }
 
     /**
@@ -292,6 +353,8 @@ class Container extends Object
      */
     public function hasSingleton($class, $checkInstance = false)
     {
+        $class = $this->getAlias($class);
+
         return $checkInstance ? isset($this->_singletons[$class]) : array_key_exists($class, $this->_singletons);
     }
 
@@ -301,7 +364,10 @@ class Container extends Object
      */
     public function clear($class)
     {
-        unset($this->_definitions[$class], $this->_singletons[$class]);
+        $concrete = $this->getAlias($class);
+        unset ($this->_aliases[$class]);
+
+        unset($this->_definitions[$concrete], $this->_singletons[$concrete]);
     }
 
     /**
