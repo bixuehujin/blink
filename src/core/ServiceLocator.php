@@ -54,6 +54,50 @@ class ServiceLocator extends Object
         return Container::$instance->get($id);
     }
 
+    /**
+     * Call the given callback or class method with dependency injection.
+     *
+     * @param $callback
+     * @param array $arguments
+     * @return mixed
+     */
+    public function call($callback, $arguments = [])
+    {
+        $dependencies = $this->getMethodDependencies($callback, $arguments);
+
+        return call_user_func_array($callback, $dependencies);
+    }
+
+    protected function getMethodDependencies($callback, array $arguments = [])
+    {
+        $dependencies = $arguments;
+        $parameters = array_slice($this->getCallerReflector($callback)->getParameters(), count($arguments));
+
+        foreach($parameters as $key => $parameter) {
+            if ($parameter->isDefaultValueAvailable()) {
+                $dependencies[] = $parameter->getDefaultValue();
+            } else if ($class = $parameter->getClass()) {
+                $dependencies[] = $this->get($class->getName());
+            } else {
+                throw new InvalidParamException('Missing required argument: ' . $parameter->getName());
+            }
+        }
+
+        return $dependencies;
+    }
+
+    protected function getCallerReflector($callback)
+    {
+        if (is_string($callback) && strpos($callback, '::') !== false) {
+            $callback = explode('::', $callback);
+        }
+
+        if (is_array($callback)) {
+            return new \ReflectionMethod($callback[0], $callback[1]);
+        }
+
+        return new \ReflectionFunction($callback);
+    }
 
     public function __get($name)
     {

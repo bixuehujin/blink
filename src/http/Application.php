@@ -244,9 +244,7 @@ class Application extends ServiceLocator
         list($handler, $args) = $this->dispatch($request);
 
         if (is_callable($handler)) {
-            $reflection = new \ReflectionFunction($handler);
-            $args = $this->resolveParameters($args, $reflection->getParameters(), $request, $response);
-            $data = call_user_func_array($handler, $args);
+            $data = $this->call($handler, $args);
         } else if (($pos = strpos($handler, ':')) !== false) {
             $class = substr($handler, 0, $pos);
             $method = substr($handler, $pos + 1);
@@ -255,15 +253,7 @@ class Application extends ServiceLocator
                 $class = $this->controllerNamespace . '\\' . $class;
             }
 
-            $reflection = new \ReflectionClass($class);
-            $parameters = $reflection->getConstructor()->getParameters();
-
-            $obj = $reflection->newInstanceArgs($this->resolveParameters([], $parameters, $request, $response));
-
-            $reflection = new \ReflectionMethod($class, $method);
-            $args = $this->resolveParameters($args, $reflection->getParameters(), $request, $response);
-
-            $data = call_user_func_array([$obj, $method], $args);
+            $data = $this->call([$this->get($class), $method], $args);
         } else {
             throw new HttpException(404);
         }
