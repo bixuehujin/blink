@@ -8,7 +8,8 @@ use blink\di\Instance;
 use Monolog\Formatter\JsonFormatter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
-use Monolog\Logger as MonoLogger;
+use Monolog\Logger as BaseMonoLogger;
+use Monolog\Handler\HandlerInterface;
 
 /**
  * Class Logger
@@ -60,5 +61,20 @@ class Logger extends Object implements LoggerInterface
         }
 
         $this->monolog->addRecord($this->levelMap[$level], $message, $context);
+    }
+}
+
+class MonoLogger extends BaseMonoLogger
+{
+    /**
+     * Hack to remove the default logger support of Monolog.
+     */
+    public function pushHandler(HandlerInterface $handler)
+    {
+        if ($handler instanceof Object) {
+            array_unshift($this->handlers, $handler);
+        }
+
+        return $this;
     }
 }
