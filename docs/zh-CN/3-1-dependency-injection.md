@@ -35,7 +35,7 @@ Setter 和属性注入是通过对象配置提供支持的。当注册一个依�
 Setter 或属性注入依赖。例如：
 
 ```php
-use yii\base\Object;
+use blink\core\Object;
 
 class Foo extends Object
 {
