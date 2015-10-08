@@ -19,7 +19,7 @@ Blink 中文文档
 核心组件
 -------
 
-* [依赖注入](3-1-di.md)
+* [依赖注入](3-1-dependency-injection.md)
 * [Session管理](3-2-session.md)
 * [授权与认证](3-3-authentication.md)
 * [错误与日志处理](3-4-error-and-logging.md)
