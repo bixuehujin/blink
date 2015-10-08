@@ -6,7 +6,7 @@ use blink\auth\Auth;
 use blink\auth\Authenticatable;
 use blink\core\InvalidParamException;
 use blink\core\Object;
-use blink\http\Application;
+use blink\core\Application;
 use blink\testing\TestCase;
 use blink\session\Session;
 use blink\session\FileStorage;

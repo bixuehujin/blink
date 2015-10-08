@@ -1,14 +1,12 @@
 <?php
 
-namespace blink\http;
+namespace blink\core;
 
-use blink\core\InvalidParamException;
-use blink\core\ServiceLocator;
 use blink\di\Container;
 use FastRoute;
-use blink\core\ErrorHandler;
-use blink\core\HttpException;
 use blink\log\Logger;
+use blink\http\Request;
+use blink\http\Response;
 
 /**
  * Class Application
@@ -173,6 +171,17 @@ class Application extends ServiceLocator
         return $response;
     }
 
+    protected function exec($request, $response)
+    {
+        list($handler, $args) = $this->dispatch($request);
+
+        $data = $this->callAction($handler, $args);
+
+        if (!$data instanceof Response && $data) {
+            $response->with($data);
+        }
+    }
+
     protected function afterRequest()
     {
         foreach($this->refresh as $id) {
@@ -239,10 +248,8 @@ class Application extends ServiceLocator
         }
     }
 
-    protected function exec($request, $response)
+    protected function callAction($handler, $args)
     {
-        list($handler, $args) = $this->dispatch($request);
-
         if (is_callable($handler)) {
             $data = $this->call($handler, $args);
         } else if (($pos = strpos($handler, '@')) !== false) {
@@ -258,32 +265,7 @@ class Application extends ServiceLocator
             throw new HttpException(404);
         }
 
-        if (!$data instanceof Response && $data) {
-            $response->with($data);
-        }
-    }
-
-    protected function resolveParameters($args, $parameters, $request, $response)
-    {
-        $parameters = array_slice($parameters, count($args));
-
-        foreach ($parameters as $parameter) {
-            $type = $parameter->getClass();
-            if (!$type) {
-                $args[] = $parameter->getDefaultValue();
-                continue;
-            }
-
-            if ($request instanceof $type->name) {
-                $args[] = $request;
-            } elseif ($response instanceof $type->name) {
-                $args[] = $response;
-            } else {
-                $args[] = $parameter->getDefaultValue();
-            }
-        }
-
-        return $args;
+        return $data;
     }
 
     /**

@@ -4,7 +4,7 @@ namespace blink\tests\http;
 
 use blink\core\Object;
 use blink\core\ErrorHandler;
-use blink\http\Application;
+use blink\core\Application;
 use blink\http\Request;
 use blink\http\Response;
 use blink\log\Logger;

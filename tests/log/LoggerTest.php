@@ -7,7 +7,7 @@ use blink\log\Logger;
 use blink\tests\TestCase;
 use blink\log\StreamTarget;
 use Psr\Log\LogLevel;
-use blink\http\Application;
+use blink\core\Application;
 use blink\core\ErrorHandler;
 use blink\http\Request;
 
