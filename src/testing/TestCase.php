@@ -19,7 +19,9 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        $this->app->shutdown();
-        $this->app = null;
+        if ($this->app) {
+            $this->app->shutdown();
+            $this->app = null;
+        }
     }
 }

@@ -297,7 +297,11 @@ class Request extends Object
             $sessionId = is_callable($this->sessionId) ?
                 call_user_func($this->sessionId, $this) : $this->headers->first($this->sessionId);
 
-            $this->_user = auth()->who($sessionId);
+            if ($sessionId) {
+                $this->_user = auth()->who($sessionId);
+            } else {
+                $this->_user = null;
+            }
         }
 
         return $this->_user;
