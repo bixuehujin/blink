@@ -55,6 +55,13 @@ class Application extends ServiceLocator
 
     public $debug = true;
 
+    /**
+     * The environment that the application is running on. dev, prod or test.
+     *
+     * @var string
+     */
+    public $environment = 'dev';
+
     public $timezone = 'UTC';
 
     public $runtime;
@@ -158,6 +165,10 @@ class Application extends ServiceLocator
             $response->status($e->statusCode);
             $response->data = $this->exceptionToArray($e);
         } catch (\Exception $e) {
+            if ($this->environment === 'test') {
+                throw $e;
+            }
+
             $this->get('errorHandler')->handleException($e);
 
             $response->status(500);
