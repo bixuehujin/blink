@@ -5,14 +5,14 @@ Installing Blink
 ---------------------------
 
 
-Before your installation please be sure your PHP version is greater then 5.5, then execute the following command
+Before your installation please be sure your PHP version is greater then 5.5, then run the following command
 to install Swoole:
 
 ```
 $ pecl install swoole
 ```
 
-Then, execute `php -m | grep swoole` command to make sure `Swoole` installed successfully.
+Then, run `php -m | grep swoole` command to make sure `Swoole` installed successfully.
 
 2. Install Blink Framework via Composer
 ---------------------------------------
