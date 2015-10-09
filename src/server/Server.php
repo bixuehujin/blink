@@ -3,7 +3,7 @@
 namespace blink\server;
 
 use blink\core\Object;
-use blink\http\Application;
+use blink\core\Application;
 
 /**
  * The base class for Application Server.
