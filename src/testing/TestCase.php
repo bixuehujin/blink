@@ -4,8 +4,15 @@ namespace blink\testing;
 
 use PHPUnit_Framework_TestCase;
 
+/**
+ * Class TestCase
+ *
+ * @package blink\testing
+ */
 abstract class TestCase extends PHPUnit_Framework_TestCase
 {
+    use AuthTrait;
+
     protected $app;
 
     abstract public function createApplication();
