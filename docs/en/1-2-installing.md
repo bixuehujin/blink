@@ -38,7 +38,7 @@ Start Blink server to ensure the installation:
 
 ```
 cd /path/to/your-app
-php blink server:serve
+php blink server serve
 ```
 
 Then, launch your browser and open http://localhost:7788/ , if you can see a welcome message saying

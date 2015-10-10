@@ -35,7 +35,7 @@ composer create-project --prefer-dist -s dev blink/seed your-app
 
 ```
 cd /path/to/your-app
-php blink server:serve
+php blink server serve
 ```
 
 成功之后， 打开浏览器在地址栏输入 http://localhost:7788/ , 如果浏览器显示 **"Hello world, Blink"** 的欢迎语那就表示 Blink
