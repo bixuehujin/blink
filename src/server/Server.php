@@ -15,6 +15,8 @@ abstract class Server extends Object
     public $host = '0.0.0.0';
     public $port = 7788;
 
+    public $pidFile;
+
     /**
      * A php file that application will boot from.
      *

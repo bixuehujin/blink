@@ -210,7 +210,7 @@ class Application extends ServiceLocator
         ]);
 
         $commands = array_merge($this->commands, [
-            'blink\console\ServeCommand',
+            'blink\console\ServerCommand',
         ]);
 
         foreach ($commands as $command) {

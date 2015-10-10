@@ -56,14 +56,18 @@ class SwServer extends Server
         return $server;
     }
 
-    public function onServerStart()
+    public function onServerStart($server)
     {
-
+        if ($this->pidFile) {
+            file_put_contents($this->pidFile, $server->master_pid);
+        }
     }
 
     public function onServerStop()
     {
-
+        if ($this->pidFile) {
+            unlink($this->pidFile);
+        }
     }
 
     public function onWorkerStart()
