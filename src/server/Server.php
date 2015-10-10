@@ -15,6 +15,7 @@ abstract class Server extends Object
     public $host = '0.0.0.0';
     public $port = 7788;
 
+    public $name = 'blink-server';
     public $pidFile;
 
     /**

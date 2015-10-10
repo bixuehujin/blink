@@ -25,6 +25,8 @@ class SwServer extends Server
         $server->on('start', [$this, 'onServerStart']);
         $server->on('shutdown', [$this, 'onServerStop']);
 
+        $server->on('managerStart', [$this, 'onManagerStart']);
+
         $server->on('workerStart', [$this, 'onWorkerStart']);
         $server->on('workerStop', [$this, 'onWorkerStop']);
 
@@ -56,11 +58,18 @@ class SwServer extends Server
         return $server;
     }
 
+
     public function onServerStart($server)
     {
+        cli_set_process_title($this->name . ': master');
         if ($this->pidFile) {
             file_put_contents($this->pidFile, $server->master_pid);
         }
+    }
+
+    public function onManagerStart($server)
+    {
+        cli_set_process_title($this->name . ': manager');
     }
 
     public function onServerStop()
@@ -72,6 +81,7 @@ class SwServer extends Server
 
     public function onWorkerStart()
     {
+        cli_set_process_title($this->name . ': worker');
         $this->startApp();
     }
 
