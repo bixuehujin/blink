@@ -62,7 +62,13 @@ class ServerCommand extends Command
 
     protected function handleRestart()
     {
+        $pidFile = $this->blink->root . '/runtime/server.pid';
+
         $this->handleStop();
+
+        do {
+            usleep(100000);
+        } while(file_exists($pidFile));
 
         return $this->handleStart();
     }
