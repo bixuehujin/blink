@@ -34,6 +34,11 @@ composer create-project --prefer-dist -s dev blink/seed your-app
  * [English Documentation](docs/en/README.md)(Not Ready Yet)
  * [简体中文文档](docs/zh-CN/README.md)
 
+## Author
+
+Follow my [Twitter](https://twitter.com/bixuehujin) or [Weibo](http://weibo.com/bixuehujin) (Mainland China) to receive news and updates about the framework.
+
+
 ## Participating
 
 **Blink is still in active development, your participating is very wellcome!**
@@ -47,4 +52,4 @@ You may participate in the following ways:
 License
 -------
 
-This is a open sourced software under the MIT license.
+The Blink framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
