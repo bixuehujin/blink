@@ -1,7 +1,7 @@
 {
     "name" : "blink/blink",
-    "description": "A web framework build for high performance services",
-    "keywords": ["framework", "swoole"],
+    "description": "A web framework build for long-running and high performance services",
+    "keywords": ["framework", "swoole", "restful"],
     "authors" : [
         {
             "name" : "Jin Hu",
