@@ -13,7 +13,7 @@ interface Contract
 
     /**
      * @param array $credentials
-     * @return string|false
+     * @return Authenticatable|false
      */
     public function attempt(array $credentials = []);
 

@@ -3,6 +3,7 @@
 namespace blink\http;
 
 use blink\auth\Authenticatable;
+use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
 use blink\core\Object;
 
@@ -13,10 +14,14 @@ use blink\core\Object;
  * @property HeaderBag $headers The collection of request headers
  * @property HeaderBag $body The collection of request body
  *
+ * @property string $sessionId The session id of the request
+ *
  * @package blink\http
  */
 class Request extends Object
 {
+    use MiddlewareTrait;
+
     const METHOD_HEAD = 'HEAD';
     const METHOD_GET = 'GET';
     const METHOD_POST = 'POST';
@@ -42,7 +47,7 @@ class Request extends Object
     public $method = 'GET';
 
     /**
-     * The name of a header field that stores the session id, or a callable that will returns the session id.
+     * The key of a header field that stores the session id, or a callable that will returns the session id.
      *
      * The following is the signature of the callable:
      *
@@ -51,7 +56,9 @@ class Request extends Object
      * ```
      * @var string|callable
      */
-    public $sessionId = 'X-Session-Id';
+    public $sessionKey = 'X-Session-Id';
+
+    private $_sessionId;
 
     private $_params;
 
@@ -284,18 +291,48 @@ class Request extends Object
         return array_replace_recursive($this->params->only($keys), $this->body->only($keys));
     }
 
+    /**
+     * Returns session id of the request.
+     *
+     * @return string|null
+     */
+    public function getSessionId()
+    {
+        if ($this->_sessionId === null) {
+            $this->_sessionId = is_callable($this->sessionKey) ?
+                call_user_func($this->sessionKey, $this) : $this->headers->first($this->sessionKey);
+        }
+
+        return $this->_sessionId;
+    }
+
+    /**
+     * Sets session id of the request.
+     *
+     * @param $sessionId
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->_sessionId = $sessionId;
+    }
+
     private $_user = false;
 
     /**
-     * Gets the authenticated user for this request.
+     * Gets or sets the authenticated user for this request.
      *
+     * @param Authenticatable $user
      * @return \blink\auth\Authenticatable|null
      */
-    public function user()
+    public function user($user = null)
     {
+        if ($user !== null) {
+            $this->_user = $user;
+            return;
+        }
+
         if ($this->_user === false) {
-            $sessionId = is_callable($this->sessionId) ?
-                call_user_func($this->sessionId, $this) : $this->headers->first($this->sessionId);
+            $sessionId = $this->getSessionId();
 
             if ($sessionId) {
                 $this->_user = auth()->who($sessionId);

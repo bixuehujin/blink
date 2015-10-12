@@ -40,11 +40,13 @@ class Auth extends Object implements AuthContract
     public function attempt(array $credentials = [])
     {
         $user = $this->validate($credentials);
-        if ($user) {
-            return $this->login($user);
+        if ($user && ($sessionId = $this->login($user))) {
+            app()->request->sessionId = $sessionId;
+            app()->request->user($user);
+            return $user;
         }
 
-        return $user;
+        return false;
     }
 
     /**

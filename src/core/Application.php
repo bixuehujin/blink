@@ -155,11 +155,18 @@ class Application extends ServiceLocator
         return $request;
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Exception
+     */
     public function handleRequest($request)
     {
+        /** @var Response $response */
         $response = $this->get('response');
 
         try {
+            $request->callMiddleware();
             $this->exec($request, $response);
         } catch (HttpException $e) {
             $response->status($e->statusCode);
@@ -175,7 +182,14 @@ class Application extends ServiceLocator
             $response->data = $this->exceptionToArray($e);
         }
 
-        $response->prepare();
+        try {
+            $response->prepare();
+        } catch (\Exception $e) {
+            $this->get('errorHandler')->handleException($e);
+
+            $response->status(500);
+            $response->data = $this->exceptionToArray($e);
+        }
 
         $this->afterRequest();
 

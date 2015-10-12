@@ -2,6 +2,7 @@
 
 namespace blink\http;
 
+use blink\core\MiddlewareTrait;
 use blink\core\Object;
 use blink\support\Json;
 use blink\core\InvalidParamException;
@@ -13,6 +14,8 @@ use blink\core\InvalidParamException;
  */
 class Response extends Object
 {
+    use MiddlewareTrait;
+
     public $data;
 
     /**
@@ -129,7 +132,7 @@ class Response extends Object
     public function prepare()
     {
         if (!$this->prepared) {
-
+            $this->callMiddleware();
             $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
             if (!is_string($this->data)) {
                 $this->headers->set('Content-Type', 'application/json');
