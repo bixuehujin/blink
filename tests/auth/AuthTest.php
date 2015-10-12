@@ -10,6 +10,7 @@ use blink\core\Application;
 use blink\testing\TestCase;
 use blink\session\Session;
 use blink\session\FileStorage;
+use blink\auth\middleware\BasicAccess;
 
 /**
  * Class AuthTest
@@ -42,10 +43,10 @@ class AuthTest extends TestCase
 
     public function testAttempt()
     {
-        $sessionId = auth()->attempt(['name' => 'user1', 'password' => 'user1']);
-        $this->assertNotFalse($sessionId);
+        $user = auth()->attempt(['name' => 'user1', 'password' => 'user1']);
+        $this->assertNotFalse($user);
 
-        $user = auth()->who($sessionId);
+        $user = auth()->who(app('request')->sessionId);
         $this->assertInstanceOf(TestUser::class, $user);
         $this->assertEquals('user1', $user->name);
     }
@@ -59,6 +60,19 @@ class AuthTest extends TestCase
 
         $user = auth()->once(['name' => 'user1', 'password' => 'invalid password']);
         $this->assertFalse($user);
+    }
+
+    public function testBasicAccessMiddleware()
+    {
+        $request = request();
+        $request->headers->set('Authorization', 'Basic ' . base64_encode('user1:user1'));
+        $request->middleware([
+            'class' => BasicAccess::class,
+            'identity' => 'name',
+        ]);
+        $request->callMiddleware();
+
+        $this->assertEquals(1, $request->user()->id);
     }
 }
 

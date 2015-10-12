@@ -68,6 +68,27 @@ function auth()
 }
 
 /**
+ * Helper function to get current request.
+ *
+ * @return \blink\http\Request
+ */
+function request()
+{
+    return Container::$app->get('request');
+}
+
+/**
+ * Helper function to get current response.
+ *
+ * @return \blink\http\Response
+ */
+function response()
+{
+    return Container::$app->get('response');
+}
+
+
+/**
  * Abort the current request.
  *
  * @param $status
