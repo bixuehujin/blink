@@ -200,7 +200,7 @@ class Application extends ServiceLocator
     {
         list($handler, $args) = $this->dispatch($request);
 
-        $data = $this->callAction($handler, $args);
+        $data = $this->callAction($handler, $args, $request, $response);
 
         if (!$data instanceof Response && $data) {
             $response->with($data);
@@ -273,7 +273,7 @@ class Application extends ServiceLocator
         }
     }
 
-    protected function callAction($handler, $args)
+    protected function callAction($handler, $args, $request, $response)
     {
         if (is_callable($handler)) {
             $data = $this->call($handler, $args);
@@ -284,8 +284,17 @@ class Application extends ServiceLocator
             if ($class[0] !== '\\' && $this->controllerNamespace) {
                 $class = $this->controllerNamespace . '\\' . $class;
             }
+            $object = $this->get($class);
 
-            $data = $this->call([$this->get($class), $method], $args);
+            if (method_exists($class, 'before')) {
+                call_user_func([$object, 'before'], $method, $request);
+            }
+
+            $data = $this->call([$object, $method], $args);
+
+            if (method_exists($class, 'after')) {
+                call_user_func([$object, 'after'], $method, $request, $response);
+            }
         } else {
             throw new HttpException(404);
         }

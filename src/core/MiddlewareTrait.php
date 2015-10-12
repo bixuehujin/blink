@@ -12,11 +12,21 @@ trait MiddlewareTrait
 {
     public $middleware = [];
 
+    /**
+     * Add a new middleware to the middleware stack of the object.
+     *
+     * @param $definition
+     */
     public function middleware($definition)
     {
         $this->middleware[] = $definition;
     }
 
+    /**
+     * Call the middleware stack.
+     *
+     * @throws InvalidConfigException
+     */
     public function callMiddleware()
     {
         foreach ($this->middleware as $definition) {
