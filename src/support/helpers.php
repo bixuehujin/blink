@@ -66,3 +66,15 @@ function auth()
 {
     return Container::$app->get('auth');
 }
+
+/**
+ * Abort the current request.
+ *
+ * @param $status
+ * @param string $message
+ * @throws \blink\core\HttpException
+ */
+function abort($status, $message = '')
+{
+    throw new \blink\core\HttpException($status, $message);
+}
