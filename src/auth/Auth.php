@@ -41,7 +41,7 @@ class Auth extends Object implements AuthContract
     {
         $user = $this->validate($credentials);
         if ($user) {
-            return session()->put(['auth_id' => $user->getAuthId()]);
+            return $this->login($user);
         }
 
         return $user;
@@ -53,6 +53,22 @@ class Auth extends Object implements AuthContract
     public function once(array $credentials = [])
     {
         return $this->validate($credentials);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function login(Authenticatable $user)
+    {
+        return session()->put(['auth_id' => $user->getAuthId()]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function logout($sessionId)
+    {
+        return session()->destroy($sessionId);
     }
 
     /**

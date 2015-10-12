@@ -24,6 +24,22 @@ interface Contract
     public function once(array $credentials = []);
 
     /**
+     * Login the given user.
+     *
+     * @param Authenticatable $user
+     * @return string the session id
+     */
+    public function login(Authenticatable $user);
+
+    /**
+     * Logout the given user.
+     *
+     * @param $sessionId
+     * @return boolean
+     */
+    public function logout($sessionId);
+
+    /**
      * @param $sessionId
      * @return Authenticatable|null
      */

@@ -40,7 +40,7 @@ trait AuthTrait
             throw new InvalidParamException('The "identifier" parameter is valid ');
         }
 
-        $this->sessionId = $this->app->session->put(['auth_id' => $identifier->getAuthId()]);
+        $this->sessionId = $this->app->auth->login($identifier);
 
         if (!$this->sessionId) {
             throw new InvalidValueException('Session id is not generated successfully');
