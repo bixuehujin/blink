@@ -27,9 +27,9 @@ interface Contract
      * Login the given user.
      *
      * @param Authenticatable $user
-     * @return string the session id
+     * @param boolean $once Login just for once, no session will be stored.
      */
-    public function login(Authenticatable $user);
+    public function login(Authenticatable $user, $once = false);
 
     /**
      * Logout the given user.

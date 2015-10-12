@@ -40,13 +40,11 @@ class Auth extends Object implements AuthContract
     public function attempt(array $credentials = [])
     {
         $user = $this->validate($credentials);
-        if ($user && ($sessionId = $this->login($user))) {
-            app()->request->sessionId = $sessionId;
-            app()->request->user($user);
-            return $user;
+        if ($user) {
+            $this->login($user, false);
         }
 
-        return false;
+        return $user;
     }
 
     /**
@@ -54,15 +52,27 @@ class Auth extends Object implements AuthContract
      */
     public function once(array $credentials = [])
     {
-        return $this->validate($credentials);
+        $user = $this->validate($credentials);
+        if ($user) {
+            $this->login($user, true);
+        }
+
+        return $user;
     }
 
     /**
      * @inheritDoc
      */
-    public function login(Authenticatable $user)
+    public function login(Authenticatable $user, $once = false)
     {
-        return session()->put(['auth_id' => $user->getAuthId()]);
+        $request = request();
+
+        if (!$once) {
+            $sessionId = session()->put(['auth_id' => $user->getAuthId()]);
+            $request->sessionId = $sessionId;
+        }
+
+        $request->user($user);
     }
 
     /**
