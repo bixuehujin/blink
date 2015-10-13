@@ -12,24 +12,25 @@ undefined behaviors.
 Session Service
 ---------------
 
-Blink provides session storage function by the session application service, it can be accessed through `session()` helper
-function, here is several example shows how session service can be used:
+Blink implemented `blink\session\Manager` class to provide session service for our application, the session service can
+be accessed through `session()` helper function, here is several example shows how session service can be used:
 
 ```php
-$session = session(); // retrieving the session service
+$manager = session(); // retrieving the session service
 
-$sessionId = $session->put($data); // creating a new session with $data
+$session = $manager->put($data); // creating a new session with $data, the returned $session is an instance of \blink\session\Session
+$sessionId = $session->id; //accessing the session id
 
-$data = $session->get($sessionId); // gettting session data by session id
+$session = $manager->get($sessionId); // gettting session data by session id
 
-$session->set($sessionId, $newData); // replacing session with new data
+$manager->set($sessionId, $newData); // replacing session with new data
 
-$session->destroy($sessionId); // destroying session data by session id
+$manager->destroy($sessionId); // destroying session data by session id
 
 ```
 
-In the addition, Blink provides `blink\session\SessionBag` class as a session container that makes session management
-much easier.
+In the example above, both `put()` and `get()` method return a `blink\session\Session` object. The `blink\session\Session`
+is a collection of key-value pairs of sessions which provides some very helpful method to edit or update session.
 
 In Blink, it is possible to implement your own custom session service, the only thing you need is implement the
 `blink\session\Contract` interface and configure your service in configuration file.

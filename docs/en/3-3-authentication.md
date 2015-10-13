@@ -119,5 +119,5 @@ class Controller extends Object
 ```
 
 Currently, Blink utilize http header `X-Session-Id` to transfer session id by default, if you do not want this, you can
-redefine the behavior by setting the `sessionId` property of `blink\http\Request`, please checkout the corresponding
+redefine the behavior by setting the `sessionKey` property of `blink\http\Request`, please checkout the corresponding
 comments of the class for more detailed information.
