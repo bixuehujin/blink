@@ -28,5 +28,5 @@ Core Components
 Concepts & Architecture
 -----------------------
 
-* [Object Configuration](4-1-object-configuration.md)
+* [Object Configuration](4-1-properties-and-configurations.md)
 * [Application Lifecycle](4-2-lifecycle.md)
