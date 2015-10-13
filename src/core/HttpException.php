@@ -2,27 +2,12 @@
 
 namespace blink\core;
 
-use blink\core\Exception;
-use blink\server\Response;
-
+use blink\http\Response;
 
 /**
- * HttpException represents an exception caused by an improper request of the end-user.
+ * Class HttpException
  *
- * HttpException can be differentiated via its [[statusCode]] property value which
- * keeps a standard HTTP status code (e.g. 404, 500). Error handlers may use this status code
- * to decide how to format the error page.
- *
- * Throwing an HttpException like in the following example will result in the 404 page to be displayed.
- *
- * ```php
- * if ($item === null) { // item does not exist
- *     throw new \yii\web\HttpException(404, 'The requested Item could not be found.');
- * }
- * ```
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @package blink\core
  */
 class HttpException extends Exception
 {
@@ -30,7 +15,6 @@ class HttpException extends Exception
      * @var integer HTTP status code, such as 403, 404, 500, etc.
      */
     public $statusCode;
-
 
     /**
      * Constructor.
@@ -42,6 +26,11 @@ class HttpException extends Exception
     public function __construct($status, $message = null, $code = 0, \Exception $previous = null)
     {
         $this->statusCode = $status;
+
+        if ($message === null && isset(Response::$httpStatuses[$status])) {
+            $message = Response::$httpStatuses[$status];
+        }
+
         parent::__construct($message, $code, $previous);
     }
 
