@@ -168,32 +168,44 @@ class Application extends ServiceLocator
         try {
             $request->callMiddleware();
             $this->exec($request, $response);
-        } catch (HttpException $e) {
-            $response->status($e->statusCode);
-            $response->data = $this->exceptionToArray($e);
         } catch (\Exception $e) {
-            if ($this->environment === 'test') {
-                throw $e;
-            }
+            $response->data = $e;
 
             $this->get('errorHandler')->handleException($e);
-
-            $response->status(500);
-            $response->data = $this->exceptionToArray($e);
         }
 
         try {
-            $response->prepare();
-        } catch (\Exception $e) {
-            $this->get('errorHandler')->handleException($e);
+            $response->callMiddleware();
 
-            $response->status(500);
-            $response->data = $this->exceptionToArray($e);
+            $this->formatException($e, $response);
+            $response->prepare();
+
+        } catch (\Exception $e) {
+            $this->formatException($e, $response);
         }
 
         $this->afterRequest();
 
         return $response;
+    }
+
+    protected function formatException($e, $response)
+    {
+        if (!$response->data instanceof \Exception) {
+            return;
+        }
+
+        if ($e instanceof HttpException) {
+            $response->status($e->statusCode);
+            $response->data = $this->exceptionToArray($e);
+        } else {
+            if ($this->environment === 'test') {
+                throw $e;
+            }
+
+            $response->status(500);
+            $response->data = $this->exceptionToArray($e);
+        }
     }
 
     protected function exec($request, $response)

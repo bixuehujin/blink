@@ -132,7 +132,6 @@ class Response extends Object
     public function prepare()
     {
         if (!$this->prepared) {
-            $this->callMiddleware();
             $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
             if (!is_string($this->data)) {
                 $this->headers->set('Content-Type', 'application/json');
