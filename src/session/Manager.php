@@ -15,7 +15,7 @@ class Manager extends Object implements SessionContract
     /**
      * The backend session storage.
      *
-     * @var array|SessionContract
+     * @var array|StorageContract
      */
     public $storage;
     /**
@@ -25,11 +25,14 @@ class Manager extends Object implements SessionContract
      */
     public $expires = 1296000;
 
+
     public function init()
     {
         if (!$this->storage instanceof SessionContract) {
             $this->storage = make($this->storage);
         }
+
+        $this->storage->timeout($this->expires);
     }
 
     /**
@@ -41,9 +44,11 @@ class Manager extends Object implements SessionContract
             $attributes = $attributes->all();
         }
 
-        $sessionId = $this->storage->put($attributes);
+        $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
 
-        return new Session($attributes, ['id' => $sessionId]);
+        $this->storage->write($id, $attributes);
+
+        return new Session($attributes, ['id' => $id]);
     }
 
     /**
@@ -51,7 +56,7 @@ class Manager extends Object implements SessionContract
      */
     public function get($id)
     {
-        $data = $this->storage->get($id);
+        $data = $this->storage->read($id);
         if ($data) {
             return new Session($data, ['id' => $id]);
         }
@@ -66,7 +71,7 @@ class Manager extends Object implements SessionContract
             $attributes = $attributes->all();
         }
 
-        return $this->storage->set($id, $attributes);
+        return $this->storage->write($id, $attributes);
     }
 
     /**

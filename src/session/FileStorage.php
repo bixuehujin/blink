@@ -10,31 +10,28 @@ use blink\session\Contract as SessionContract;
  *
  * @package blink\session
  */
-class FileStorage implements  SessionContract
+class FileStorage implements StorageContract
 {
     public $path;
+    public $divisor = 1000;
+
+    protected $timeout;
 
     public function init()
     {
         if (!$this->path || !file_exists($this->path) || !is_writable($this->path)) {
             throw new InvalidConfigException("The param: '{$this->path}' is invalid or not writable");
         }
+
+        if (rand(0, $this->divisor) <= 0) {
+            $this->gc();
+        }
     }
 
     /**
      * @inheritDoc
      */
-    public function put($attributes = [])
-    {
-        $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
-
-        return $this->set($id, $attributes) ? $id : false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function get($id)
+    public function read($id)
     {
         if (file_exists($this->path . '/' . $id)) {
             return unserialize(file_get_contents($this->path . '/' . $id));
@@ -44,9 +41,9 @@ class FileStorage implements  SessionContract
     /**
      * @inheritDoc
      */
-    public function set($id, $attributes)
+    public function write($id, array $data)
     {
-        return file_put_contents($this->path . '/' . $id, serialize($attributes)) !== false;
+        return file_put_contents($this->path . '/' . $id, serialize($data)) !== false;
     }
 
     /**
@@ -58,6 +55,26 @@ class FileStorage implements  SessionContract
             return unlink($this->path . '/' . $id);
         } else {
             return false;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function timeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+
+    protected function gc()
+    {
+        $iterator = new \DirectoryIterator($this->path);
+        $now = time();
+
+        foreach ($iterator as $file) {
+            if ($file->getMTime() < $now - $this->timeout) {
+                unlink($file->getRealPath());
+            }
         }
     }
 }
