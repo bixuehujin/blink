@@ -2,9 +2,9 @@
 
 namespace blink\tests\session;
 
-use blink\session\Session;
+use blink\session\Manager;
 use blink\session\FileStorage;
-use blink\session\SessionBag;
+use blink\session\Session;
 use blink\tests\TestCase;
 
 class SessionTest extends TestCase
@@ -36,7 +36,7 @@ class SessionTest extends TestCase
     protected function createSession()
     {
         return make([
-            'class' => Session::class,
+            'class' => Manager::class,
             'storage' => [
                 'class' => FileStorage::class,
                 'path' => $this->sessionPath,
@@ -46,16 +46,16 @@ class SessionTest extends TestCase
 
     public function testSimple()
     {
-        $session = $this->createSession();
+        $manager = $this->createSession();
 
-        $id = $session->put(['foo' => 'bar']);
+        $session = $manager->put(['foo' => 'bar']);
 
-        $this->assertEquals(32, strlen($id));
+        $this->assertEquals(32, strlen($session->id));
 
-        $bag = $session->get($id);
-        $this->assertInstanceOf(SessionBag::class, $bag);
+        $bag = $manager->get($session->id);
+        $this->assertInstanceOf(Session::class, $bag);
 
         $bag->set('foo', 'bar');
-        $this->assertTrue($session->set($id, $bag));
+        $this->assertTrue($manager->set($session->id, $bag));
     }
 }

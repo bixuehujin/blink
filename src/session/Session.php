@@ -3,72 +3,28 @@
 namespace blink\session;
 
 use blink\core\Object;
-use blink\session\Contract as SessionContract;
+use blink\support\BagTrait;
 
 /**
- * Class Session
+ * The container of session key-value pairs.
  *
  * @package blink\session
  */
-class Session extends Object implements SessionContract
+class Session extends Object
 {
+    use BagTrait;
+
     /**
-     * The backend session storage.
+     * The id of the session, this is possible null when the session is not actually stored.
      *
-     * @var array|SessionContract
+     * @var string|null
      */
-    public $storage;
-    /**
-     * How long the session should expires, defaults to 15 days.
-     *
-     * @var int
-     */
-    public $expires = 1296000;
+    public $id;
 
-    public function init()
+    public function __construct(array $attributes = [], $config = [])
     {
-        if (!$this->storage instanceof SessionContract) {
-            $this->storage = make($this->storage);
-        }
-    }
+        $this->replace($attributes);
 
-    /**
-     * @inheritDoc
-     */
-    public function put($attributes = [])
-    {
-        if ($attributes instanceof SessionBag) {
-            $attributes = $attributes->all();
-        }
-
-        return $this->storage->put($attributes);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function get($id)
-    {
-        return $this->storage->get($id);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function set($id, $attributes)
-    {
-        if ($attributes instanceof SessionBag) {
-            $attributes = $attributes->all();
-        }
-
-        return $this->storage->set($id, $attributes);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function destroy($id)
-    {
-        return $this->storage->destroy($id);
+        parent::__construct($config);
     }
 }

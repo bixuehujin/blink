@@ -68,8 +68,8 @@ class Auth extends Object implements AuthContract
         $request = request();
 
         if (!$once) {
-            $sessionId = session()->put(['auth_id' => $user->getAuthId()]);
-            $request->sessionId = $sessionId;
+            $session = session()->put(['auth_id' => $user->getAuthId()]);
+            $request->session = $session;
         }
 
         $request->user($user);

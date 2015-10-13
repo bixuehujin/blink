@@ -8,7 +8,7 @@ use blink\core\InvalidParamException;
 use blink\core\Object;
 use blink\core\Application;
 use blink\testing\TestCase;
-use blink\session\Session;
+use blink\session\Manager;
 use blink\session\FileStorage;
 use blink\auth\middleware\BasicAccess;
 
@@ -27,7 +27,7 @@ class AuthTest extends TestCase
             'root' => '.',
             'services' => [
                 'session' => [
-                    'class' => Session::class,
+                    'class' => Manager::class,
                     'storage' => [
                         'class' => FileStorage::class,
                         'path' => $this->sessionPath,
@@ -46,7 +46,7 @@ class AuthTest extends TestCase
         $user = auth()->attempt(['name' => 'user1', 'password' => 'user1']);
         $this->assertNotFalse($user);
 
-        $user = auth()->who(app('request')->sessionId);
+        $user = auth()->who(app('request')->session->id);
         $this->assertInstanceOf(TestUser::class, $user);
         $this->assertEquals('user1', $user->name);
     }

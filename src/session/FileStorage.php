@@ -37,7 +37,7 @@ class FileStorage implements  SessionContract
     public function get($id)
     {
         if (file_exists($this->path . '/' . $id)) {
-            return new SessionBag(unserialize(file_get_contents($this->path . '/' . $id)));
+            return unserialize(file_get_contents($this->path . '/' . $id));
         }
     }
 

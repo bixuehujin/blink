@@ -13,7 +13,7 @@ interface Contract
      * Put a new session into storage.
      *
      * @param array $attributes
-     * @return string The session id
+     * @return Session The newly created session object
      */
     public function put($attributes = []);
 
@@ -21,7 +21,7 @@ interface Contract
      * Get a session by session id.
      *
      * @param $id
-     * @return SessionBag
+     * @return Session
      */
     public function get($id);
 

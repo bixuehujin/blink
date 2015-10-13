@@ -14,7 +14,7 @@ use blink\core\Object;
  * @property HeaderBag $headers The collection of request headers
  * @property HeaderBag $body The collection of request body
  *
- * @property string $sessionId The session id of the request
+ * @property \blink\session\Session $session The session associated to the request
  *
  * @package blink\http
  */
@@ -57,8 +57,6 @@ class Request extends Object
      * @var string|callable
      */
     public $sessionKey = 'X-Session-Id';
-
-    private $_sessionId;
 
     private $_params;
 
@@ -291,29 +289,37 @@ class Request extends Object
         return array_replace_recursive($this->params->only($keys), $this->body->only($keys));
     }
 
-    /**
-     * Returns session id of the request.
-     *
-     * @return string|null
-     */
-    public function getSessionId()
-    {
-        if ($this->_sessionId === null) {
-            $this->_sessionId = is_callable($this->sessionKey) ?
-                call_user_func($this->sessionKey, $this) : $this->headers->first($this->sessionKey);
-        }
 
-        return $this->_sessionId;
+    private $_session = false;
+
+    /**
+     * Sets the session of the request.
+     *
+     * @param $session
+     */
+    public function setSession($session)
+    {
+        $this->_session = $session;
     }
 
     /**
-     * Sets session id of the request.
+     * Returns the current session associated to the request.
      *
-     * @param $sessionId
+     * @return \blink\session\Session|null
      */
-    public function setSessionId($sessionId)
+    public function getSession()
     {
-        $this->_sessionId = $sessionId;
+        if ($this->_session === false) {
+            $sessionId = is_callable($this->sessionKey) ?
+                call_user_func($this->sessionKey, $this) : $this->headers->first($this->sessionKey);
+            if ($session = session()->get($sessionId)) {
+                $this->_session = $session;
+            } else {
+                $this->_session = null;
+            }
+        }
+
+        return $this->_session;
     }
 
     private $_user = false;
@@ -332,7 +338,7 @@ class Request extends Object
         }
 
         if ($this->_user === false) {
-            $sessionId = $this->getSessionId();
+            $sessionId = $this->getSession()->id;
 
             if ($sessionId) {
                 $this->_user = auth()->who($sessionId);
