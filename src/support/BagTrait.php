@@ -62,6 +62,19 @@ trait BagTrait
         return $results;
     }
 
+    public function except($keys)
+    {
+        $keys = is_array($keys) ? $keys : func_get_args();
+
+        $results = $this->data;
+
+        foreach ($keys as $key) {
+            unset($results[$this->transformKey($key)]);
+        }
+
+        return $results;
+    }
+
     public function set($key, $value)
     {
         $this->data[$this->transformKey($key)] = $this->transformValue($value);
