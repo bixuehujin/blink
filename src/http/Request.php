@@ -69,9 +69,26 @@ class Request extends Object
         return $this->method;
     }
 
+    /**
+     * Returns whether the request method is the given $method.
+     *
+     * @param $method
+     * @return bool
+     */
     public function is($method)
     {
         return $this->method === strtoupper($method);
+    }
+
+    /**
+     * Checks whether the path of the request match the given pattern.
+     *
+     * @param $pattern
+     * @return boolean
+     */
+    public function match($pattern)
+    {
+        return preg_match($pattern, $this->path);
     }
 
     /**
@@ -338,10 +355,9 @@ class Request extends Object
         }
 
         if ($this->_user === false) {
-            $sessionId = $this->getSession()->id;
 
-            if ($sessionId) {
-                $this->_user = auth()->who($sessionId);
+            if (($session = $this->getSession()) && $session->id) {
+                $this->_user = auth()->who($session->id);
             } else {
                 $this->_user = null;
             }
