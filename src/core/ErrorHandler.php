@@ -7,7 +7,7 @@ use Psr\Log\LogLevel;
 /**
  * Class ErrorHandler
  *
- * @package blink\log
+ * @package blink\core
  */
 class ErrorHandler extends Object
 {
@@ -15,6 +15,13 @@ class ErrorHandler extends Object
     public $exception;
     public $logger;
     public $discardExistingOutput;
+
+    /**
+     * Specifies the exception names that should not be reported to logger.
+     *
+     * @var array
+     */
+    public $notReport = [];
 
     private $_memoryReserve;
 
@@ -59,13 +66,13 @@ class ErrorHandler extends Object
         restore_exception_handler();
 
         try {
-            $this->logException($exception);
+            $this->report($exception);
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
             //$this->renderException($exception);
         } catch (\Exception $e) {
-            $this->logException($exception);
+            $this->report($exception);
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
@@ -118,7 +125,7 @@ class ErrorHandler extends Object
             $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             $this->exception = $exception;
 
-            $this->logException($exception);
+            $this->report($exception);
 
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
@@ -131,8 +138,12 @@ class ErrorHandler extends Object
         }
     }
 
-    protected function logException($exception)
+    protected function report($exception)
     {
+        if (in_array(get_class($exception), $this->notReport)) {
+            return;
+        }
+
         $errorLevelMap = [
             E_ERROR             => LogLevel::CRITICAL,
             E_WARNING           => LogLevel::WARNING,
