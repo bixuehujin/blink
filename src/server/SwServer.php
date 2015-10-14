@@ -61,7 +61,7 @@ class SwServer extends Server
 
     public function onServerStart($server)
     {
-        //cli_set_process_title($this->name . ': master');
+        cli_set_process_title($this->name . ': master');
         if ($this->pidFile) {
             file_put_contents($this->pidFile, $server->master_pid);
         }
@@ -69,7 +69,7 @@ class SwServer extends Server
 
     public function onManagerStart($server)
     {
-        //cli_set_process_title($this->name . ': manager');
+        cli_set_process_title($this->name . ': manager');
     }
 
     public function onServerStop()
@@ -81,7 +81,7 @@ class SwServer extends Server
 
     public function onWorkerStart()
     {
-        //cli_set_process_title($this->name . ': worker');
+        cli_set_process_title($this->name . ': worker');
         $this->startApp();
     }
 
