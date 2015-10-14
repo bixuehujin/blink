@@ -72,7 +72,8 @@ class Application extends ServiceLocator
             throw new InvalidParamException("The param: 'root' is invalid");
         }
 
-        $this->services += $this->defaultServices();
+        $this->services = array_merge($this->defaultServices(), $this->services);
+
         Container::$app = $this;
         Container::$instance = new Container();
     }
@@ -101,7 +102,9 @@ class Application extends ServiceLocator
     {
         foreach ($this->services as $id => $definition) {
             $this->bind($id, $definition);
+        }
 
+        foreach ($this->services as $id => $_) {
             if ($this->get($id) instanceof ShouldBeRefreshed) {
                 $this->refreshing[$id] = true;
             }
