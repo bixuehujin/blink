@@ -2,6 +2,7 @@
 
 namespace blink\core;
 
+use Closure;
 use blink\di\Container;
 use FastRoute;
 use blink\log\Logger;
@@ -166,24 +167,20 @@ class Application extends ServiceLocator
         $response = $this->get('response');
 
         try {
-            $request->callMiddleware();
             $this->exec($request, $response);
         } catch (\Exception $e) {
             $response->data = $e;
-
             $this->get('errorHandler')->handleException($e);
         }
 
         try {
             $response->callMiddleware();
-
-            $this->formatException($e, $response);
-            $response->prepare();
-
+            $this->formatException($response->data, $response);
         } catch (\Exception $e) {
             $this->formatException($e, $response);
         }
 
+        $response->prepare();
         $this->afterRequest();
 
         return $response;
@@ -212,7 +209,11 @@ class Application extends ServiceLocator
     {
         list($handler, $args) = $this->dispatch($request);
 
-        $data = $this->callAction($handler, $args, $request, $response);
+        $action = $this->createAction($handler);
+
+        $request->callMiddleware();
+
+        $data = $this->runAction($action, $args, $request, $response);
 
         if (!$data instanceof Response && $data) {
             $response->with($data);
@@ -285,10 +286,10 @@ class Application extends ServiceLocator
         }
     }
 
-    protected function callAction($handler, $args, $request, $response)
+    protected function createAction($handler)
     {
-        if (is_callable($handler)) {
-            $data = $this->call($handler, $args);
+        if ($handler instanceof Closure) {
+            $action = $handler;
         } else if (($pos = strpos($handler, '@')) !== false) {
             $class = substr($handler, 0, $pos);
             $method = substr($handler, $pos + 1);
@@ -296,22 +297,51 @@ class Application extends ServiceLocator
             if ($class[0] !== '\\' && $this->controllerNamespace) {
                 $class = $this->controllerNamespace . '\\' . $class;
             }
-            $object = $this->get($class);
 
-            if (method_exists($class, 'before')) {
-                call_user_func([$object, 'before'], $method, $request);
-            }
-
-            $data = $this->call([$object, $method], $args);
-
-            if (method_exists($class, 'after')) {
-                call_user_func([$object, 'after'], $method, $request, $response);
-            }
+            $action = [$this->get($class), $method];
         } else {
             throw new HttpException(404);
         }
 
+        return $action;
+    }
+
+    protected function runAction($action, $args, $request, $response)
+    {
+
+        $this->beforeAction($action, $request);
+
+        $data = $this->call($action, $args);
+
+        $this->afterAction($action, $request, $response);
+
         return $data;
+    }
+
+    protected function beforeAction($action, $request)
+    {
+        if ($action instanceof Closure) {
+            return;
+        }
+
+        list($object, $method) = $action;
+
+        if (method_exists($object, 'before')) {
+            call_user_func([$object, 'before'], $method, $request);
+        }
+    }
+
+    protected function afterAction($action, $request, $response)
+    {
+        if ($action instanceof Closure) {
+            return;
+        }
+
+        list($object, $method) = $action;
+
+        if (method_exists($object, 'after')) {
+            call_user_func([$object, 'after'], $method, $request, $response);
+        }
     }
 
     /**
