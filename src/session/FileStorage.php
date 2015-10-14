@@ -3,6 +3,7 @@
 namespace blink\session;
 
 use blink\core\InvalidConfigException;
+use blink\core\Object;
 use blink\session\Contract as SessionContract;
 
 /**
@@ -10,7 +11,7 @@ use blink\session\Contract as SessionContract;
  *
  * @package blink\session
  */
-class FileStorage implements StorageContract
+class FileStorage extends Object implements StorageContract
 {
     public $path;
     public $divisor = 1000;
@@ -72,6 +73,9 @@ class FileStorage implements StorageContract
         $now = time();
 
         foreach ($iterator as $file) {
+            if ($file->isDot()) {
+                continue;
+            }
             if ($file->getMTime() < $now - $this->timeout) {
                 unlink($file->getRealPath());
             }

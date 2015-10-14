@@ -28,7 +28,7 @@ class Manager extends Object implements SessionContract
 
     public function init()
     {
-        if (!$this->storage instanceof SessionContract) {
+        if (!$this->storage instanceof StorageContract) {
             $this->storage = make($this->storage);
         }
 
