@@ -47,13 +47,6 @@ class Application extends ServiceLocator
      */
     public $services = [];
 
-    /**
-     * Specify the services that need to be refreshed after request.
-     *
-     * @var array
-     */
-    public $refresh = ['request', 'response'];
-
     public $debug = true;
 
     /**
@@ -71,7 +64,7 @@ class Application extends ServiceLocator
 
     protected $dispatcher;
     protected $bootstrapped = false;
-
+    protected $refreshing = [];
 
     public function init()
     {
@@ -108,6 +101,10 @@ class Application extends ServiceLocator
     {
         foreach ($this->services as $id => $definition) {
             $this->bind($id, $definition);
+
+            if ($this->get($id) instanceof ShouldBeRefreshed) {
+                $this->refreshing[$id] = true;
+            }
         }
     }
 
@@ -181,7 +178,7 @@ class Application extends ServiceLocator
         }
 
         $response->prepare();
-        $this->afterRequest();
+        $this->refreshServices();
 
         return $response;
     }
@@ -220,9 +217,9 @@ class Application extends ServiceLocator
         }
     }
 
-    protected function afterRequest()
+    protected function refreshServices()
     {
-        foreach($this->refresh as $id) {
+        foreach($this->refreshing as $id => $_) {
             $this->unbind($id);
             $this->bind($id, $this->services[$id]);
         }

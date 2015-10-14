@@ -4,6 +4,7 @@ namespace blink\http;
 
 use blink\core\MiddlewareTrait;
 use blink\core\Object;
+use blink\core\ShouldBeRefreshed;
 use blink\support\Json;
 use blink\core\InvalidParamException;
 
@@ -12,7 +13,7 @@ use blink\core\InvalidParamException;
  *
  * @package blink\http
  */
-class Response extends Object
+class Response extends Object implements ShouldBeRefreshed
 {
     use MiddlewareTrait;
 

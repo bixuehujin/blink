@@ -6,6 +6,7 @@ use blink\auth\Authenticatable;
 use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
 use blink\core\Object;
+use blink\core\ShouldBeRefreshed;
 
 /**
  * Class Request
@@ -18,7 +19,7 @@ use blink\core\Object;
  *
  * @package blink\http
  */
-class Request extends Object
+class Request extends Object implements ShouldBeRefreshed
 {
     use MiddlewareTrait;
 
