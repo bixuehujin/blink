@@ -40,7 +40,7 @@ class ServerCommand extends Command
     protected function handleServe()
     {
         $server = require $this->blink->root . '/src/config/server.php';
-        $server['swConfig']['daemonize'] = 0;
+        $server['asDaemon'] = 0;
 
         return make($server)->run();
     }
@@ -54,7 +54,7 @@ class ServerCommand extends Command
         }
 
         $server = require $this->blink->root . '/src/config/server.php';
-        $server['swConfig']['daemonize'] = 1;
+        $server['asDaemon'] = 1;
         $server['pidFile'] = $this->blink->root . '/runtime/server.pid';
 
         return make($server)->run();
@@ -62,13 +62,7 @@ class ServerCommand extends Command
 
     protected function handleRestart()
     {
-        $pidFile = $this->blink->root . '/runtime/server.pid';
-
         $this->handleStop();
-
-        do {
-            usleep(100000);
-        } while(file_exists($pidFile));
 
         return $this->handleStart();
     }
@@ -77,6 +71,9 @@ class ServerCommand extends Command
     {
         $pidFile = $this->blink->root . '/runtime/server.pid';
         if (file_exists($pidFile) && posix_kill(file_get_contents($pidFile), 15)) {
+            do {
+                usleep(100000);
+            } while(file_exists($pidFile));
             return 0;
         }
 

@@ -2,8 +2,6 @@
 
 namespace blink\server;
 
-use blink\http\Request;
-
 /**
  * A Swoole based server implementation.
  *
@@ -11,12 +9,53 @@ use blink\http\Request;
  */
 class SwServer extends Server
 {
-    public $swConfig = [];
+    /**
+     * The number of requests each process should execute before respawning, This can be useful to work around
+     * with possible memory leaks.
+     *
+     * @var int
+     */
+    public $maxRequests = 10000;
 
-    private $defaultSwConfig = [
-        'worker_num' => 2,
-        'task_worker_num' => 2,
-    ];
+    /**
+     * The number of workers should be started to serve requests.
+     *
+     * @var int
+     */
+    public $numWorkers;
+
+    /**
+     * Detach the server process and run as daemon.
+     *
+     * @var bool
+     */
+    public $asDaemon = false;
+
+    /**
+     * Specifies the path where logs should be stored in.
+     *
+     * @var string
+     */
+    public $logFile;
+
+
+    private function normalizedConfig()
+    {
+        $config = [];
+
+        $config['max_requests'] = $this->maxRequests;
+        $config['daemonize'] = $this->asDaemon;
+
+        if ($this->numWorkers) {
+            $config['worker_num'] = $this->numWorkers;
+        }
+
+        if ($this->logFile) {
+            $config['log_file'] = $this->logFile;
+        }
+
+        return $config;
+    }
 
     private function createServer()
     {
@@ -53,7 +92,7 @@ class SwServer extends Server
             $server->on('finish', [$this, 'onFinish']);
         }
 
-        $server->set($this->swConfig + $this->defaultSwConfig);
+        $server->set($this->normalizedConfig());
 
         return $server;
     }
