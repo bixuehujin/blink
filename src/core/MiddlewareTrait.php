@@ -12,14 +12,25 @@ trait MiddlewareTrait
 {
     public $middleware = [];
 
+    private $_middlewareCalled = false;
+
     /**
      * Add a new middleware to the middleware stack of the object.
      *
      * @param $definition
+     * @param $prepend
      */
-    public function middleware($definition)
+    public function middleware($definition, $prepend = false)
     {
-        $this->middleware[] = $definition;
+        if ($this->_middlewareCalled) {
+            throw new InvalidCallException('The middleware stack is already called, no middleware can be added');
+        }
+
+        if ($prepend) {
+            array_unshift($this->middleware, $definition);
+        } else {
+            $this->middleware[] = $definition;
+        }
     }
 
     /**
@@ -29,6 +40,10 @@ trait MiddlewareTrait
      */
     public function callMiddleware()
     {
+        if ($this->_middlewareCalled) {
+            return;
+        }
+
         foreach ($this->middleware as $definition) {
             $middleware = make($definition);
             if (!$middleware instanceof MiddlewareContract) {
@@ -39,5 +54,7 @@ trait MiddlewareTrait
                 break;
             }
         }
+
+        $this->_middlewareCalled = true;
     }
 }
