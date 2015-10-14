@@ -2,6 +2,7 @@
 
 use blink\di\Container;
 use blink\core\InvalidConfigException;
+use blink\core\HttpException;
 
 /**
  * Shortcut helper function to create object via Object Configuration.
@@ -36,7 +37,7 @@ function make($type, $params = [])
  * Helper function to get application instance or registered application services.
  *
  * @param null $service
- * @return mixed
+ * @return \blink\core\Application
  */
 function app($service = null)
 {
@@ -95,7 +96,7 @@ function response()
  * @param string $message
  * @throws \blink\core\HttpException
  */
-function abort($status, $message = '')
+function abort($status, $message = null)
 {
-    throw new \blink\core\HttpException($status, $message);
+    throw new HttpException($status, $message);
 }
