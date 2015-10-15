@@ -18,9 +18,9 @@ class ParamBag extends Object implements IteratorAggregate, Countable
         parent::__construct($config);
     }
 
-    public function filter($key, $default = null, $deep = false, $filter = FILTER_DEFAULT, $options = array())
+    public function filter($key, $default = null, $filter = FILTER_DEFAULT, $options = array())
     {
-        $value = $this->get($key, $default, $deep);
+        $value = $this->get($key, $default);
 
         // Always turn $options into an array - this allows filter_var option shortcuts.
         if (!is_array($options) && $options) {
@@ -35,13 +35,13 @@ class ParamBag extends Object implements IteratorAggregate, Countable
         return filter_var($value, $filter, $options);
     }
 
-    public function getInt($key, $default = 0, $deep = false)
+    public function integer($key, $default = 0)
     {
-        return (int) $this->get($key, $default, $deep);
+        return (int) $this->get($key, $default);
     }
 
-    public function getBoolean($key, $default = false, $deep = false)
+    public function boolean($key, $default = false)
     {
-        return $this->filter($key, $default, $deep, FILTER_VALIDATE_BOOLEAN);
+        return $this->filter($key, $default, FILTER_VALIDATE_BOOLEAN);
     }
 }
