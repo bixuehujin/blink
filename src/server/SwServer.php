@@ -43,7 +43,7 @@ class SwServer extends Server
     {
         $config = [];
 
-        $config['max_requests'] = $this->maxRequests;
+        $config['max_request'] = $this->maxRequests;
         $config['daemonize'] = $this->asDaemon;
 
         if ($this->numWorkers) {

@@ -175,10 +175,11 @@ class Application extends ServiceLocator
 
         try {
             $response->callMiddleware();
-            $this->formatException($response->data, $response);
         } catch (\Exception $e) {
-            $this->formatException($e, $response);
+            $response->data = $e;
         }
+
+        $this->formatException($response->data, $response);
 
         $response->prepare();
         $this->refreshServices();
@@ -215,7 +216,7 @@ class Application extends ServiceLocator
 
         $data = $this->runAction($action, $args, $request, $response);
 
-        if (!$data instanceof Response && $data) {
+        if (!$data instanceof Response && $data !== null) {
             $response->with($data);
         }
     }
