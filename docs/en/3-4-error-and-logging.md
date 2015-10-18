@@ -40,7 +40,7 @@ $log->emergency('my message');
 // logging when action must be taken immediately
 $log->alert('my message');
 
-// logging on credical conditions
+// logging on critical conditions
 $log->critical('my message');
 
 // logging for runtime errors
