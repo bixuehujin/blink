@@ -1,7 +1,7 @@
 Session Management
 ==================
 
-Sessions allow data to be persisted across multiple requests. In tranditional PHP application, you may access them
+Sessions allow data to be shared across multiple requests. In tranditional PHP application, you may access them
 through global variable `$_SESSION` directly. but in Blink, it is not an option, the only way to access session
 data is through session service.
 
@@ -39,6 +39,6 @@ In Blink, it is possible to implement your own custom session service, the only 
 Session Storage
 ---------------
 
-By default, files are be used to storage session data in Blink, it is possible to change this by using custom
-session storage class. For how to implement your own session storage class, please refer the implementation of
-`blink\session\FileStorage` class.
+By default, files are be used to storage session data in Blink, it is possible to change this behavior by using custom
+session storage class. To implement our own session storage class, we need implement the `blink\session\StorageContract`
+interface. For more detailed information, you can refer the implementation of `blink\session\FileStorage` class.
