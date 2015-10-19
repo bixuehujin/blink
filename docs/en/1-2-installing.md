@@ -28,7 +28,7 @@ After Composer installed, you are able to create a Blink project and install all
 `create-project` command:
 
 ```bash
-composer create-project --prefer-dist -s dev blink/seed your-app
+composer create-project --prefer-dist blink/seed your-app
 ```
 
 3. Confirm The Installation

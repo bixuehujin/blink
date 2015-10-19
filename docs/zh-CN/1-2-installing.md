@@ -25,7 +25,7 @@ mv composer.phar /usr/local/bin/composer
 Composer 安装后，你可以通过 Composer 的 create-project 的命令创建项目并安装依赖：
 
 ```bash
-composer create-project --prefer-dist -s dev blink/seed your-app
+composer create-project --prefer-dist blink/seed your-app
 ```
 
 3. 确认安装成功

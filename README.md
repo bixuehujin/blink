@@ -40,7 +40,7 @@ i'm finally very glad to announce that **Blink** is exactly the answer!
 Install the latest version with
 
 ```bash
-composer create-project --prefer-dist -s dev blink/seed your-app
+composer create-project --prefer-dist blink/seed your-app
 ```
 
 ## Documentation

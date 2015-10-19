@@ -16,7 +16,7 @@ use blink\http\Response;
  */
 class Application extends ServiceLocator
 {
-    const VERSION = '0.1.0 (dev)';
+    const VERSION = '0.1.0';
 
     /**
      * The name for the application.
