@@ -28,5 +28,5 @@ Blink 中文文档
 理念与架构
 ---------
 
-* [对象配置](4-1-object-configuration.md)
+* [对象配置](4-1-properties-and-configurations.md)
 * [生命周期](4-2-lifecycle.md)
