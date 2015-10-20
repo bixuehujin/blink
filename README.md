@@ -6,7 +6,7 @@ Blink - A web framework built for high performance services
 [![Latest Unstable Version](https://poser.pugx.org/blink/blink/v/unstable)](https://packagist.org/packages/blink/blink)
 
 
-Blink is micro web framework build for long-running and high performance services, the design heavily inspired by Yii2
+Blink is a micro web framework build for long-running and high performance services, the design heavily inspired by Yii2
 and Laravel. Blink aims to provide the most expressive and elegant API and try to make the experience of web development
 as pleasant as possible.
 
