@@ -1,4 +1,4 @@
-Blink - A web framework build for high performance services
+Blink - A web framework built for high performance services
 ===========================================================
 
 [![Build Status](https://travis-ci.org/bixuehujin/blink.svg?branch=master)](https://travis-ci.org/bixuehujin/blink)
@@ -10,19 +10,19 @@ Blink is micro web framework build for long-running and high performance service
 and Laravel. Blink aims to provide the most expressive and elegant API and try to make the experience of web development
 as pleasant as possible.
 
-Besides, Blink is not like other frameworks that running upon php-fpm or apache's mod_php, we currently taking
-[Swoole extension](https://github.com/swoole/swoole-src) to serve requests directly in PHP, this can easily make
-our PHP application 100% faster just in a blink.
+Besides, Blink is not like other frameworks that run upon php-fpm or Apache's mod_php; we use the
+[Swoole extension](https://github.com/swoole/swoole-src) to serve requests directly in PHP. This can easily make
+our PHP application 100% faster in just a blink.
 
-## Why Built this?
+## Why build this?
 
-In php-fpm or mod_php, all resources like objects and database connections are only live within a single request,
-all these resources will be freed once the request terminated. This is works fine with simple applications without
+In php-fpm or mod_php, all resources like objects and database connections only live within a single request,
+all these resources will be freed once the request terminates. This works fine with simple applications without
 much traffic, but for large scale applications, the performance impact of reallocating resources on every request
 is really huge.
 
-As this reason, we are always trying to find a way to reduce unnecessary resources reallocating on every request, and
-i'm finally very glad to announce that **Blink** is exactly the answer!
+Because of this, we are always trying to find a way to reduce unnecessary resources reallocating on every request, and
+I'm finally very glad to announce that **Blink** is exactly the answer!
 
 
 ## Features
@@ -53,7 +53,7 @@ Blink is fully documented in both English and Chinese:
 
 ## Participating
 
-**Blink is still in active development, your participating is very wellcome!**
+**Blink is still in active development, so your participation is very welcome!**
 
 You may participate in the following ways:
 
