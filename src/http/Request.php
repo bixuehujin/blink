@@ -14,6 +14,7 @@ use blink\core\ShouldBeRefreshed;
  * @property ParamBag $params The collection of query parameters
  * @property HeaderBag $headers The collection of request headers
  * @property HeaderBag $body The collection of request body
+ * @property HeaderBag $files The collection of uploaded files
  *
  * @property \blink\session\Session $session The session associated to the request
  *
@@ -59,12 +60,6 @@ class Request extends Object implements ShouldBeRefreshed
      */
     public $sessionKey = 'X-Session-Id';
 
-    private $_params;
-
-    private $_body;
-
-    private $_headers;
-
     public function method()
     {
         return $this->method;
@@ -102,6 +97,8 @@ class Request extends Object implements ShouldBeRefreshed
         return 'HTTPS' === explode('/', $this->protocol)[0];
     }
 
+    private $_params;
+
     public function setParams($params = [])
     {
         if (!$params instanceof ParamBag) {
@@ -125,6 +122,8 @@ class Request extends Object implements ShouldBeRefreshed
         return $this->_params = new ParamBag($params);
     }
 
+    private $_headers;
+
     public function setHeaders($headers = [])
     {
         if (!$headers instanceof HeaderBag) {
@@ -142,6 +141,8 @@ class Request extends Object implements ShouldBeRefreshed
 
         return $this->_headers;
     }
+
+    private $_body;
 
     public function getBody()
     {
@@ -165,6 +166,36 @@ class Request extends Object implements ShouldBeRefreshed
         }
 
         $this->_body = $body;
+    }
+
+    private $_files;
+
+    /**
+     * Defines the setter for files property.
+     *
+     * @param array $files
+     */
+    public function setFiles($files = [])
+    {
+        if (!$files instanceof FileBag) {
+            $files = new FileBag($files);
+        }
+
+        $this->_files = $files;
+    }
+
+    /**
+     * Defines the getter for files property.
+     *
+     * @return FileBag
+     */
+    public function getFiles()
+    {
+        if ($this->_files === null) {
+            $this->_files = new FileBag();
+        }
+
+        return $this->_files;
     }
 
     public function host()

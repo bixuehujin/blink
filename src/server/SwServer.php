@@ -150,6 +150,10 @@ class SwServer extends Server
             'content' => $request->rawcontent()
         ];
 
+        if (!empty($request->files)) {
+            $config['files'] = $request->files;
+        }
+
         return app()->makeRequest($config);
     }
 
