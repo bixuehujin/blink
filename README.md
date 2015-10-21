@@ -1,17 +1,17 @@
-Blink - A web framework built for high performance services
-===========================================================
+Blink - A high performance web framework and application server in PHP
+======================================================================
 
 [![Build Status](https://travis-ci.org/bixuehujin/blink.svg?branch=master)](https://travis-ci.org/bixuehujin/blink)
 [![Latest Stable Version](https://poser.pugx.org/blink/blink/v/stable)](https://packagist.org/packages/blink/blink)
 [![Latest Unstable Version](https://poser.pugx.org/blink/blink/v/unstable)](https://packagist.org/packages/blink/blink)
 
 
-Blink is a micro web framework build for long-running and high performance services, the design heavily inspired by Yii2
+Blink is a micro web framework for building long-running and high performance services, the design heavily inspired by Yii2
 and Laravel. Blink aims to provide the most expressive and elegant API and try to make the experience of web development
 as pleasant as possible.
 
-Besides, Blink is not like other frameworks that run upon php-fpm or Apache's mod_php; we use the
-[Swoole extension](https://github.com/swoole/swoole-src) to serve requests directly in PHP. This can easily make
+Besides, Blink is also an application server that can serve requests directly in PHP, without php-fpm or Apache's mod_php.
+we use the [Swoole extension](https://github.com/swoole/swoole-src) as the underlying networking library. This can easily make
 our PHP application 100% faster in just a blink.
 
 ## Why build this?

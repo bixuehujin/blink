@@ -1,6 +1,6 @@
 {
     "name" : "blink/blink",
-    "description": "A web framework build for long-running and high performance services",
+    "description": "A high performance web framework and application server in PHP",
     "keywords": ["framework", "swoole", "restful"],
     "authors" : [
         {
