@@ -65,6 +65,7 @@ class Application extends ServiceLocator
     protected $dispatcher;
     protected $bootstrapped = false;
     protected $refreshing = [];
+    protected $lastError;
 
     public function init()
     {
@@ -82,12 +83,20 @@ class Application extends ServiceLocator
     public function bootstrap()
     {
         if (!$this->bootstrapped) {
-            $this->initializeConfig();
-            $this->registerServices();
-            $this->registerRoutes();
-            $this->bootstrapped = true;
+            try {
+                $this->initializeConfig();
+                $this->registerServices();
+                $this->registerRoutes();
+                $this->bootstrapped = true;
+                $this->get('log')->info('application started');
+            } catch (\Exception $e) {
+                if ($this->environment === 'test') {
+                    throw $e;
+                }
 
-            $this->get('log')->info('application started');
+                $this->lastError = $e;
+                $this->get('log')->emergency($e);
+            }
         }
 
         return $this;
@@ -163,6 +172,10 @@ class Application extends ServiceLocator
      */
     public function handleRequest($request)
     {
+        if (!$this->bootstrapped) {
+            return $this->internalServerError();
+        }
+
         /** @var Response $response */
         $response = $this->get('response');
 
@@ -183,6 +196,19 @@ class Application extends ServiceLocator
 
         $response->prepare();
         $this->refreshServices();
+
+        return $response;
+    }
+
+    protected function internalServerError()
+    {
+        $response = new Response([
+            'data' => $this->lastError ?: new HttpException(500, 'There was an internal server error'),
+        ]);
+
+        $this->formatException($response->data, $response);
+
+        $response->prepare();
 
         return $response;
     }
