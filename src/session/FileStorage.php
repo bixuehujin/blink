@@ -20,8 +20,16 @@ class FileStorage extends Object implements StorageContract
 
     public function init()
     {
-        if (!$this->path || !file_exists($this->path) || !is_writable($this->path)) {
-            throw new InvalidConfigException("The param: '{$this->path}' is invalid or not writable");
+        if (!$this->path) {
+            throw new InvalidConfigException("The parameter 'blink\\session\\FileStorage::path' must be configured");
+        }
+
+        if (!file_exists($this->path)) {
+            @mkdir($this->path, 0777, true);
+        }
+
+        if (!file_exists($this->path) || !is_writable($this->path)) {
+            throw new InvalidConfigException("The parameter 'blink\\session\\FileStorage::path': '{$this->path}' is invalid or not writable");
         }
 
         if (rand(0, $this->divisor) <= 0) {
@@ -77,7 +85,7 @@ class FileStorage extends Object implements StorageContract
                 continue;
             }
             if ($file->getMTime() < $now - $this->timeout) {
-                unlink($file->getRealPath());
+                @unlink($file->getRealPath());
             }
         }
     }
