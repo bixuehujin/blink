@@ -49,6 +49,16 @@ function app($service = null)
 }
 
 /**
+ * Helper function to get log service.
+ *
+ * @return \blink\log\Logger
+ */
+function logger()
+{
+    return Container::$app->get('log');
+}
+
+/**
  * Helper function to get session service.
  *
  * @return \blink\session\Contract
