@@ -2,6 +2,7 @@
     "name" : "blink/blink",
     "description": "A high performance web framework and application server in PHP",
     "keywords": ["framework", "swoole", "restful"],
+    "license":"MIT",
     "authors" : [
         {
             "name" : "Jin Hu",
