@@ -13,8 +13,9 @@ use blink\core\ShouldBeRefreshed;
  *
  * @property ParamBag $params The collection of query parameters
  * @property HeaderBag $headers The collection of request headers
- * @property HeaderBag $body The collection of request body
- * @property HeaderBag $files The collection of uploaded files
+ * @property ParamBag $body The collection of request body
+ * @property FileBag $files The collection of uploaded files
+ * @property CookieBag $cookies The collection of received cookies.
  *
  * @property \blink\session\Session $session The session associated to the request
  *
@@ -196,6 +197,36 @@ class Request extends Object implements ShouldBeRefreshed
         }
 
         return $this->_files;
+    }
+
+    private $_cookies;
+
+    /**
+     * Defines the setter for cookie property.
+     *
+     * @param $cookies
+     */
+    public function setCookies($cookies)
+    {
+        if (!$cookies instanceof CookieBag) {
+            $cookies = new CookieBag(CookieBag::normalize($cookies));
+        }
+
+        $this->_cookies = $cookies;
+    }
+
+    /**
+     * Defines the getter for cookies property.
+     *
+     * @return CookieBag
+     */
+    public function getCookies()
+    {
+        if ($this->_cookies === null) {
+            $this->_cookies = new CookieBag();
+        }
+
+        return $this->_cookies;
     }
 
     public function host()

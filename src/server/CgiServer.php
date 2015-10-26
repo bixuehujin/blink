@@ -74,6 +74,7 @@ class CgiServer extends Server
             'path' => parse_url($requestUri, PHP_URL_PATH),
             'headers' => $this->extractHeaders(),
             'params' => $_GET,
+            'cookies' => $_COOKIE,
             'content' => file_get_contents('php://input'),
         ];
 

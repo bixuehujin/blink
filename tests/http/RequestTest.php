@@ -39,4 +39,16 @@ class RequestTest extends TestCase
         $this->assertEquals('b', $request->input('a'));
         $this->assertEquals(true, $request->has('foo'));
     }
+
+    public function testCookies()
+    {
+        $request = new Request([
+            'cookies' => [
+                'foo' => 'bar'
+            ]
+        ]);
+
+        $this->assertEquals('foo', $request->cookies->get('foo')->name);
+        $this->assertEquals('bar', $request->cookies->get('foo')->value);
+    }
 }
