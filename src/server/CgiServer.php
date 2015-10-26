@@ -43,7 +43,7 @@ class CgiServer extends Server
         $results = [];
 
         foreach ($files as $class => $info) {
-            if (!is_array($info['name'])) {
+            if (is_array($info['name'])) {
                 foreach ($info['name'] as $key => $_) {
                     $results[$class][$key] = new File([
                         'name' => $files[$class]['name'][$key],
