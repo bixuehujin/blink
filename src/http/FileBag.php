@@ -22,4 +22,29 @@ class FileBag extends Object implements IteratorAggregate, Countable
 
         parent::__construct($config);
     }
+
+    /**
+     * Returns the first file by given key.
+     *
+     * @param mixed $key
+     * @return File|File[]|null
+     */
+    public function first($key = null)
+    {
+        if ($key !== null) {
+            if ($files = $this->get($key)) {
+                return reset($files);
+            } else {
+                return;
+            }
+        }
+
+        $ret = [];
+
+        foreach ($this->all() as $key => $files) {
+            $ret[] = reset($files);
+        }
+
+        return $ret;
+    }
 }

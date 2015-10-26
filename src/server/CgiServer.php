@@ -7,6 +7,7 @@
 
 namespace blink\server;
 
+use blink\http\File;
 use blink\http\Response;
 
 /**
@@ -30,6 +31,36 @@ class CgiServer extends Server
         return $headers;
     }
 
+    /**
+     * Blink only support the 2-dimensions $_FILES structure, we have no plan to support recursively $_FILES parsing as
+     * it is quite useless and makes our design complicated.
+     *
+     * @param $files
+     * @return array
+     */
+    protected function normalizeFiles($files)
+    {
+        $results = [];
+
+        foreach ($files as $class => $info) {
+            if (!is_array($info['name'])) {
+                foreach ($info['name'] as $key => $_) {
+                    $results[$class][$key] = new File([
+                        'name' => $files[$class]['name'][$key],
+                        'tmpName' => $files[$class]['tmp_name'][$key],
+                        'size' => $files[$class]['size'][$key],
+                        'type' => $files[$class]['type'][$key],
+                        'error' => $files[$class]['error'][$key],
+                    ]);
+                }
+            } else {
+                $results[$class][] = new File($info);
+            }
+        }
+
+        return $results;
+    }
+
     protected function extractRequest()
     {
         $requestUri = $_SERVER['REQUEST_URI'];
@@ -47,7 +78,7 @@ class CgiServer extends Server
         ];
 
         if (!empty($_FILES)) {
-            $config['files'] = $_FILES;
+            $config['files'] = $this->normalizeFiles($_FILES);
         }
 
         return app()->makeRequest($config);

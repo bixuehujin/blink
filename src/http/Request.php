@@ -288,6 +288,8 @@ class Request extends Object implements ShouldBeRefreshed
             $parsedBody = json_decode($body, true);
         } else if ($contentType == 'application/x-www-form-urlencoded') {
             parse_str($body, $parsedBody);
+        } else if ($contentType == 'multipart/form-data') {
+            // noop
         } else {
             throw new NotSupportedException("The content type: '$contentType' does not supported");
         }
