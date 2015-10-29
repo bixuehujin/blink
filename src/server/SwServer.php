@@ -40,7 +40,7 @@ class SwServer extends Server
     public $logFile;
 
 
-    private function normalizedConfig()
+    protected function normalizedConfig()
     {
         $config = [];
 
@@ -58,7 +58,7 @@ class SwServer extends Server
         return $config;
     }
 
-    private function createServer()
+    protected function createServer()
     {
         $server = new \swoole_http_server($this->host, $this->port);
 
@@ -130,12 +130,12 @@ class SwServer extends Server
         $this->stopApp();
     }
 
-    public function onTask()
+    public function onTask($server, $taskId, $fromId, $data)
     {
 
     }
 
-    public function onFinish()
+    public function onFinish($server, $taskId, $data)
     {
 
     }
