@@ -62,6 +62,8 @@ class Application extends ServiceLocator
 
     public $controllerNamespace;
 
+    public $currentRequest;
+
     protected $dispatcher;
     protected $bootstrapped = false;
     protected $refreshing = [];
@@ -176,6 +178,8 @@ class Application extends ServiceLocator
             return $this->internalServerError();
         }
 
+        $this->currentRequest = $request;
+
         /** @var Response $response */
         $response = $this->get('response');
 
@@ -196,6 +200,8 @@ class Application extends ServiceLocator
 
         $response->prepare();
         $this->refreshServices();
+
+        $this->currentRequest = null;
 
         return $response;
     }
