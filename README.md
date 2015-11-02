@@ -1,8 +1,6 @@
 Blink - A high performance web framework and application server in PHP
 ======================================================================
 
-[![Join the chat at https://gitter.im/bixuehujin/blink](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bixuehujin/blink?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build Status](https://travis-ci.org/bixuehujin/blink.svg?branch=master)](https://travis-ci.org/bixuehujin/blink)
 [![Latest Stable Version](https://poser.pugx.org/blink/blink/v/stable)](https://packagist.org/packages/blink/blink)
 [![Latest Unstable Version](https://poser.pugx.org/blink/blink/v/unstable)](https://packagist.org/packages/blink/blink)
@@ -51,6 +49,11 @@ Blink is fully documented in both English and Chinese:
 
  * [English Documentation](docs/en/README.md)
  * [简体中文文档](docs/zh-CN/README.md)
+
+## Community Group
+
+ * Gitter (Worldwide): [![Join the chat at https://gitter.im/bixuehujin/blink](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bixuehujin/blink?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * QQ群 (China): 114632054
 
 
 ## Participating
