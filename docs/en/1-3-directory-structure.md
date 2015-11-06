@@ -9,7 +9,7 @@ your-app/                   application root directory
     composer.json           Composer configuration file, stored information about installed packages
     src/                    application source code
         config/
-            app.php         baisc application configurations
+            app.php         basic application configurations
             server.php      Swoole server configuration
             services.php    service configurations
         console/            console commands
