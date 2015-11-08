@@ -7,14 +7,12 @@
 
 namespace blink\coroutine;
 
+use React\Promise\PromiseInterface;
 use SplStack;
 use blink\core\Object;
 
 /**
  * Coroutine represents a user-space "thread" of execution.
- *
- * @method return($value)
- * @method throw($exception)
  *
  * @package blink\coroutine
  */
@@ -43,7 +41,7 @@ class Coroutine extends Object
                 if (!$this->stack->isEmpty()) {
                     $task = $this->stack->pop();
                 } else {
-                    assert(0);
+                    return;
                 }
             }
 
@@ -65,7 +63,17 @@ class Coroutine extends Object
                     $task->send($value->value);
                 }
 
-            } else if (is_scalar($value)) {
+            } else if ($value instanceof PromiseInterface) {
+                $value->then(
+                    function ($data) use ($task) {
+                        $task->send($data);
+                    },
+                    function ($reason) use ($task) {
+                        $task->throw($reason);
+                    }
+                );
+            }
+            else if (is_scalar($value)) {
                 $task->send($value);
             } else {
                 $task->send(null);
