@@ -120,6 +120,22 @@ class Response extends Object implements ShouldBeRefreshed
         }
     }
 
+    /**
+     * Redirects to the specified url.
+     *
+     * @param $url The url to redirect
+     * @param int $statusCode
+     */
+    public function redirect($url, $statusCode = 302)
+    {
+        if (strpos($url,'/') === 0 && strpos($url,'//') !== 0) {
+            $url = request()->root() . $url;
+        }
+
+        $this->status($statusCode);
+        $this->headers->set('Location', $url);
+    }
+
     public function with($data)
     {
         $this->data = $data;
