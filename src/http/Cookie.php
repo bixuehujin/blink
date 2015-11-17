@@ -65,5 +65,30 @@ class Cookie extends Object
      *
      * @var bool
      */
-    public $httpOnly = true;
+    public $httpOnly = false;
+
+    public function toString()
+    {
+        $line = "{$this->name}={$this->value}";
+
+        if ($this->expire > 0) {
+            $dt = date('D, d-M-Y H:i:s T', $this->expire);
+            $line .= "; expires={$dt}";
+        }
+        if ($this->path) {
+            $line .= "; path={$this->path}";
+        }
+        if ($this->domain) {
+            $line .= "; domain={$this->domain}";
+        }
+
+        if ($this->secure) {
+            $line .= '; secure';
+        }
+        if ($this->httpOnly) {
+            $line .= '; HttpOnly';
+        }
+
+        return $line;
+    }
 }

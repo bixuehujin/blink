@@ -94,6 +94,10 @@ class CgiServer extends Server
             }
         }
 
+        foreach ($response->cookies as $cookie) {
+            setcookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+        }
+
         echo $response->content();
     }
 

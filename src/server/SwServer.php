@@ -1,6 +1,7 @@
 <?php
 
 namespace blink\server;
+
 use blink\http\File;
 
 /**
@@ -197,6 +198,9 @@ class SwServer extends Server
             }
         }
         $response->header('Content-Length', strlen($content));
+        foreach ($res->cookies as $cookie) {
+            $response->header('Set-Cookie', $cookie->toString());
+        }
 
         $response->status($res->statusCode);
         $response->end($content);

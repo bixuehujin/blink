@@ -11,6 +11,8 @@ use blink\core\InvalidParamException;
 /**
  * Class Response
  *
+ * @property CookieBag $cookies
+ *
  * @package blink\http
  */
 class Response extends Object implements ShouldBeRefreshed
@@ -134,6 +136,22 @@ class Response extends Object implements ShouldBeRefreshed
 
         $this->status($statusCode);
         $this->headers->set('Location', $url);
+    }
+
+    private $_cookies;
+
+    /**
+     * Returns the cookies that should be sent with the response.
+     *
+     * @return CookieBag
+     */
+    public function getCookies()
+    {
+        if (!$this->_cookies) {
+            $this->_cookies = new CookieBag();
+        }
+
+        return $this->_cookies;
     }
 
     public function with($data)
