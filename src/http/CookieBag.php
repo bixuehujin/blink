@@ -7,8 +7,9 @@
 
 namespace blink\http;
 
+use ArrayIterator;
+use IteratorAggregate;
 use blink\core\Object;
-use blink\support\BagTrait;
 
 /**
  * Class CookieBag
@@ -16,13 +17,13 @@ use blink\support\BagTrait;
  * @package blink\http
  * @since 0.1.1
  */
-class CookieBag extends Object
+class CookieBag extends Object implements IteratorAggregate
 {
-    use BagTrait;
+    private $cookies;
 
     public function __construct(array $cookies = [], $config = [])
     {
-        $this->replace($cookies);
+        $this->cookies = static::normalize($cookies);
 
         parent::__construct($config);
     }
@@ -36,5 +37,57 @@ class CookieBag extends Object
         }
 
         return $cookies;
+    }
+
+    /**
+     * Returns a cookie by name.
+     *
+     * @param $name
+     * @return null
+     */
+    public function get($name)
+    {
+        return isset($this->cookies[$name]) ? $this->cookies[$name] : null;
+    }
+
+    /**
+     * Add a cookie to the bag.
+     *
+     * @param Cookie $cookie
+     */
+    public function add(Cookie $cookie)
+    {
+        $this->cookies[$cookie->name] = $cookie;
+    }
+
+    /**
+     * Returns whether a cookie is exists.
+     *
+     * @param $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->cookies[$name]);
+    }
+
+    /**
+     * Remove a cookie by name.
+     *
+     * @param $name
+     */
+    public function remove($name)
+    {
+        unset($this->cookies[$name]);
+    }
+
+    public function count()
+    {
+        return count($this->cookies);
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->cookies);
     }
 }
