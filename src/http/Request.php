@@ -397,7 +397,7 @@ class Request extends Object implements ShouldBeRefreshed
             if ($session = session()->get($sessionId)) {
                 $this->_session = $session;
             } else {
-                $this->_session = null;
+                $this->_session = session()->put();
             }
         }
 
