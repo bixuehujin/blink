@@ -57,7 +57,7 @@ class Manager extends Object implements SessionContract
     public function get($id)
     {
         $data = $this->storage->read($id);
-        if ($data) {
+        if ($data !== null) {
             return new Session($data, ['id' => $id]);
         }
     }

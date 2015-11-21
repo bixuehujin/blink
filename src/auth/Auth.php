@@ -89,9 +89,10 @@ class Auth extends Object implements AuthContract
     public function who($sessionId)
     {
         $class = $this->model;
+        $bag = session()->get($sessionId);
 
-        if ($bag = session()->get($sessionId)) {
-            return $class::findIdentity($bag->get('auth_id'));
+        if ($bag && ($authId = $bag->get('auth_id')) !== null) {
+            return $class::findIdentity($authId);
         }
     }
 }
