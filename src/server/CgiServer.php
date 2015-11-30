@@ -31,34 +31,38 @@ class CgiServer extends Server
         return $headers;
     }
 
+    private $_files = [];
+
+    protected function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors)
+    {
+        if (is_array($names)) {
+            foreach ($names as $i => $name) {
+                self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
+            }
+        } elseif ($errors !== UPLOAD_ERR_NO_FILE) {
+            $this->_files[$key] = new File([
+                'name' => $names,
+                'tmpName' => $tempNames,
+                'type' => $types,
+                'size' => $sizes,
+                'error' => $errors,
+            ]);
+        }
+    }
+
     /**
-     * Blink only support the 2-dimensions $_FILES structure, we have no plan to support recursively $_FILES parsing as
-     * it is quite useless and makes our design complicated.
+     * Normalize the PHP $_FILE array.
      *
      * @param $files
      * @return array
      */
     protected function normalizeFiles($files)
     {
-        $results = [];
-
-        foreach ($files as $class => $info) {
-            if (is_array($info['name'])) {
-                foreach ($info['name'] as $key => $_) {
-                    $results[$class][$key] = new File([
-                        'name' => $files[$class]['name'][$key],
-                        'tmpName' => $files[$class]['tmp_name'][$key],
-                        'size' => $files[$class]['size'][$key],
-                        'type' => $files[$class]['type'][$key],
-                        'error' => $files[$class]['error'][$key],
-                    ]);
-                }
-            } else {
-                $results[$class][] = new File($info);
-            }
+        foreach ($files as $name => $info) {
+            $this->loadFilesRecursive($name, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
         }
 
-        return $results;
+        return $this->_files;
     }
 
     protected function extractRequest()

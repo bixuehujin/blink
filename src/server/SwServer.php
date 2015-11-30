@@ -2,7 +2,6 @@
 
 namespace blink\server;
 
-use blink\http\File;
 
 /**
  * A Swoole based server implementation.
@@ -143,27 +142,12 @@ class SwServer extends Server
 
     protected function normalizeFiles($files)
     {
-        $results = [];
-
-        foreach ($files as $name => $file) {
+        foreach ($files as $name => &$file) {
             $file['tmpName'] = $file['tmp_name'];
             unset($file['tmp_name']);
-
-            if (($start = strpos($name, '[')) !== false) {
-                $end = strpos($name, ']');
-                $subIndex = substr($name, $start + 1, $end - $start - 1);
-
-                if ($subIndex !== '') {
-                    $results[substr($name, 0, $start)][$subIndex] = new File($file);
-                } else {
-                    $results[substr($name, 0, $start)][] = new File($file);
-                }
-            } else {
-                $results[$name][] = new File($file);
-            }
         }
 
-        return $results;
+        return $files;
     }
 
     protected function prepareRequest($request)
