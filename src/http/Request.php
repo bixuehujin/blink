@@ -352,7 +352,7 @@ class Request extends Object implements ShouldBeRefreshed
             return $value;
         }
 
-        if (($value == $this->body->get($key)) !== null) {
+        if (($value = $this->body->get($key)) !== null) {
             return $value;
         }
 
@@ -420,7 +420,6 @@ class Request extends Object implements ShouldBeRefreshed
         }
 
         if ($this->_user === false) {
-
             if (($session = $this->getSession()) && $session->id) {
                 $this->_user = auth()->who($session->id);
             } else {
