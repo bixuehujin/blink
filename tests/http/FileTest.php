@@ -52,13 +52,16 @@ class FileTest extends TestCase
 
     public function testBag()
     {
-        $files['foo'][0] = $this->fakeFile();
+        $files['foo'] = $this->fakeFile();
+        $files['bar[0]'] = $this->fakeFile();
+        $files['bar[1]'] = $this->fakeFile();
 
         $bag = new FileBag($files);
 
-        $this->assertNull($bag->first('bar'));
+        $this->assertNull($bag->first('not_exists'));
+        $this->assertInstanceOf(File::class, $bag->first('bar'));
         $this->assertInstanceOf(File::class, $bag->first('foo'));
-        $this->assertInstanceOf(File::class, $bag->first()[0]);
+        $this->assertInstanceOf(File::class, $bag->get('bar')[0]);
         $this->assertInstanceOf(File::class, $bag->get('foo')[0]);
     }
 }
