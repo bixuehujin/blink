@@ -14,6 +14,11 @@ Besides, Blink is also an application server that can serve requests directly in
 we use the [Swoole extension](https://github.com/swoole/swoole-src) as the underlying networking library. This can easily make
 our PHP application 100% faster in just a blink.
 
+## Community
+
+ * Gitter (Worldwide): [![Join the chat at https://gitter.im/bixuehujin/blink](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bixuehujin/blink?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ * QQ群 (China): 114632054
+
 ## Why build this?
 
 In php-fpm or mod_php, all resources like objects and database connections only live within a single request,
@@ -50,11 +55,9 @@ Blink is fully documented in both English and Chinese:
  * [English Documentation](docs/en/README.md)
  * [简体中文文档](docs/zh-CN/README.md)
 
-## Community Group
+## Related Projects
 
- * Gitter (Worldwide): [![Join the chat at https://gitter.im/bixuehujin/blink](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bixuehujin/blink?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- * QQ群 (China): 114632054
-
+ * [blink-sentry](https://github.com/bixuehujin/blink-sentry) The Sentry integration for Blink Framework.
 
 ## Participating
 
