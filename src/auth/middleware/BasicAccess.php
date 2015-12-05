@@ -20,11 +20,11 @@ class BasicAccess implements MiddlewareContract
     public $identity = 'name';
 
     /**
-     * @param Request $request
+     * @param Request $owner
      */
-    public function handle($request)
+    public function handle($owner)
     {
-        $value = $request->headers->first('Authorization');
+        $value = $owner->headers->first('Authorization');
         if (!$value) {
             return;
         }

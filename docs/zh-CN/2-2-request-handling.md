@@ -52,4 +52,49 @@ class Controller extends Object
 }
 ```
 
-另外，Request 和 Response 的中间件架构也在计划中，未来会提供更多的方式来对输入输出的数据进行格式化。
+
+中间件(Middleware)
+-----------------
+
+Blink 支持 Request 和 Response 的中间件机制，通过为 Request 和 Response 编写中间件，我们可以很方便的实现
+诸如权限认证和数据格式化之类的功能。
+
+要使用中间件功能，我们只需要设置 Request 或 Response 的 `middleware` 属性即可。通过该属性，指定应用到 Request
+或 Response 的全局中间件。下面的示例指定了对所有的请求应用 BasicAccess 中间件：
+
+```php
+    'request' => [
+        'class' => \blink\http\Request::class,
+        'middleware' => [
+            blink\auth\middleware\BasicAccess::class,
+        ],
+    ],
+```
+
+除了在配置文件中指定应用到全局的中间件，我们也可以在处理请求的过程中(在中间件被执行之前)动态的指定需要应用的中间件。如：
+
+```php
+ response()->middleware(Cors::class, true);
+```
+
+这里我们通过 Response 的 `middleware()` 方法动态的添加了 `Cors` 这个中间件，其中第二参数表示是否吧该中间件放在执行栈的最前面。
+通过动态指定中间件的方式，我们可以很方便的只对特定的 Controller 或 Action 应用中间件。
+
+
+实现一个中间件
+-----------
+
+在 Blink 中，我们通过实现 `blink\core\MiddlewareContract` 接口可以很方便的实现一个中间件。要实现这个接口，我们只需要实现
+一个 `handle()` 方法即可，这个方法的原型如下：
+
+```php
+public function handle($owner)
+{
+
+}
+```
+
+其中 `$owner` 代表该中间件所应用的的 Request 或 Response 对象。
+
+同时，我们默认提供了 `blink\auth\middleware\BasicAccess` 中间件，用于 Http 的 BasicAuth 权限认证，
+读者可以参考该中间件的实现了解更多。

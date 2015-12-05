@@ -9,5 +9,5 @@ namespace blink\core;
  */
 interface MiddlewareContract
 {
-    public function handle($value);
+    public function handle($owner);
 }
