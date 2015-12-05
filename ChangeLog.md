@@ -1,14 +1,14 @@
 Blink Framework Change Log
 ==========================
 
-0.2.0 xx xx, 2015
----------------------
+0.2.0 December 05, 2015
+-----------------------
 
 - Bug #10: Fixed get body value with blink\http\Request::input()
 - Enh: Added blink\core\Application::currentRequest property
+- Enh: Added automatically session directory creation support
 - New: Added file uploading support
 - New: Added CgiServer for php-fpm or Apache's mod_php support
-- New: Added automatically session directory creation support
 - New: Added logger() helper function to get log service
 - New: Added file uploading support
 - New: Added Cookie handling support
