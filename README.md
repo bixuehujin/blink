@@ -58,6 +58,7 @@ Blink is fully documented in both English and Chinese:
 ## Related Projects
 
  * [blink-sentry](https://github.com/bixuehujin/blink-sentry) The Sentry integration for Blink Framework.
+ * [notejam_blink](https://github.com/Whyounes/notejam_blink) A notejam demo application for Blink.
 
 ## Participating
 
