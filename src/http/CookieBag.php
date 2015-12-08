@@ -15,7 +15,7 @@ use blink\core\Object;
  * Class CookieBag
  *
  * @package blink\http
- * @since 0.1.1
+ * @since 0.2.0
  */
 class CookieBag extends Object implements IteratorAggregate
 {

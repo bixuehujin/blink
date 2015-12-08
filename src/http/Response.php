@@ -127,6 +127,7 @@ class Response extends Object implements ShouldBeRefreshed
      *
      * @param $url The url to redirect
      * @param int $statusCode
+     * @since 0.2.0
      */
     public function redirect($url, $statusCode = 302)
     {

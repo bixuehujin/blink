@@ -14,7 +14,7 @@ use blink\core\Object;
  * Class Cookie
  *
  * @package blink\http
- * @since 0.1.1
+ * @since 0.2.0
  */
 class Cookie extends Object
 {

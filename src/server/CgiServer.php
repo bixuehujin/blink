@@ -15,7 +15,7 @@ use blink\http\Response;
  *
  * @package blink\server
  * @author Jin Hu <bixuehujin@gmail.com>
- * @since 0.1.1
+ * @since 0.2.0
  */
 class CgiServer extends Server
 {
