@@ -159,7 +159,7 @@ class SwServer extends Server
             'headers' => $request->header,
             'params' => isset($request->get) ? $request->get : [],
             'cookies' => isset($request->cookie) ? $request->cookie : [],
-            'content' => $request->rawcontent()
+            'content' => $request->rawContent()
         ];
 
         if (!empty($request->files)) {
