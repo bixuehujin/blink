@@ -19,6 +19,14 @@ class SwServer extends Server
     public $maxRequests = 10000;
 
     /**
+     * The max package length in bytes for swoole, which is default to 2M (1024 * 1024 * 2). Please refer
+     * http://wiki.swoole.com/wiki/page/301.html for more detailed information.
+     *
+     * @var int
+     */
+    public $maxPackageLength;
+
+    /**
      * The number of workers should be started to serve requests.
      *
      * @var int
@@ -53,6 +61,10 @@ class SwServer extends Server
 
         if ($this->logFile) {
             $config['log_file'] = $this->logFile;
+        }
+
+        if ($this->maxPackageLength) {
+            $config['package_max_length'] = $this->maxPackageLength;
         }
 
         return $config;
