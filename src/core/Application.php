@@ -98,6 +98,13 @@ class Application extends ServiceLocator
 
                 $this->lastError = $e;
                 $this->get('log')->emergency($e);
+            } catch (\Throwable $e) {
+                if ($this->environment === 'test') {
+                    throw $e;
+                }
+
+                $this->lastError = $e;
+                $this->get('log')->emergency($e);
             }
         }
 
@@ -188,11 +195,16 @@ class Application extends ServiceLocator
         } catch (\Exception $e) {
             $response->data = $e;
             $this->get('errorHandler')->handleException($e);
+        } catch (\Throwable $e) {
+            $response->data = $e;
+            $this->get('errorHandler')->handleException($e);
         }
 
         try {
             $response->callMiddleware();
         } catch (\Exception $e) {
+            $response->data = $e;
+        } catch (\Throwable $e) {
             $response->data = $e;
         }
 
@@ -221,7 +233,7 @@ class Application extends ServiceLocator
 
     protected function formatException($e, $response)
     {
-        if (!$response->data instanceof \Exception) {
+        if (!$response->data instanceof \Exception && !$response->data instanceof \Throwable) {
             return;
         }
 
