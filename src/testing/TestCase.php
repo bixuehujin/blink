@@ -24,6 +24,17 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * Returns a new request actor for testing.
+     *
+     * @return RequestActor
+     * @since 0.3.0
+     */
+    public function request()
+    {
+        return new RequestActor($this, $this->createApplication()->bootstrap());
+    }
+
     public function tearDown()
     {
         if ($this->app) {
