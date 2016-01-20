@@ -3,6 +3,7 @@
 namespace blink\testing;
 
 use blink\core\Application;
+use blink\http\HeaderBag;
 
 /**
  * Class RequestActor
@@ -12,6 +13,8 @@ use blink\core\Application;
  */
 class RequestActor
 {
+    use AuthTrait;
+
     protected $phpunit;
     protected $app;
 
@@ -37,7 +40,7 @@ class RequestActor
     {
         $this->request->headers->add($headers);
 
-        if ($this->isJsonRequest() && is_array($content)) {
+        if ($this->isJsonMessage($this->request->headers) && is_array($content)) {
             $content = json_encode($content);
         }
 
@@ -58,9 +61,9 @@ class RequestActor
         return $this;
     }
 
-    protected function isJsonRequest()
+    protected function isJsonMessage(HeaderBag $headers)
     {
-        $headers = $this->request->headers->get('Content-Type', []);
+        $headers = $headers->get('Content-Type', []);
 
         foreach ($headers as $header) {
             if (strpos($header, 'application/json') === 0) {
@@ -211,7 +214,7 @@ class RequestActor
         foreach (array_sort_recursive($data) as $key => $value) {
             $expected = $this->formatToExpectedJson($key, $value);
 
-            $this->{$method}(
+            $this->phpunit->{$method}(
                 strpos($actual, $expected) !== false,
                 ($negate ? 'Found unexpected' : 'Unable to find')." JSON fragment [{$expected}] within [{$actual}]."
             );
@@ -359,5 +362,19 @@ class RequestActor
         }
 
         return $this;
+    }
+
+    /**
+     * Returns the response as json.
+     *
+     * @return mixed
+     */
+    public function asJson()
+    {
+        if (!$this->isJsonMessage($this->response->headers)) {
+            throw new \RuntimeException('The response is not a valid json response');
+        }
+
+        return json_decode($this->response->content(), true);
     }
 }

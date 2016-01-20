@@ -11,8 +11,6 @@ use PHPUnit_Framework_TestCase;
  */
 abstract class TestCase extends PHPUnit_Framework_TestCase
 {
-    use AuthTrait;
-
     protected $app;
 
     abstract public function createApplication();
@@ -30,7 +28,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
      * @return RequestActor
      * @since 0.3.0
      */
-    public function request()
+    public function actor()
     {
         return new RequestActor($this, $this->createApplication()->bootstrap());
     }
