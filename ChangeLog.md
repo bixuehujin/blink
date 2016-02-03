@@ -1,6 +1,15 @@
 Blink Framework Change Log
 ==========================
 
+0.2.1 February 03, 2016
+-----------------------
+
+- Enh: Improved blink\session\Manager::get() with empty value
+- Enh: Improved support for PHP7
+- New: Added SwServer::$maxPackageLength configuration
+
+
+
 0.2.0 December 05, 2015
 -----------------------
 
