@@ -169,7 +169,7 @@ class Response extends Object implements ShouldBeRefreshed
     {
         if (!$this->prepared) {
             $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
-            if ($this->data !== null && !is_string($this->data)) {
+            if ($this->data !== null && !is_string($this->data) && !$this->headers->has('Content-Type')) {
                 $this->headers->set('Content-Type', 'application/json');
             }
 
