@@ -3,6 +3,8 @@
 namespace blink\testing;
 
 use blink\core\Application;
+use blink\core\InvalidParamException;
+use blink\http\File;
 use blink\http\HeaderBag;
 
 /**
@@ -98,6 +100,32 @@ class RequestActor
     public function withJson()
     {
         $this->withHeaders(['Content-Type' => 'application/json']);
+
+        return $this;
+    }
+
+    /**
+     * Send the request with specified files.
+     *
+     * @param array $files
+     * @return $this
+     */
+    public function withFiles(array $files)
+    {
+        foreach ($files as $key => $file) {
+            if (!is_file($file)) {
+                throw new InvalidParamException(sprintf("The file: '$file' does not exists."));
+            }
+
+            $target = new File();
+            $target->name = basename($file);
+            $target->size = filesize($file);
+            $target->type = (new \finfo())->file($file, FILEINFO_MIME_TYPE);
+            $target->tmpName = $file;
+            $target->error = UPLOAD_ERR_OK;
+
+            $this->request->files->set($key, $target);
+        }
 
         return $this;
     }
