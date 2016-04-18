@@ -7,7 +7,9 @@
 
 namespace blink\http;
 
+use RuntimeException;
 use blink\core\Object;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * File represents an uploaded file.
@@ -19,13 +21,16 @@ use blink\core\Object;
  * @author Jin Hu <bixuehujin@gmail.com>
  * @since 0.2.0
  */
-class File extends Object
+class File extends Object implements UploadedFileInterface
 {
     public $name;
     public $tmpName;
     public $type;
     public $size;
     public $error;
+
+    private $_saved = false;
+    private $_stream;
 
     public function getExtension()
     {
@@ -44,6 +49,69 @@ class File extends Object
 
     public function saveAs($path)
     {
+        if ($this->_saved) {
+
+        }
         return copy($this->tmpName, $path);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStream()
+    {
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Cannot retrieve stream due to upload error');
+        }
+
+        if ($this->_saved) {
+            throw new RuntimeException('Cannot retrieve stream after it has already been moved');
+        }
+
+        if (!$this->_stream) {
+            $this->_stream = new Stream($this->tmpName);
+        }
+
+        return $this->_stream;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function moveTo($targetPath)
+    {
+        return $this->saveAs($targetPath);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getClientFilename()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getClientMediaType()
+    {
+        return $this->type;
     }
 }

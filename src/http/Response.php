@@ -7,6 +7,8 @@ use blink\core\Object;
 use blink\core\ShouldBeRefreshed;
 use blink\support\Json;
 use blink\core\InvalidParamException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Class Response
@@ -14,10 +16,11 @@ use blink\core\InvalidParamException;
  * @property CookieBag $cookies
  * @package blink\http
  */
-class Response extends Object implements ShouldBeRefreshed
+class Response extends Object implements ShouldBeRefreshed, ResponseInterface
 {
 
     use MiddlewareTrait;
+    use MessageTrait;
 
     public $data;
 
@@ -191,5 +194,48 @@ class Response extends Object implements ShouldBeRefreshed
         }
 
         return $this->content;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBody()
+    {
+        // TODO: Implement getBody() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatusCode()
+    {
+        return $this->statusCode;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        $new = clone $this;
+        $new->status($code, $reasonPhrase);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getReasonPhrase()
+    {
+        return $this->statusText;
     }
 }
