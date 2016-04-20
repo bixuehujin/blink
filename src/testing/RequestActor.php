@@ -392,6 +392,91 @@ class RequestActor
         return $this;
     }
 
+    private $_verbose;
+
+    protected function isVerbose()
+    {
+        if ($this->_verbose !== null) {
+            return $this->_verbose;
+        }
+
+        $verbose = false;
+
+        global $argv;
+
+        foreach ($argv as $arg) {
+            if (preg_match('/^\-{1,2}v(erbose)?$/', $arg)) {
+                $verbose = true;
+                break;
+            }
+        }
+
+        return $this->_verbose = $verbose;
+    }
+
+    /**
+     * Dump the response headers for debug purpose.
+     *
+     * @return $this
+     */
+    public function dumpHeaders()
+    {
+        $headers = $this->response->headers;
+
+        if ($headers->count() && $this->isVerbose()) {
+            $class = debug_backtrace()[1];
+
+            printf("\ndump headers in %s::%s():\n", $class['class'], $class['function']);
+
+            foreach ($headers as $key => $values) {
+                echo $key, ': ', implode(',', $values), "\n";
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Dump the response cookies for debug purpose.
+     *
+     * @return $this
+     */
+    public function dumpCookies()
+    {
+        $cookies = $this->response->cookies;
+
+        if ($cookies->count() && $this->isVerbose()) {
+            $class = debug_backtrace()[1];
+
+            printf("\ndump cookies in %s::%s():\n", $class['class'], $class['function']);
+
+            foreach ($cookies as $key => $value) {
+                echo $key, '=> ', $value, "\n";
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Dump the response json for debug purpose.
+     *
+     * @return $this
+     */
+    public function dumpJson()
+    {
+        if ($this->isVerbose()) {
+            $json = $this->asJson();
+
+            $class = debug_backtrace()[1];
+
+            printf("\ndump json in %s::%s():\n", $class['class'], $class['function']);
+            var_export($json);
+        }
+
+        return $this;
+    }
+
     /**
      * Returns the response as json.
      *
