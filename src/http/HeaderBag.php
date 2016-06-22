@@ -3,12 +3,13 @@
 namespace blink\http;
 
 use Countable;
+use ArrayAccess;
 use IteratorAggregate;
 use blink\core\Object;
 use blink\support\BagTrait;
 
 
-class HeaderBag extends Object implements IteratorAggregate, Countable
+class HeaderBag extends Object implements IteratorAggregate, Countable, ArrayAccess
 {
     use BagTrait;
 

@@ -435,7 +435,7 @@ class Application extends ServiceLocator
 
     protected function dispatch($request)
     {
-        $info = $this->getDispatcher()->dispatch($request->method, $request->path);
+        $info = $this->getDispatcher()->dispatch($request->method, $request->uri->path);
 
         switch ($info[0]) {
             case FastRoute\Dispatcher::NOT_FOUND:

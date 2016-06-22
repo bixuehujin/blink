@@ -58,6 +58,16 @@ class Uri extends Object implements UriInterface
         'https' => 443,
     ];
 
+    public function __construct($uri = '', $config = [])
+    {
+        if (!empty($uri)) {
+            $this->_uriString = $uri;
+            $this->parseUri($uri);
+        }
+
+        parent::__construct($config);
+    }
+
     /**
      * @inheritDoc
      */

@@ -28,6 +28,11 @@ class CookieBag extends Object implements IteratorAggregate
         parent::__construct($config);
     }
 
+    public function replace(array $cookies)
+    {
+        $this->cookies = self::normalize($cookies);
+    }
+
     public static function normalize(array $cookies)
     {
         foreach ($cookies as $name => $value) {

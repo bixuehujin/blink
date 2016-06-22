@@ -101,7 +101,7 @@ class LoggerTest extends TestCase
             return $a['undefined'];
         };
         $app = $this->createApp($func);
-        $response = $app->handleRequest(new Request());
+        $response = $app->handleRequest(new Request(['method' => 'GET', 'uri' => '/']));
 
         $this->assertEquals(['name', 'message', 'code', 'file', 'line', 'trace'], array_keys($response->data));
     }
@@ -112,7 +112,7 @@ class LoggerTest extends TestCase
             throw new \LogicException('test exception');
         };
         $app = $this->createApp($func);
-        $response = $app->handleRequest(new Request());
+        $response = $app->handleRequest(new Request(['method' => 'GET', 'uri' => '/']));
 
         $this->assertEquals(['name', 'message', 'code', 'file', 'line', 'trace'], array_keys($response->data));
     }

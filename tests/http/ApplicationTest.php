@@ -40,7 +40,8 @@ class ApplicationTest extends TestCase
     protected function createRequest($app, $path = '/')
     {
         $request = $app->get('request');
-        $request->path = $path;
+        $request->method = 'GET';
+        $request->uri->path = $path;
 
         return $request;
     }

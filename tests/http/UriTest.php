@@ -14,15 +14,15 @@ class UriTest extends TestCase
 {
     public function testBasic()
     {
-        $uriString = 'https://user@localhost:8989/foo?q=abc#frag';
+        $uriString = 'https://user:pass@localhost:8989/foo?q=abc#frag';
 
-        $uri = new Uri(['uriString' => $uriString]);
+        $uri = new Uri($uriString);
 
         $excepted = [
             'scheme' => 'https',
             'host' => 'localhost',
             'port' => 8989,
-            'authority' => 'user@localhost:8989',
+            'authority' => 'user:pass@localhost:8989',
             'path' => '/foo',
             'query' => 'q=abc',
             'fragment' => 'frag',
@@ -33,5 +33,19 @@ class UriTest extends TestCase
         }
 
         $this->assertEquals($uriString, (string)$uri);
+    }
+
+    public function testToString()
+    {
+        $url = 'https://user:pass@localhost:8989/foo?q=abc#frag';
+        $uri = new Uri($url);
+        $this->assertEquals($url, (string) $uri);
+    }
+
+    public function testUtf8Uri()
+    {
+        $uri = new Uri('http://世界.中国/foobar');
+
+        $this->assertEquals('世界.中国', $uri->getHost());
     }
 }

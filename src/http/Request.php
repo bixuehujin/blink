@@ -2,24 +2,34 @@
 
 namespace blink\http;
 
+use blink\core\Object;
 use blink\auth\Authenticatable;
+use blink\core\InvalidParamException;
 use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
-use blink\core\Object;
 use blink\core\ShouldBeRefreshed;
-use Psr\Http\Message\An;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Request
  *
+<<<<<<< 048d4ef900a09fc7a66d33973887b4f598646f89
  * @property ParamBag               $params  The collection of query parameters
  * @property HeaderBag              $headers The collection of request headers
  * @property ParamBag               $body    The collection of request body
  * @property FileBag                $files   The collection of uploaded files
  * @property CookieBag              $cookies The collection of received cookies.
+=======
+ * @property ParamBag $params The collection of query parameters
+ * @property HeaderBag $headers The collection of request headers
+ * @property ParamBag $payload The collection of request body
+ * @property ParamBag $attributes The collection of attributes
+ * @property FileBag $files The collection of uploaded files
+ * @property CookieBag $cookies The collection of received cookies.
+ * @property Uri $uri The uri instance of the request
+ *
+>>>>>>> Implemented PSR-7 Reqeust & Response
  * @property \blink\session\Session $session The session associated to the request
  * @package blink\http
  */
@@ -28,17 +38,6 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
     use MiddlewareTrait;
     use MessageTrait;
-
-    const METHOD_HEAD = 'HEAD';
-    const METHOD_GET = 'GET';
-    const METHOD_POST = 'POST';
-    const METHOD_PUT = 'PUT';
-    const METHOD_PATCH = 'PATCH';
-    const METHOD_DELETE = 'DELETE';
-    const METHOD_OPTIONS = 'OPTIONS';
-    const METHOD_OVERRIDE = '_METHOD';
-
-    public $path = '/';
 
     /**
      * The raw content.
@@ -49,7 +48,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
     public $queryString = '';
 
-    public $method = 'GET';
+    public $method = '';
 
     /**
      * The key of a header field that stores the session id, or a callable that will returns the session id.
@@ -86,7 +85,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function match($pattern)
     {
-        return preg_match($pattern, $this->path);
+        return preg_match($pattern, $this->uri->path);
     }
 
     /**
@@ -106,7 +105,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
             return true;
         }
 
-        return 'HTTPS' === explode('/', $this->protocol)[0];
+        return 'https' === $this->uri->scheme;
     }
 
     private $_params;
@@ -156,7 +155,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
     private $_body;
 
-    public function getBody()
+    public function getPayload()
     {
         if ($this->_body !== null) {
             return $this->_body;
@@ -171,7 +170,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
         return $this->_body = new ParamBag($body);
     }
 
-    public function setBody($body = [])
+    public function setPayload($body = [])
     {
         if (!$body instanceof ParamBag) {
             $body = new ParamBag($body);
@@ -242,32 +241,35 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
     public function host()
     {
-        $parts = explode(':', $this->headers->first('Host', 'localhost'));
+        $uri = $this->getUri();
 
-        $host = $parts[0];
-
-        if (!isset($parts[1])) {
-            return $host;
+        if (empty($uri->host) || empty($uri->port)) {
+            return '';
         }
 
-        $port = $parts[1];
         $secure = $this->secure();
+<<<<<<< 048d4ef900a09fc7a66d33973887b4f598646f89
 
         if ((!$secure && $port == 80) || ($secure && $port == 443)) {
             return $host;
         } else {
             return $host . ':' . $port;
+=======
+        if ((!$secure && $uri->port == 80) || ($secure && $uri->port == 443)) {
+            return $uri->host;
+        }else {
+            return $uri->host . ':' . $uri->port;
+>>>>>>> Implemented PSR-7 Reqeust & Response
         }
-    }
-
-    public function path()
-    {
-        return $this->path;
     }
 
     public function root()
     {
-        return ($this->secure() ? 'https' : 'http') . '://' . $this->host();
+        if ($host = $this->host()) {
+            return ($this->secure() ? 'https' : 'http') . '://' . $this->host();
+        } else {
+            return '';
+        }
     }
 
     public function url($full = true)
@@ -282,7 +284,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
             $params = '';
         }
 
-        return $this->root() . $this->path() . $params;
+        return $this->root() . $this->uri->path . $params;
     }
 
     /**
@@ -348,7 +350,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function has($key)
     {
-        return $this->params->has($key) || $this->body->has($key);
+        return $this->params->has($key) || $this->payload->has($key);
     }
 
     /**
@@ -364,7 +366,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
             return $value;
         }
 
-        if (($value = $this->body->get($key)) !== null) {
+        if (($value = $this->payload->get($key)) !== null) {
             return $value;
         }
 
@@ -373,14 +375,14 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
     public function all()
     {
-        return array_replace_recursive($this->params->all(), $this->body->all());
+        return array_replace_recursive($this->params->all(), $this->payload->all());
     }
 
     public function only($keys)
     {
         $keys = is_array($keys) ? $keys : func_get_args();
 
-        return array_replace_recursive($this->params->only($keys), $this->body->only($keys));
+        return array_replace_recursive($this->params->only($keys), $this->payload->only($keys));
     }
 
 
@@ -453,12 +455,29 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
         return $this->user() === null;
     }
 
+    private $requestTarget;
+
     /**
      * @inheritDoc
      */
     public function getRequestTarget()
     {
-        // TODO: Implement getRequestTarget() method.
+        if (null !== $this->requestTarget) {
+            return $this->requestTarget;
+        }
+
+        $uri = $this->getUri();
+
+        $target = $uri->path;
+        if ($query = $uri->query) {
+            $target .= '?' . $query;
+        }
+
+        if (empty($target)) {
+            $target = '/';
+        }
+
+        return $target;
     }
 
     /**
@@ -466,7 +485,10 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withRequestTarget($requestTarget)
     {
-        // TODO: Implement withRequestTarget() method.
+        $new = clone $this;
+        $new->requestTarget = $requestTarget;
+
+        return $new;
     }
 
     /**
@@ -474,7 +496,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getMethod()
     {
-        // TODO: Implement getMethod() method.
+        return $this->method;
     }
 
     /**
@@ -482,15 +504,39 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withMethod($method)
     {
-        // TODO: Implement withMethod() method.
+        $new = clone  $this;
+        $new->method = $method;
+
+        return $new;
     }
+
+    private $_uri;
 
     /**
      * @inheritDoc
      */
     public function getUri()
     {
-        // TODO: Implement getUri() method.
+        if (!$this->_uri) {
+            $this->_uri = new Uri();
+        }
+
+        return $this->_uri;
+    }
+
+    public function setUri($uri)
+    {
+        if (is_string($uri)) {
+            $uri = new Uri($uri);
+        } else if ($uri === null) {
+            $uri = new Uri();
+        }
+
+        if (!$uri instanceof UriInterface) {
+            throw new InvalidParamException('Invalid URI provided');
+        }
+
+        $this->_uri = $uri;
     }
 
     /**
@@ -498,7 +544,24 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        // TODO: Implement withUri() method.
+        $new = clone $this;
+        $new->_uri = $uri;
+
+        if ($preserveHost && $this->headers->has('Host')) {
+            return $new;
+        }
+
+        if (!$uri->getHost()) {
+            return $new;
+        }
+
+        $host = $uri->getHost();
+        if ($uri->getPort()) {
+            $host .= ':' . $uri->getPort();
+        }
+        $new->headers->set('Host', $host);
+
+        return $new;
     }
 
     /**
@@ -506,7 +569,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getServerParams()
     {
-        // TODO: Implement getServerParams() method.
+        return [];
     }
 
     /**
@@ -514,15 +577,24 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getCookieParams()
     {
-        // TODO: Implement getCookieParams() method.
+        $cookies = [];
+        foreach ($this->cookies as $name => $cookie) {
+            $cookies[$name] = $cookie->value;
+        }
+
+        return $cookies;
     }
+
 
     /**
      * @inheritDoc
      */
     public function withCookieParams(array $cookies)
     {
-        // TODO: Implement withCookieParams() method.
+        $new = clone $this;
+        $new->cookies->replace($cookies);
+
+        return $new;
     }
 
     /**
@@ -530,7 +602,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getQueryParams()
     {
-        // TODO: Implement getQueryParams() method.
+        return $this->params->all();
     }
 
     /**
@@ -538,7 +610,10 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withQueryParams(array $query)
     {
-        // TODO: Implement withQueryParams() method.
+        $new = clone $this;
+        $new->params->replace($query);
+
+        return $new;
     }
 
     /**
@@ -546,7 +621,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getUploadedFiles()
     {
-        // TODO: Implement getUploadedFiles() method.
+        return $this->files->all();
     }
 
     /**
@@ -554,7 +629,10 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        // TODO: Implement withUploadedFiles() method.
+        $new = clone $this;
+        $new->files->replace($uploadedFiles);
+
+        return $new;
     }
 
     /**
@@ -562,7 +640,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getParsedBody()
     {
-        // TODO: Implement getParsedBody() method.
+        return $this->getPayload();
     }
 
     /**
@@ -570,15 +648,24 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withParsedBody($data)
     {
-        // TODO: Implement withParsedBody() method.
+        $new = clone $this;
+        $new->setPayload($data);
+
+        return $new;
     }
+
+    private $_attributes;
 
     /**
      * @inheritDoc
      */
     public function getAttributes()
     {
-        // TODO: Implement getAttributes() method.
+        if (!$this->_attributes) {
+            $this->_attributes = new ParamBag();
+        }
+
+        return $this->_attributes;
     }
 
     /**
@@ -586,7 +673,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function getAttribute($name, $default = null)
     {
-        // TODO: Implement getAttribute() method.
+        return $this->attributes->get($name, $default);
     }
 
     /**
@@ -594,7 +681,10 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withAttribute($name, $value)
     {
-        // TODO: Implement withAttribute() method.
+        $new = clone $this;
+        $new->attributes->set($name, $value);
+
+        return $new;
     }
 
     /**
@@ -602,6 +692,9 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      */
     public function withoutAttribute($name)
     {
-        // TODO: Implement withoutAttribute() method.
+        $new = clone $this;
+        $new->attributes->remove($name);
+
+        return $new;
     }
 }
