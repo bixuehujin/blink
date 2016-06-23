@@ -1,6 +1,9 @@
 <?php
 
 namespace blink\server;
+use blink\http\Request;
+use blink\http\Stream;
+use blink\http\Uri;
 
 
 /**
@@ -180,28 +183,41 @@ class SwServer extends Server
         return $files;
     }
 
-    protected function prepareRequest($request)
+    public function createRequest($request)
     {
-        $config = [
-            'protocol' => $request->server['server_protocol'],
-            'method' => $request->server['request_method'],
+        $protocolParts = explode('/', $request->server['server_protocol']);
+        $hostParts = explode(':', $request->header['host']);
+
+        $uriConfig = [
+            'scheme' => strtolower($protocolParts[0]),
+            'query' => $request->server['query_string'],
             'path' => $request->server['request_uri'],
+            'host' => $hostParts[0],
+            'port' => isset($hostParts[1]) ? $hostParts[1] : 80,
+        ];
+
+        $body = new Stream('php://memory', 'w+');
+        $body->write($request->rawContent());
+
+        $config = [
+            'uri' => new Uri('', $uriConfig),
+            'protocol' => $protocolParts[1],
+            'method' => $request->server['request_method'],
             'headers' => $request->header,
-            'params' => isset($request->get) ? $request->get : [],
             'cookies' => isset($request->cookie) ? $request->cookie : [],
-            'content' => $request->rawContent()
+            'body' => $body,
         ];
 
         if (!empty($request->files)) {
             $config['files'] = $this->normalizeFiles($request->files);
         }
 
-        return app()->makeRequest($config);
+        return new Request($config);
     }
 
     public function onRequest($request, $response)
     {
-        $res = $this->handleRequest($this->prepareRequest($request));
+        $res = $this->handleRequest($this->createRequest($request));
 
         $content = $res->content();
 
