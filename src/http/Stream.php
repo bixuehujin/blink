@@ -56,6 +56,7 @@ class Stream implements StreamInterface
             $this->rewind();
             return $this->getContents();
         } catch (RuntimeException $e) {
+            var_dump($e);
             return '';
         }
     }
@@ -222,10 +223,10 @@ class Stream implements StreamInterface
         if (!$this->resource) {
             return false;
         }
-        
+
         $meta = stream_get_meta_data($this->resource);
-        
-        return strstr($meta['mode'], 'r') || strstr($meta['mode'], '*');
+
+        return strstr($meta['mode'], 'r') || strstr($meta['mode'], '+');
     }
 
     /**

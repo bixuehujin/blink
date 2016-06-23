@@ -2,6 +2,7 @@
 
 namespace blink\tests\http;
 
+use blink\http\Stream;
 use blink\http\Uri;
 use blink\http\HeaderBag;
 use blink\http\ParamBag;
@@ -41,10 +42,13 @@ class RequestTest extends TestCase
 
     public function testBasic()
     {
+        $body = new Stream('php://memory', 'w+');
+        $body->write(json_encode(['foo' => 'bar']));
+
         $request = new Request([
             'method' => 'POST',
-            'queryString' => 'a=b&b=c',
-            'content' => json_encode(['foo' => 'bar']),
+            'uri' => new Uri('', ['query' => 'a=b&b=c']),
+            'body' => $body,
             'headers' => [
                 'Content-Type' => 'application/json; Charset=utf8',
                 'x-forwarded-proto' => 'https',

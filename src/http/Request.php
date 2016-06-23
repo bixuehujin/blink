@@ -39,15 +39,6 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
     use MiddlewareTrait;
     use MessageTrait;
 
-    /**
-     * The raw content.
-     *
-     * @var string
-     */
-    public $content;
-
-    public $queryString = '';
-
     public $method = '';
 
     /**
@@ -126,8 +117,8 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
         }
 
         $params = [];
-        if ($this->queryString) {
-            parse_str($this->queryString, $params);
+        if ($query = $this->uri->getQuery()) {
+            parse_str($query, $params);
         }
 
         return $this->_params = new ParamBag($params);
@@ -153,21 +144,21 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
         return $this->_headers;
     }
 
-    private $_body;
+    private $_payload;
 
     public function getPayload()
     {
-        if ($this->_body !== null) {
-            return $this->_body;
+        if ($this->_payload !== null) {
+            return $this->_payload;
         }
 
-        if ($this->content) {
-            $body = $this->parseBody($this->content);
+        if ($content = (string)$this->getBody()) {
+            $payload = $this->parseBody($content);
         } else {
-            $body = [];
+            $payload = [];
         }
 
-        return $this->_body = new ParamBag($body);
+        return $this->_payload = new ParamBag($payload);
     }
 
     public function setPayload($body = [])
