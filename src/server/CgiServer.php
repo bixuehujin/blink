@@ -8,7 +8,10 @@
 namespace blink\server;
 
 use blink\http\File;
+use blink\http\Request;
 use blink\http\Response;
+use blink\http\Stream;
+use blink\http\Uri;
 
 /**
  * The CgiServer makes it possible to run Blink application upon php-fpm or Apache's mod_php.
@@ -72,21 +75,35 @@ class CgiServer extends Server
             $requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $requestUri);
         }
 
-        $config = [
-            'protocol' => $_SERVER['SERVER_PROTOCOL'],
-            'method' => strtoupper($_SERVER['REQUEST_METHOD']),
+        $protocolParts = explode('/', $_SERVER['SERVER_PROTOCOL']);
+        $hostParts = explode(':', $_SERVER['HTTP_HOST']);
+
+        $uriConfig = [
+            'scheme' => strtolower($protocolParts[0]),
+            'query' => isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '',
             'path' => parse_url($requestUri, PHP_URL_PATH),
+            'host' => $hostParts[0],
+            'port' => isset($hostParts[1]) ? $hostParts[1] : 80,
+        ];
+
+        $body = new Stream('php://memory', 'w+');
+        $body->write(file_get_contents('php://input'));
+
+        $config = [
+            'protocol' => $protocolParts[1],
+            'uri' => new Uri('', $uriConfig),
+            'method' => strtoupper($_SERVER['REQUEST_METHOD']),
             'headers' => $this->extractHeaders(),
             'params' => $_GET,
             'cookies' => $_COOKIE,
-            'content' => file_get_contents('php://input'),
+            'body' => $body,
         ];
 
         if (!empty($_FILES)) {
             $config['files'] = $this->normalizeFiles($_FILES);
         }
 
-        return app()->makeRequest($config);
+        return new Request($config);
     }
 
     protected function response(Response $response)
