@@ -6,6 +6,8 @@ use blink\core\Application;
 use blink\core\InvalidParamException;
 use blink\http\File;
 use blink\http\HeaderBag;
+use blink\http\Stream;
+use blink\http\Uri;
 
 /**
  * Class RequestActor
@@ -41,20 +43,25 @@ class RequestActor
     }
 
 
-    protected function doRequest($method, $uri, $query = '', $cookies = [], $files = [], $headers = [], $content = null)
+    protected function doRequest($method, $uri, $query = '', $cookies = [], $files = [], $headers = [], $content = '')
     {
         $this->request->headers->add($headers);
 
-        if ($this->isJsonMessage($this->request->headers) && is_array($content)) {
+        if (is_array($content)) {
             $content = json_encode($content);
         }
 
+        $body = new Stream('php://memory', 'w+');
+        $body->write($content);
+
         $config = [
             'method' => $method,
-            'path' => $uri,
-            'queryString' => is_array($query) ? http_build_query($query, '', '&') : $query,
+            'uri' => new Uri('', [
+                'path' => $uri,
+                'query' => is_array($query) ? http_build_query($query, '', '&') : $query
+            ]),
             'cookies' => $cookies,
-            'content' => $content,
+            'body' => $body,
         ];
 
         foreach ($config as $key => $value) {
