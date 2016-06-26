@@ -32,6 +32,13 @@ class Application extends ServiceLocator
     public $root;
 
     /**
+     * The installed application plugins.
+     *
+     * @var array
+     */
+    public $plugins = [];
+
+    /**
      * Available console commands.
      *
      * @var string[]
@@ -88,6 +95,7 @@ class Application extends ServiceLocator
             try {
                 $this->initializeConfig();
                 $this->registerServices();
+                $this->registerPlugins();
                 $this->registerRoutes();
                 $this->bootstrapped = true;
                 $this->get('log')->info('application started');
@@ -126,6 +134,14 @@ class Application extends ServiceLocator
             if ($this->get($id) instanceof ShouldBeRefreshed) {
                 $this->refreshing[$id] = true;
             }
+        }
+    }
+
+    protected function registerPlugins()
+    {
+        foreach ($this->plugins as $name => $definition) {
+            $this->plugins[$name] = $plugin = make($definition);
+            $plugin->bootstrap($this);
         }
     }
 
