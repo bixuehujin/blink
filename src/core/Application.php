@@ -141,7 +141,7 @@ class Application extends ServiceLocator
     {
         foreach ($this->plugins as $name => $definition) {
             $this->plugins[$name] = $plugin = make($definition);
-            $plugin->bootstrap($this);
+            $plugin->install($this);
         }
     }
 

@@ -11,11 +11,11 @@ namespace blink\core;
 interface PluginContract
 {
     /**
-     * Bootstrap the plugin.
+     * Install the plugin.
      *
      * This method will be called at the application bootstrapping stage.
      *
      * @param Application $app
      */
-    public function bootstrap(Application $app);
+    public function install(Application $app);
 }
