@@ -98,7 +98,6 @@ class Application extends ServiceLocator
                 $this->registerPlugins();
                 $this->registerRoutes();
                 $this->bootstrapped = true;
-                $this->get('log')->info('application started');
             } catch (\Exception $e) {
                 if ($this->environment === 'test') {
                     throw $e;
@@ -299,6 +298,7 @@ class Application extends ServiceLocator
 
         $commands = array_merge($this->commands, [
             'blink\console\ServerCommand',
+            'blink\console\ShellCommand',
         ]);
 
         foreach ($commands as $command) {
