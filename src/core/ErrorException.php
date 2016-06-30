@@ -25,6 +25,7 @@ class ErrorException extends \ErrorException
         parent::__construct($message, $code, $severity, $filename, $lineno, $previous);
 
         if (function_exists('xdebug_get_function_stack')) {
+            $phpCompatibleTrace = [];
             $trace = array_slice(array_reverse(xdebug_get_function_stack()), 3, -1);
             foreach ($trace as &$frame) {
                 if (!isset($frame['function'])) {
@@ -42,11 +43,13 @@ class ErrorException extends \ErrorException
                 if (isset($frame['params']) && !isset($frame['args'])) {
                     $frame['args'] = $frame['params'];
                 }
+
+                $phpCompatibleTrace[] = $frame;
             }
 
             $ref = new \ReflectionProperty('Exception', 'trace');
             $ref->setAccessible(true);
-            $ref->setValue($this, $trace);
+            $ref->setValue($this, $phpCompatibleTrace);
         }
     }
 
