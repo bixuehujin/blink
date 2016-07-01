@@ -8,6 +8,8 @@ use FastRoute;
 use blink\log\Logger;
 use blink\http\Request;
 use blink\http\Response;
+use blink\console\ServerCommand;
+use blink\console\ShellCommand;
 
 /**
  * Class Application
@@ -171,6 +173,18 @@ class Application extends ServiceLocator
         ];
     }
 
+    public function defaultCommands()
+    {
+        return [
+            'server' => [
+                'class' => ServerCommand::class,
+            ],
+            'shell' => [
+                'class' => ShellCommand::class,
+            ]
+        ];
+    }
+
     public function route($method, $route, $handler)
     {
         $this->routes[] = [$method, $route, $handler];
@@ -296,13 +310,15 @@ class Application extends ServiceLocator
             'blink' => $this,
         ]);
 
-        $commands = array_merge($this->commands, [
-            'blink\console\ServerCommand',
-            'blink\console\ShellCommand',
-        ]);
+        $commands = array_merge_recursive($this->commands, $this->defaultCommands());
 
         foreach ($commands as $command) {
-            $app->add(make(['class' => $command, 'blink' => $this]));
+            if (is_string($command)) {
+                $command = ['class' => $command];
+            }
+            $command['blink'] = $this;
+
+            $app->add(make($command));
         }
 
         return $app->run($input, $output);

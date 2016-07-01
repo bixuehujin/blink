@@ -29,6 +29,7 @@ class ShellCommand extends Command
         $config->getPresenter()->addCasters($this->casters);
 
         $shell = new Shell($config);
-        $shell->run();
+
+        return $shell->run();
     }
 }
