@@ -36,6 +36,8 @@ abstract class Server extends Object
         }
 
         $app->bootstrap();
+
+        return $app;
     }
 
     public function stopApp()

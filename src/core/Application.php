@@ -173,6 +173,11 @@ class Application extends ServiceLocator
         ];
     }
 
+    /**
+     * Returns the default console commands definitions.
+     *
+     * @return array
+     */
     public function defaultCommands()
     {
         return [
@@ -183,6 +188,16 @@ class Application extends ServiceLocator
                 'class' => ShellCommand::class,
             ]
         ];
+    }
+
+    /**
+     * Returns all console commands definitions.
+     *
+     * @return array
+     */
+    public function consoleCommands()
+    {
+        return array_merge_recursive($this->defaultCommands(), $this->commands);
     }
 
     public function route($method, $route, $handler)
@@ -300,28 +315,6 @@ class Application extends ServiceLocator
             $this->unbind($id);
             $this->bind($id, $this->services[$id]);
         }
-    }
-
-    public function handleConsole($input, $output)
-    {
-        $app = new \blink\core\console\Application([
-            'name' => 'Blink Command Runner',
-            'version' => self::VERSION,
-            'blink' => $this,
-        ]);
-
-        $commands = array_merge_recursive($this->commands, $this->defaultCommands());
-
-        foreach ($commands as $command) {
-            if (is_string($command)) {
-                $command = ['class' => $command];
-            }
-            $command['blink'] = $this;
-
-            $app->add(make($command));
-        }
-
-        return $app->run($input, $output);
     }
 
     protected function exceptionToArray(\Exception $exception)
