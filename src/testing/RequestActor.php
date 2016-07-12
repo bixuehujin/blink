@@ -224,8 +224,9 @@ class RequestActor
     public function seeJson(array $data = null, $negate = false)
     {
         if (is_null($data)) {
-            $this->phpunit->assertJson($this->response->content(),
-                "Failed asserting that JSON returned [{$this->request->path}].");
+            $this->phpunit->assertJson(
+                $this->response->content(), "Failed asserting that JSON returned [{$this->request->uri->path}]."
+            );
 
             return $this;
         }
@@ -285,9 +286,15 @@ class RequestActor
     }
 
     /**
+<<<<<<< 770a308cb12cf112cff17e47be4ce66e64bbe8cb
      * Asserts that the content of the response matches the given content.
      *
      * @param string $content
+=======
+     * Asserts the content of the response matches the given value.
+     *
+     * @param $content
+>>>>>>> Added RequestActor::seeContent()
      * @return $this
      */
     public function seeContent($content)
