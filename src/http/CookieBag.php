@@ -40,10 +40,21 @@ class CookieBag extends Object implements IteratorAggregate
     }
 
     /**
+     * Returns all cookies.
+     *
+     * @return Cookie[]
+     * @since 0.3.0
+     */
+    public function all()
+    {
+        return $this->cookies;
+    }
+
+    /**
      * Returns a cookie by name.
      *
      * @param $name
-     * @return null
+     * @return Cookie|null
      */
     public function get($name)
     {
