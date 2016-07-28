@@ -22,14 +22,14 @@ class ServerCommand extends Command
 
     protected function configure()
     {
-        $this->addArgument('operation', InputArgument::REQUIRED, 'the operation: serve, start, restart or stop');
+        $this->addArgument('operation', InputArgument::REQUIRED, 'the operation: serve, start, reload, restart or stop');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $operation = $input->getArgument('operation');
 
-        if (!in_array($operation, ['serve', 'start', 'restart', 'stop'])) {
+        if (!in_array($operation, ['serve', 'start', 'reload', 'restart', 'stop'])) {
             throw new InvalidParamException('The <operation> argument is invalid');
         }
 
@@ -65,6 +65,17 @@ class ServerCommand extends Command
         $this->handleStop();
 
         return $this->handleStart();
+    }
+
+    protected function handleReload()
+    {
+        $pidFile = $this->blink->root . '/runtime/server.pid';
+
+        if (file_exists($pidFile) && posix_kill(file_get_contents($pidFile), 10)) {
+            return 0;
+        }
+
+        return 1;
     }
 
     protected function handleStop()
