@@ -317,7 +317,7 @@ class Application extends ServiceLocator
         }
     }
 
-    protected function exceptionToArray(\Exception $exception)
+    protected function exceptionToArray($exception)
     {
         $array = [
             'name' => get_class($exception),
