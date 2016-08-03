@@ -190,7 +190,7 @@ class SwServer extends Server
 
         $uriConfig = [
             'scheme' => strtolower($protocolParts[0]),
-            'query' => $request->server['query_string'],
+            'query' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'path' => $request->server['request_uri'],
             'host' => $hostParts[0],
             'port' => isset($hostParts[1]) ? $hostParts[1] : 80,
