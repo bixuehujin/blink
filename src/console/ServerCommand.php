@@ -47,15 +47,15 @@ class ServerCommand extends Command
 
     protected function handleStart()
     {
-        $pidFile = $this->blink->root . '/runtime/server.pid';
+        $server = require $this->blink->root . '/src/config/server.php';
+
+        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->root . '/runtime/server.pid';
 
         if (file_exists($pidFile)) {
             throw new InvalidValueException('The pidfile exists, it seems the server is already started');
         }
-
-        $server = require $this->blink->root . '/src/config/server.php';
         $server['asDaemon'] = 1;
-        $server['pidFile'] = $this->blink->root . '/runtime/server.pid';
+        $server['pidFile'] = $pidFile;
 
         return make($server)->run();
     }
@@ -69,7 +69,11 @@ class ServerCommand extends Command
 
     protected function handleReload()
     {
-        $pidFile = $this->blink->root . '/runtime/server.pid';
+        $server = require $this->blink->root . '/src/config/server.php';
+
+        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->root . '/runtime/server.pid';
+
+        unset($server);
 
         if (file_exists($pidFile) && posix_kill(file_get_contents($pidFile), 10)) {
             return 0;
@@ -80,7 +84,12 @@ class ServerCommand extends Command
 
     protected function handleStop()
     {
-        $pidFile = $this->blink->root . '/runtime/server.pid';
+        $server = require $this->blink->root . '/src/config/server.php';
+
+        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->root . '/runtime/server.pid';
+
+        unset($server);
+
         if (file_exists($pidFile) && posix_kill(file_get_contents($pidFile), 15)) {
             do {
                 usleep(100000);
