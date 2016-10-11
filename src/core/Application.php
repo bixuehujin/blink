@@ -69,6 +69,8 @@ class Application extends ServiceLocator
 
     public $runtime;
 
+    public $server;
+
     public $controllerNamespace;
 
     public $currentRequest;
