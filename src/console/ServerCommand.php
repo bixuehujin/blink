@@ -37,9 +37,18 @@ class ServerCommand extends Command
 
     }
 
+    protected function getServerDefinition()
+    {
+        if (isset($this->blink->server) && is_array($this->blink->server)) {
+            return $this->blink->server;
+        } else {
+            return require $this->blink->root . '/src/config/server.php';
+        }
+    }
+
     protected function handleServe()
     {
-        $server = require $this->blink->root . '/src/config/server.php';
+        $server = $this->getServerDefinition();
         $server['asDaemon'] = 0;
 
         return make($server)->run();
@@ -47,9 +56,9 @@ class ServerCommand extends Command
 
     protected function handleStart()
     {
-        $server = require $this->blink->root . '/src/config/server.php';
+        $server = $this->getServerDefinition();
 
-        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->root . '/runtime/server.pid';
+        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->runtime . '/server.pid';
 
         if (file_exists($pidFile)) {
             throw new InvalidValueException('The pidfile exists, it seems the server is already started');
@@ -69,9 +78,9 @@ class ServerCommand extends Command
 
     protected function handleReload()
     {
-        $server = require $this->blink->root . '/src/config/server.php';
+        $server = $this->getServerDefinition();
 
-        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->root . '/runtime/server.pid';
+        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->runtime . '/server.pid';
 
         unset($server);
 
@@ -84,9 +93,9 @@ class ServerCommand extends Command
 
     protected function handleStop()
     {
-        $server = require $this->blink->root . '/src/config/server.php';
+        $server = $this->getServerDefinition();
 
-        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->root . '/runtime/server.pid';
+        $pidFile = !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->runtime . '/server.pid';
 
         unset($server);
 
