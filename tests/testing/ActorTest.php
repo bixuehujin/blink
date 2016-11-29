@@ -26,9 +26,20 @@ class ActorTest extends TestCase
                     'size' => $file->size
                 ];
             })
+            ->route('GET','/',function (Request $request,Response $response){
+
+                return 'Hello, Blink!';
+            })
             ->bootstrap();
 
         return $this->app = $application;
+    }
+
+    public function testGetContent()
+    {
+        $this->actor()
+            ->get('/')
+            ->seeContent('Hello, Blink!');
     }
 
     public function testUploadFile()
