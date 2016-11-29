@@ -280,6 +280,19 @@ class RequestActor
     }
 
     /**
+     * Asserts that the content of the response matches the given content.
+     *
+     * @param string  $content
+     * @return $this
+     */
+    public function seeContent($content)
+    {
+        $this->phpunit->assertEquals($content,$this->response->content());
+
+        return $this;
+    }
+
+    /**
      * Assert that the response doesn't contain JSON.
      *
      * @param  array|null  $data
