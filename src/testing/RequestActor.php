@@ -11,19 +11,22 @@ use blink\http\HeaderBag;
  * Class RequestActor
  *
  * @package blink\testing
- * @since 0.3.0
+ * @since   0.3.0
  */
 class RequestActor
 {
+
     use AuthTrait;
 
     protected $phpunit;
+
     protected $app;
 
     /**
      * @var \blink\http\Request
      */
     protected $request;
+
     /**
      * @var \blink\http\Response
      */
@@ -133,7 +136,7 @@ class RequestActor
     /**
      * Visit the given URI with a GET request.
      *
-     * @param  string  $uri
+     * @param  string $uri
      * @param  array  $headers
      * @return $this
      */
@@ -147,7 +150,7 @@ class RequestActor
     /**
      * Visit the given URI with a POST request.
      *
-     * @param  string  $uri
+     * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
      * @return $this
@@ -162,7 +165,7 @@ class RequestActor
     /**
      * Visit the given URI with a PUT request.
      *
-     * @param  string  $uri
+     * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
      * @return $this
@@ -177,7 +180,7 @@ class RequestActor
     /**
      * Visit the given URI with a PATCH request.
      *
-     * @param  string  $uri
+     * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
      * @return $this
@@ -192,7 +195,7 @@ class RequestActor
     /**
      * Visit the given URI with a DELETE request.
      *
-     * @param  string  $uri
+     * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
      * @return $this
@@ -207,16 +210,15 @@ class RequestActor
     /**
      * Assert that the response contains JSON.
      *
-     * @param  array|null  $data
-     * @param  bool  $negate
+     * @param  array|null $data
+     * @param  bool       $negate
      * @return $this
      */
     public function seeJson(array $data = null, $negate = false)
     {
         if (is_null($data)) {
-            $this->phpunit->assertJson(
-                $this->response->content(), "Failed asserting that JSON returned [{$this->request->path}]."
-            );
+            $this->phpunit->assertJson($this->response->content(),
+                "Failed asserting that JSON returned [{$this->request->path}].");
 
             return $this;
         }
@@ -227,7 +229,7 @@ class RequestActor
     /**
      * Assert that the response contains the given JSON.
      *
-     * @param  array  $data
+     * @param  array $data
      * @param  bool  $negate
      * @return $this
      */
@@ -235,17 +237,13 @@ class RequestActor
     {
         $method = $negate ? 'assertFalse' : 'assertTrue';
 
-        $actual = json_encode(array_sort_recursive(
-            json_decode($this->response->content(), true)
-        ));
+        $actual = json_encode($this->sortRecursive(json_decode($this->response->content(), true)));
 
-        foreach (array_sort_recursive($data) as $key => $value) {
+        foreach ($this->sortRecursive($data) as $key => $value) {
             $expected = $this->formatToExpectedJson($key, $value);
 
-            $this->phpunit->{$method}(
-                strpos($actual, $expected) !== false,
-                ($negate ? 'Found unexpected' : 'Unable to find')." JSON fragment [{$expected}] within [{$actual}]."
-            );
+            $this->phpunit->{$method}(strpos($actual, $expected) !== false,
+                ($negate ? 'Found unexpected' : 'Unable to find') . " JSON fragment [{$expected}] within [{$actual}].");
         }
 
         return $this;
@@ -269,7 +267,7 @@ class RequestActor
     /**
      * Asserts that the status code of the response matches the given code.
      *
-     * @param  int  $status
+     * @param  int $status
      * @return $this
      */
     public function seeStatusCode($status)
@@ -282,12 +280,12 @@ class RequestActor
     /**
      * Asserts that the content of the response matches the given content.
      *
-     * @param string  $content
+     * @param string $content
      * @return $this
      */
     public function seeContent($content)
     {
-        $this->phpunit->assertEquals($content,$this->response->content());
+        $this->phpunit->assertEquals($content, $this->response->content());
 
         return $this;
     }
@@ -295,7 +293,7 @@ class RequestActor
     /**
      * Assert that the response doesn't contain JSON.
      *
-     * @param  array|null  $data
+     * @param  array|null $data
      * @return $this
      */
     public function dontSeeJson(array $data = null)
@@ -307,16 +305,14 @@ class RequestActor
     /**
      * Assert that the response contains an exact JSON array.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return $this
      */
     public function seeJsonEquals(array $data)
     {
-        $actual = json_encode(array_sort_recursive(
-            json_decode($this->response->content(), true)
-        ));
+        $actual = json_encode($this->sortRecursive(json_decode($this->response->content(), true)));
 
-        $this->phpunit->assertEquals(json_encode(array_sort_recursive($data)), $actual);
+        $this->phpunit->assertEquals(json_encode($this->sortRecursive($data)), $actual);
 
         return $this;
     }
@@ -324,8 +320,8 @@ class RequestActor
     /**
      * Assert that the JSON response has a given structure.
      *
-     * @param  array|null  $structure
-     * @param  array|null  $responseData
+     * @param  array|null $structure
+     * @param  array|null $responseData
      * @return $this
      */
     public function seeJsonStructure(array $structure = null, $responseData = null)
@@ -360,7 +356,7 @@ class RequestActor
      * Asserts that the response contains the given header and equals the optional value.
      *
      * @param  string $name
-     * @param  mixed $value
+     * @param  mixed  $value
      * @return $this
      */
     public function seeHeader($name, $value = null)
@@ -373,10 +369,8 @@ class RequestActor
             $values = $headers->get($name);
             $strValues = implode(', ', $values);
 
-            $this->phpunit->assertTrue(
-                in_array($value, $values),
-                "Header [{$name}] was found, but value [{$strValues}] does not match [{$value}]."
-            );
+            $this->phpunit->assertTrue(in_array($value, $values),
+                "Header [{$name}] was found, but value [{$strValues}] does not match [{$value}].");
         }
 
         return $this;
@@ -386,7 +380,7 @@ class RequestActor
      * Asserts that the response contains the given cookie and equals the optional value.
      *
      * @param  string $name
-     * @param  mixed $value
+     * @param  mixed  $value
      * @return $this
      */
     public function seeCookie($name, $value = null)
@@ -396,10 +390,8 @@ class RequestActor
         $this->phpunit->assertTrue((boolean)$cookie, "Cookie [{$cookie}] not present on response.");
 
         if ($cookie && !is_null($value)) {
-            $this->phpunit->assertEquals(
-                $cookie->value, $value,
-                "Cookie [{$name}] was found, but value [{$cookie->value}] does not match [{$value}]."
-            );
+            $this->phpunit->assertEquals($cookie->value, $value,
+                "Cookie [{$name}] was found, but value [{$cookie->value}] does not match [{$value}].");
         }
 
         return $this;
@@ -502,5 +494,41 @@ class RequestActor
         }
 
         return json_decode($this->response->content(), true);
+    }
+
+    /**
+     * Recursively sort an array by keys and values.
+     *
+     * @param array $array
+     * @return array
+     */
+    private function sortRecursive(array $array)
+    {
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $value = $this->sortRecursive($value);
+            }
+        }
+
+        if (self::isAssoc($array)) {
+            ksort($array);
+        } else {
+            sort($array);
+        }
+
+        return $array;
+    }
+
+    /**
+     * Determines if an array is associative.
+     *
+     * @param array $array
+     * @return bool
+     */
+    private function isAssoc(array $array)
+    {
+        $keys = array_keys($array);
+
+        return array_keys($keys) !== $keys;
     }
 }
