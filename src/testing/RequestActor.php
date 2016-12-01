@@ -510,7 +510,7 @@ class RequestActor
             }
         }
 
-        if (self::isAssoc($array)) {
+        if ($this->isAssoc($array)) {
             ksort($array);
         } else {
             sort($array);
