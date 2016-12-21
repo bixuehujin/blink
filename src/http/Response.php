@@ -12,11 +12,11 @@ use blink\core\InvalidParamException;
  * Class Response
  *
  * @property CookieBag $cookies
- *
  * @package blink\http
  */
 class Response extends Object implements ShouldBeRefreshed
 {
+
     use MiddlewareTrait;
 
     public $data;
@@ -29,6 +29,7 @@ class Response extends Object implements ShouldBeRefreshed
     public $version = '1.0';
 
     public $statusCode = 200;
+
     public $statusText;
 
     public static $httpStatuses = [
@@ -100,6 +101,7 @@ class Response extends Object implements ShouldBeRefreshed
     ];
 
     protected $content;
+
     protected $prepared = false;
 
     public function init()
@@ -125,13 +127,13 @@ class Response extends Object implements ShouldBeRefreshed
     /**
      * Redirects to the specified url.
      *
-     * @param $url The url to redirect
-     * @param int $statusCode
+     * @param string $url
+     * @param int    $statusCode
      * @since 0.2.0
      */
     public function redirect($url, $statusCode = 302)
     {
-        if (strpos($url,'/') === 0 && strpos($url,'//') !== 0) {
+        if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
             $url = request()->root() . $url;
         }
 
