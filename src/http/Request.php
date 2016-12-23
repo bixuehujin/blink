@@ -322,7 +322,7 @@ class Request extends Object implements ShouldBeRefreshed
         } else if ($contentType == 'multipart/form-data') {
             // noop
         } else {
-            throw new NotSupportedException("The content type: '$contentType' does not supported");
+            $parsedBody['body'] = $body;
         }
 
         return $parsedBody;
