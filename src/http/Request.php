@@ -11,18 +11,17 @@ use blink\core\ShouldBeRefreshed;
 /**
  * Class Request
  *
- * @property ParamBag $params The collection of query parameters
- * @property HeaderBag $headers The collection of request headers
- * @property ParamBag $body The collection of request body
- * @property FileBag $files The collection of uploaded files
- * @property CookieBag $cookies The collection of received cookies.
- *
+ * @property ParamBag               $params  The collection of query parameters
+ * @property HeaderBag              $headers The collection of request headers
+ * @property ParamBag               $body    The collection of request body
+ * @property FileBag                $files   The collection of uploaded files
+ * @property CookieBag              $cookies The collection of received cookies.
  * @property \blink\session\Session $session The session associated to the request
- *
  * @package blink\http
  */
 class Request extends Object implements ShouldBeRefreshed
 {
+
     use MiddlewareTrait;
 
     const METHOD_HEAD = 'HEAD';
@@ -51,12 +50,11 @@ class Request extends Object implements ShouldBeRefreshed
 
     /**
      * The key of a header field that stores the session id, or a callable that will returns the session id.
-     *
      * The following is the signature of the callable:
-     *
      * ```
      * string function (Request $request);
      * ```
+     *
      * @var string|callable
      */
     public $sessionKey = 'X-Session-Id';
@@ -95,6 +93,16 @@ class Request extends Object implements ShouldBeRefreshed
      */
     public function secure()
     {
+        if ($this->headers->first('x-forwarded-proto') === 'https') {
+
+            return true;
+        }
+
+        if ((int)$this->headers->first('x-forwarded-port') === 443) {
+
+            return true;
+        }
+
         return 'HTTPS' === explode('/', $this->protocol)[0];
     }
 
@@ -244,7 +252,7 @@ class Request extends Object implements ShouldBeRefreshed
 
         if ((!$secure && $port == 80) || ($secure && $port == 443)) {
             return $host;
-        }else {
+        } else {
             return $host . ':' . $port;
         }
     }
@@ -317,12 +325,16 @@ class Request extends Object implements ShouldBeRefreshed
         $contentType = $this->getContentType();
         if ($contentType == 'application/json') {
             $parsedBody = json_decode($body, true);
-        } else if ($contentType == 'application/x-www-form-urlencoded') {
-            parse_str($body, $parsedBody);
-        } else if ($contentType == 'multipart/form-data') {
-            // noop
         } else {
-            throw new NotSupportedException("The content type: '$contentType' does not supported");
+            if ($contentType == 'application/x-www-form-urlencoded') {
+                parse_str($body, $parsedBody);
+            } else {
+                if ($contentType == 'multipart/form-data') {
+                    // noop
+                } else {
+                    throw new NotSupportedException("The content type: '$contentType' does not supported");
+                }
+            }
         }
 
         return $parsedBody;
@@ -342,7 +354,7 @@ class Request extends Object implements ShouldBeRefreshed
     /**
      * Gets a input value by key.
      *
-     * @param $key
+     * @param      $key
      * @param null $default
      * @return mixed
      */
@@ -392,8 +404,8 @@ class Request extends Object implements ShouldBeRefreshed
     public function getSession()
     {
         if ($this->_session === false) {
-            $sessionId = is_callable($this->sessionKey) ?
-                call_user_func($this->sessionKey, $this) : $this->headers->first($this->sessionKey);
+            $sessionId = is_callable($this->sessionKey) ? call_user_func($this->sessionKey,
+                $this) : $this->headers->first($this->sessionKey);
             if ($session = session()->get($sessionId)) {
                 $this->_session = $session;
             } else {
@@ -416,6 +428,7 @@ class Request extends Object implements ShouldBeRefreshed
     {
         if ($user !== null) {
             $this->_user = $user;
+
             return;
         }
 
