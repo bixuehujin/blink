@@ -47,7 +47,7 @@ class Controller extends Object
     {
         return [
             'name' => 'foo'        // 返回数组，json_encode 后输出到客户端
-        ]
+        ];
     }
 }
 ```
