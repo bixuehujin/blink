@@ -34,6 +34,18 @@ return [
 ];
 ```
 
+Can also define a set of routing for use
+
+```php
+return [
+    ['/api', [
+        ['GET', '/', function () {
+            return 'hello world';
+        }]
+    ]]
+];
+```
+
 
 Routing with Parameters
 -----------------------

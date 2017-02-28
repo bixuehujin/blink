@@ -126,14 +126,14 @@ $log = $locator->log;
 
 ** 创建对象 **
 
-Blink 提供了构建与 DI 之上的辅助函数 `make($type, $params = [])`，用于快速创建类的实例并进行依赖注入，
+Blink 提供了构建于 DI 之上的辅助函数 `make($type, $params = [])`，用于快速创建类的实例并进行依赖注入，
 通过 make 函数，可以方便的通过对象配置、类名创建实例，如：
 
 ```php
 
 $object = make([
     'class' => 'blink\log\Logger',
-    'prop1' => 'prop2',
+    'prop1' => 'val1',
 ]);
 
 // 和
