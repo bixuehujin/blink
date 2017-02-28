@@ -165,7 +165,7 @@ dependency injection very conveniently. Here is the example:
 
 $object = make([
     'class' => 'blink\log\Logger',
-    'prop1' => 'prop2',
+    'prop1' => 'val1',
 ]);
 
 // and
