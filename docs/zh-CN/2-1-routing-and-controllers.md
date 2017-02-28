@@ -30,6 +30,18 @@ return [
 ];
 ```
 
+也可以定义一组路由进行使用
+
+```php
+return [
+    ['/api', [
+        ['GET', '/', function () {
+            return 'hello world';
+        }]
+    ]]
+];
+```
+
 
 带参数的路由
 ----------

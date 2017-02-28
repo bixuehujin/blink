@@ -5,3 +5,5 @@ php:
 install:
   - pecl install swoole
   - composer update
+script:
+  - vendor/bin/phpunit
