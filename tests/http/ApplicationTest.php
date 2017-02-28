@@ -23,7 +23,7 @@ class ApplicationTest extends TestCase
                         return $a + $b;
                     })
                     ->route('GET', '/{a}/multi/{b}', 'blink\tests\http\TestController@compute')
-                    ->route('/admin', [
+                    ->group('/admin', [
                         [
                             'GET',
                             '/orders',

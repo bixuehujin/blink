@@ -158,17 +158,17 @@ class Application extends ServiceLocator
     protected function registerRoutes()
     {
         $this->dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-            foreach ($this->routes as list($method, $route, $handler)) {
-                if (!is_array($method) && is_array($route)) {
-                    $groupRoute = $route;
+            foreach ($this->routes as $value) {
+                if (!is_array($value[0]) && is_array($value[1])) {
+                    $groupRoute = $value[1];
 
-                    $r->addGroup($method, function (FastRoute\RouteCollector $r) use ($groupRoute) {
+                    $r->addGroup($value[0], function (FastRoute\RouteCollector $r) use ($groupRoute) {
                         foreach ($groupRoute as list($method, $route, $handler)) {
                             $r->addRoute($method, $route, $handler);
                         }
                     });
                 } else {
-                    $r->addRoute($method, $route, $handler);
+                    $r->addRoute($value[0], $value[1], $value[2]);
                 }
             }
         });
@@ -219,9 +219,16 @@ class Application extends ServiceLocator
         return array_merge_recursive($this->defaultCommands(), $this->commands);
     }
 
-    public function route($method, $route, $handler = null)
+    public function route($method, $route, $handler)
     {
         $this->routes[] = [$method, $route, $handler];
+
+        return $this;
+    }
+
+    public function group($group, $routes)
+    {
+        $this->routes[] = [$group, $routes];
 
         return $this;
     }
