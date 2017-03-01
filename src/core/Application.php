@@ -8,8 +8,13 @@ use FastRoute;
 use blink\log\Logger;
 use blink\http\Request;
 use blink\http\Response;
-use blink\console\ServerCommand;
 use blink\console\ShellCommand;
+use blink\console\ServerCommand;
+use blink\console\ServerReloadCommand;
+use blink\console\ServerRestartCommand;
+use blink\console\ServerServeCommand;
+use blink\console\ServerStartCommand;
+use blink\console\ServerStopCommand;
 
 /**
  * Class Application
@@ -202,6 +207,21 @@ class Application extends ServiceLocator
         return [
             'server' => [
                 'class' => ServerCommand::class,
+            ],
+            'server:start' => [
+                'class' => ServerStartCommand::class,
+            ],
+            'server:stop' => [
+                'class' => ServerStopCommand::class,
+            ],
+            'server:restart' => [
+                'class' => ServerRestartCommand::class,
+            ],
+            'server:reload' => [
+                'class' => ServerReloadCommand::class,
+            ],
+            'server:serve' => [
+                'class' => ServerServeCommand::class,
             ],
             'shell' => [
                 'class' => ShellCommand::class,
