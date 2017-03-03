@@ -32,7 +32,7 @@ class ApplicationTest extends TestCase
                             }
                         ]
                     ])
-                    ->bootstrap();
+                    ->bootstrapIfNeeded();
 
         return $application;
     }

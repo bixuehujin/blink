@@ -103,7 +103,7 @@ class Application extends ServiceLocator
     }
 
 
-    public function bootstrap()
+    public function bootstrapIfNeeded()
     {
         if (!$this->bootstrapped) {
             try {
@@ -255,6 +255,8 @@ class Application extends ServiceLocator
 
     public function makeRequest($config = [])
     {
+        $this->bootstrapIfNeeded();
+
         $request = $this->get('request');
 
         foreach ($config as $name => $value) {
@@ -271,7 +273,7 @@ class Application extends ServiceLocator
      */
     public function handleRequest($request)
     {
-        if (!$this->bootstrapped) {
+        if ($this->lastError) {
             return $this->internalServerError();
         }
 

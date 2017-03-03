@@ -49,7 +49,7 @@ class ActorTest extends TestCase
                             ]
                         ];
                     })
-                    ->bootstrap();
+                    ->bootstrapIfNeeded();
 
         return $this->app = $application;
     }

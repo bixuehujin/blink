@@ -23,7 +23,7 @@ class ShellCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->blink->bootstrap();
+        $this->blink->bootstrapIfNeeded();
 
         $config = new Configuration();
         $config->getPresenter()->addCasters($this->casters);

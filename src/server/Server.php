@@ -35,8 +35,6 @@ abstract class Server extends Object
             $app = require $this->bootstrap;
         }
 
-        $app->bootstrap();
-
         return $app;
     }
 

@@ -18,7 +18,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         if (!$this->app) {
-            $this->app = $this->createApplication()->bootstrap();
+            $this->app = $this->createApplication()->bootstrapIfNeeded();
         }
     }
 
@@ -30,7 +30,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
      */
     public function actor()
     {
-        return new RequestActor($this, $this->createApplication()->bootstrap());
+        return new RequestActor($this, $this->createApplication()->bootstrapIfNeeded());
     }
 
     public function tearDown()

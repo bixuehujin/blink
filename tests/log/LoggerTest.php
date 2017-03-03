@@ -81,7 +81,7 @@ class LoggerTest extends TestCase
         if ($callback) {
             $app->route('GET', '/', $callback);
         }
-        $app->bootstrap();
+        $app->bootstrapIfNeeded();
 
         return $app;
     }
