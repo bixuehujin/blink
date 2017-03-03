@@ -28,10 +28,15 @@ class BaseServer extends Command
         return !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->runtime . '/server.pid';
     }
 
-    protected function handleServe()
+    protected function handleServe($liveReload = false)
     {
         $server = $this->getServerDefinition();
         $server['asDaemon'] = 0;
+
+        if ($liveReload) {
+            $server['maxRequests'] = 1;
+            $server['numWorkers'] = 1;
+        }
 
         return make($server)->run();
     }
