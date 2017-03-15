@@ -169,6 +169,10 @@ class Application extends ServiceLocator
 
     protected function registerPlugins()
     {
+        if (is_string($this->plugins)) {
+            $this->plugins = require $this->plugins;
+        }
+
         foreach ($this->plugins as $name => $definition) {
             $this->plugins[$name] = $plugin = make($definition);
             $plugin->install($this);
