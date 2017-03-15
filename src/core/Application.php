@@ -96,13 +96,21 @@ class Application extends ServiceLocator
             throw new InvalidParamException("The param: 'root' is invalid");
         }
 
-        $this->services = array_merge($this->defaultServices(), $this->services);
-
         Container::$app = $this;
         Container::$instance = new Container();
     }
 
+    /**
+     * @deprecated
+     */
+    public function bootstrap()
+    {
+        $this->bootstrapIfNeeded();
+    }
 
+    /**
+     * @since 0.3
+     */
     public function bootstrapIfNeeded()
     {
         if (!$this->bootstrapped) {
@@ -141,6 +149,13 @@ class Application extends ServiceLocator
 
     protected function registerServices()
     {
+        if (is_string($this->services)) {
+            $this->services = require $this->services;
+        }
+
+        $this->services = array_merge($this->defaultServices(), $this->services);
+
+
         foreach ($this->services as $id => $definition) {
             $this->bind($id, $definition);
         }
@@ -162,6 +177,10 @@ class Application extends ServiceLocator
 
     protected function registerRoutes()
     {
+        if (is_string($this->routes)) {
+            $this->routes = require $this->routes;
+        }
+
         $this->dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
             foreach ($this->routes as $value) {
                 if (!is_array($value[0]) && is_array($value[1])) {
