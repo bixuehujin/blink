@@ -5,7 +5,7 @@ Installing Blink
 ---------------------------
 
 
-Before your installation please be sure your PHP version is greater then 5.5, then run the following command
+Before your installation please be sure your PHP version is greater then 5.6, then run the following command
 to install Swoole:
 
 ```
@@ -38,7 +38,7 @@ Start Blink server to ensure the installation:
 
 ```
 cd /path/to/your-app
-php blink server serve
+php blink server:serve
 ```
 
 Then, launch your browser and open http://localhost:7788/ , if you can see a welcome message saying
