@@ -37,7 +37,7 @@ class ServerServeCommand extends BaseServer
     {
         $server = $this->getServerDefinition();
         $port = isset($server['port']) ? $server['port'] : 7788;
-        $args = ['-S', '0.0.0.0:' . $port, __DIR__ . '/../server/server.php'];
+        $args = ['-S', '0.0.0.0:' . $port, __DIR__ . '/../support/server.php'];
 
         $path = shell_exec('which php');
 
