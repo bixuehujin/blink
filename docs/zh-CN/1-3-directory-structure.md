@@ -11,6 +11,7 @@ your-app/                   应用根目录
             app.php         应用基本配置
             server.php      Swoole 服务器配置
             services.php    应用服务配置
+            plugins.php     应用插件配置
         console/            控制台命令相关
         http/               Http 相关
             controllers/    控制器文件夹

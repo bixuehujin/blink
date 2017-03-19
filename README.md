@@ -38,6 +38,7 @@ I'm finally very glad to announce that **Blink** is exactly the answer!
 * Authentication & Authorization abstraction
 * Session Management abstraction
 * Middleware support for Request and Response
+* Plugins support
 * PHPUnit integration for unit tests
 
 ## Installation

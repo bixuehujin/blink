@@ -12,6 +12,7 @@ your-app/                   application root directory
             app.php         basic application configurations
             server.php      Swoole server configuration
             services.php    service configurations
+            plugins.php     application plugin configurations
         console/            console commands
         http/               http related
             controllers/    controllers stored here
