@@ -31,3 +31,11 @@ Concepts & Architecture
 * [Object Configuration](4-1-properties-and-configurations.md)
 * [Application Lifecycle](4-2-lifecycle.md)
 * [Plugins](4-3-plugins.md)
+
+
+Misc
+----
+
+* [Development and Deployment](5-1-development-and-deploymnet.md)
+
+

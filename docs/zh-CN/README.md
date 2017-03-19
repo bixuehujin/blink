@@ -31,3 +31,10 @@ Blink 中文文档
 * [对象配置](4-1-properties-and-configurations.md)
 * [生命周期](4-2-lifecycle.md)
 * [插件](4-3-plugins.md)
+
+
+杂项
+----
+
+* [开发与部署](5-1-development-and-deploymnet.md)
+
