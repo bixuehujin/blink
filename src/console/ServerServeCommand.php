@@ -26,6 +26,11 @@ class ServerServeCommand extends BaseServer
     {
         $cliMode = $input->getOption('cli');
 
+        if (!$cliMode && !extension_loaded('swoole')) {
+            $this->error('The Swoole extension is not installed, the PHP\'s built-in web server will be used');
+            $cliMode = true;
+        }
+
         if ($cliMode) {
             return $this->handleCliServe();
         } else {

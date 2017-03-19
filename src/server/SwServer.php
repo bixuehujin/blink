@@ -55,6 +55,13 @@ class SwServer extends Server
     public $logFile;
 
 
+    public function init()
+    {
+        if (!extension_loaded('swoole')) {
+            throw new \RuntimeException('The Swoole extension is required to run blink in SwServer.');
+        }
+    }
+
     protected function normalizedConfig()
     {
         $config = [];
