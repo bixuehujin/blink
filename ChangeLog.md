@@ -1,14 +1,14 @@
 Blink Framework Change Log
 ==========================
 
-0.3.0 xx xx, 2017
------------------
+0.3.0 March 19, 2017
+--------------------
 
+- New: Added application plugins support
+- New: Added grouped routes support
 - New: Added RequestActor for easier functional testing cases
-- New: Added application plugin support
 - New: Integrated PsySH for better debug experience
 - New: Added CookieBag::all() to return all cookies
-- New: Added grouped routes support
 - New: Added the new server management commands(server:start server:stop server:restart server:serve server:reload)
 - Enh: Better PHP7 exception support
 - Enh: Added Custom PID file path support
