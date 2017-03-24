@@ -1,41 +1,38 @@
-Blink Documentation
-===================
+# What is Blink?
 
 
-Installation and Setup
-----------------------
-
-* [About Blink](1-1-about-blink.md)
-* [Installing Blink](1-2-installing.md)
-* [Directory Structure](1-3-directory-structure.md)
-
-Getting Started
----------------
-
-* [Routing & Controllers](2-1-routing-and-controllers.md)
-* [Request Handling](2-2-request-handling.md)
+Blink is a web framework, designed to build long-running and high-performance services, providing
+expressive and elegant APIs. It is very simple to extend the
+functionality of Blink. Additionally, Blink provides commonly used components out of the box, including Routing, Authentication, Dependency Injection and Logging, just to name a few.
 
 
-Core Components
----------------
-
-* [Denpendency Injection](3-1-dependency-injection.md)
-* [Session Management](3-2-session.md)
-* [Authorization & Authentication](3-3-authentication.md)
-* [Error Handling & Logging](3-4-error-and-logging.md)
+## What Makes It Special
 
 
-Concepts & Architecture
------------------------
+ What makes Blink special comparing to traditional PHP frameworks is that a Blink application
+doesn't require a third-party web server (php-fpm on Nginx or mod_php on Apache). Instead,
+It has its own server, which is implemented by [Swoole Extension](https://github.com/swoole/swoole-src) to serve
+user's requests in plain PHP.
 
-* [Object Configuration](4-1-properties-and-configurations.md)
-* [Application Lifecycle](4-2-lifecycle.md)
-* [Plugins](4-3-plugins.md)
+Blink's built-in web server has several advantages over the existing web servers namely Nginx or Apache:
+
+* Reduced the overhead of PHP's Request Startup - Request Shutdown lifecycle (many objects do not need to be recreated on
+  every request)
+* The server can gain more control on computer resources, it is possible to implement something that php-fpm or mod_php can't.
 
 
-Misc
-----
+## What use cases Blink best suits for?
 
-* [Development and Deployment](5-1-development-and-deploymnet.md)
 
+Since Blink is designed to be a generic framework, it is capable of supporting all the basic tasks other frameworks can do, but due to its unique architecture, It will be extremely promising in the following use cases:
+
+* Cases having more strict performance requirements.
+* Implement features that may limit by php-fpm or mod_php, such as real-time chatting.
+
+
+## Requirements and Prerequisites
+
+
+* PHP 5.6 and above
+* Swoole Extension 1.7.19 and above
 
