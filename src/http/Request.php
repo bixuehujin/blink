@@ -239,18 +239,11 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
         }
 
         $secure = $this->secure();
-<<<<<<< 048d4ef900a09fc7a66d33973887b4f598646f89
 
-        if ((!$secure && $port == 80) || ($secure && $port == 443)) {
-            return $host;
-        } else {
-            return $host . ':' . $port;
-=======
         if ((!$secure && $uri->port == 80) || ($secure && $uri->port == 443)) {
             return $uri->host;
         }else {
             return $uri->host . ':' . $uri->port;
->>>>>>> Implemented PSR-7 Reqeust & Response
         }
     }
 
