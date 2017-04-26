@@ -90,11 +90,15 @@ class Application extends ServiceLocator
 
     protected $lastError;
 
+    protected $router;
+
     public function init()
     {
         if (!$this->root || !file_exists($this->root)) {
             throw new InvalidParamException("The param: 'root' is invalid");
         }
+
+        $this->router = $this->createRouter();
 
         Container::$app = $this;
         Container::$instance = new Container();
@@ -179,27 +183,39 @@ class Application extends ServiceLocator
         }
     }
 
+    protected function createRouter()
+    {
+        return new FastRoute\RouteCollector(
+            new FastRoute\RouteParser\Std(),
+            new FastRoute\DataGenerator\GroupCountBased()
+        );
+    }
+
     protected function registerRoutes()
     {
         if (is_string($this->routes)) {
             $this->routes = require $this->routes;
         }
 
-        $this->dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-            foreach ($this->routes as $value) {
-                if (!is_array($value[0]) && is_array($value[1])) {
-                    $groupRoute = $value[1];
-
-                    $r->addGroup($value[0], function (FastRoute\RouteCollector $r) use ($groupRoute) {
-                        foreach ($groupRoute as list($method, $route, $handler)) {
-                            $r->addRoute($method, $route, $handler);
-                        }
-                    });
-                } else {
-                    $r->addRoute($value[0], $value[1], $value[2]);
-                }
+        foreach ($this->routes as $value) {
+            if (!is_array($value[0]) && is_array($value[1])) {
+                $this->group($value[0], $value[1]);
+            } else {
+                $this->route($value[0], $value[1], $value[2]);
             }
-        });
+        }
+    }
+
+    /**
+     * @return FastRoute\Dispatcher\GroupCountBased
+     */
+    public function getDispatcher()
+    {
+        if ($this->dispatcher === null) {
+            $this->dispatcher = new FastRoute\Dispatcher\GroupCountBased($this->router->getData());
+        }
+
+        return $this->dispatcher;
     }
 
     public function defaultServices()
@@ -264,14 +280,18 @@ class Application extends ServiceLocator
 
     public function route($method, $route, $handler)
     {
-        $this->routes[] = [$method, $route, $handler];
+        $this->router->addRoute($method, $route, $handler);
 
         return $this;
     }
 
     public function group($group, $routes)
     {
-        $this->routes[] = [$group, $routes];
+        $this->router->addGroup($group, function (FastRoute\RouteCollector $router) use ($routes) {
+            foreach ($routes as list($method, $route, $handler)) {
+                $router->addRoute($method, $route, $handler);
+            }
+        });
 
         return $this;
     }
@@ -415,7 +435,7 @@ class Application extends ServiceLocator
 
     protected function dispatch($request)
     {
-        $info = $this->dispatcher->dispatch($request->method, $request->path);
+        $info = $this->getDispatcher()->dispatch($request->method, $request->path);
 
         switch ($info[0]) {
             case FastRoute\Dispatcher::NOT_FOUND:
