@@ -131,7 +131,8 @@ class SwServer extends Server
 
     public function onServerStart($server)
     {
-        cli_set_process_title($this->name . ': master');
+        $this->setProcessTitle($this->name . ': master');
+
         if ($this->pidFile) {
             file_put_contents($this->pidFile, $server->master_pid);
         }
@@ -139,7 +140,7 @@ class SwServer extends Server
 
     public function onManagerStart($server)
     {
-        cli_set_process_title($this->name . ': manager');
+        $this->setProcessTitle($this->name . ': manager');
     }
 
     public function onServerStop()
@@ -151,8 +152,21 @@ class SwServer extends Server
 
     public function onWorkerStart()
     {
-        cli_set_process_title($this->name . ': worker');
+        $this->setProcessTitle($this->name . ': worker');
+
         $this->startApp();
+    }
+    
+    protected function setProcessTitle($title)
+    {
+        if (@cli_set_process_title($title) === false) {
+            if (PHP_OS === 'Darwin') {
+                // Running "cli_get_process_title" as an unprivileged user is not supported on MacOS.
+            } else {
+                $error = error_get_last();
+                trigger_error($error['message'], E_USER_WARNING);
+            }
+        }
     }
 
     public function onWorkerStop()
