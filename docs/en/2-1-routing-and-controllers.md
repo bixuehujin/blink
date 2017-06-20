@@ -102,7 +102,7 @@ specify class method as route handler. Here is the example:
 
 ```php
 return [
-    ['GET', '/', '/app/http/controllers/IndexController@index']
+    ['GET', '/', '\app\http\controllers\IndexController@index']
 ];
 ```
 

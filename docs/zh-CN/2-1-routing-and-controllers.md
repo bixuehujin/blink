@@ -87,7 +87,7 @@ return [
 
 ```php
 return [
-    ['GET', '/', '/app/http/controllers/IndexController@index']
+    ['GET', '/', '\app\http\controllers\IndexController@index']
 ];
 ```
 
