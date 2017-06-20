@@ -460,6 +460,7 @@ class Application extends ServiceLocator
 
                 if ($class[0] !== '\\' && $this->controllerNamespace) {
                     $class = $this->controllerNamespace . '\\' . $class;
+                    $class = strtr($class, '/', '\\');
                 }
 
                 $action = [$this->get($class), $method];
