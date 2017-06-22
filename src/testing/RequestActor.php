@@ -485,15 +485,16 @@ class RequestActor
     /**
      * Returns the response as json.
      *
+     * @param boolean $asArray Converts object to associative arrays, defaults to true.
      * @return mixed
      */
-    public function asJson()
+    public function asJson($asArray = true)
     {
         if (!$this->isJsonMessage($this->response->headers)) {
             throw new \RuntimeException('The response is not a valid json response');
         }
 
-        return json_decode($this->response->content(), true);
+        return json_decode($this->response->content(), $asArray);
     }
 
     /**
