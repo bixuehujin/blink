@@ -4,6 +4,7 @@ namespace blink\auth;
 
 use blink\core\Object;
 use blink\auth\Contract as AuthContract;
+use blink\session\Session;
 
 /**
  * Class Auth
@@ -89,7 +90,12 @@ class Auth extends Object implements AuthContract
     public function who($sessionId)
     {
         $class = $this->model;
-        $bag = session()->get($sessionId);
+
+        if ($sessionId instanceof Session) {
+            $bag = $sessionId;
+        } else {
+            $bag = session()->get($sessionId);
+        }
 
         if ($bag && ($authId = $bag->get('auth_id')) !== null) {
             return $class::findIdentity($authId);
