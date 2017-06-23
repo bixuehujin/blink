@@ -55,7 +55,13 @@ class Request extends Object implements ShouldBeRefreshed
      * string function (Request $request);
      * ```
      *
+     * **deprecated**
+     *
+     * The sessionKey configuration is deprecated since v0.4.0, please using CookieAuthenticator or custom middleware to
+     * resolve the session of a request.
+     *
      * @var string|callable
+     * @deprecated
      */
     public $sessionKey = 'X-Session-Id';
 
