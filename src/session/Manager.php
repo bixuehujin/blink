@@ -48,10 +48,13 @@ class Manager extends Object implements SessionContract
     public function put($attributes = [])
     {
         if ($attributes instanceof Session) {
+            $id = $attributes->id;
             $attributes = $attributes->all();
         }
 
-        $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
+        if (!isset($id)) {
+            $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
+        }
 
         $this->storage->write($id, $attributes);
 
