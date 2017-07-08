@@ -5,6 +5,7 @@ namespace blink\auth\middleware;
 use blink\core\MiddlewareContract;
 use blink\http\Cookie;
 use blink\http\Request;
+use blink\session\Session;
 
 /**
  * Class CookieAuthenticator
@@ -14,7 +15,6 @@ use blink\http\Request;
 class CookieAuthenticator implements MiddlewareContract
 {
     public $sessionKey = 'BLINK_SESSION_ID';
-    public $autoGeneration = false; // ??
     public $cookieParams = [];
 
     /**
@@ -25,28 +25,15 @@ class CookieAuthenticator implements MiddlewareContract
         $cookie = $request->cookies->get($this->sessionKey);
 
         if (!$cookie) {
-            return;
-        }
-
-        $session = $oldSession = session()->get($cookie->value);
-
-        if (!$session && $this->autoGeneration) {
             $session = session()->put([]);
             $this->handleNewSession($session);
+        } else if ($session = session()->get($cookie->value)) {
+            // noop
+        } else {
+            $session = session()->put(new Session([], ['id' => $cookie->value]));
         }
 
         $request->setSession($session);
-
-        if (!$oldSession) {
-            return;
-        }
-
-        $user = auth()->who($oldSession);
-        if (!$user) {
-            return;
-        }
-
-        auth()->login($user, true);
     }
 
     protected function handleNewSession($session)
