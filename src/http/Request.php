@@ -437,7 +437,7 @@ class Request extends Object implements ShouldBeRefreshed
 
         if ($this->_user === false) {
             if (($session = $this->getSession()) && $session->id) {
-                $this->_user = auth()->who($session->id);
+                $this->_user = auth()->who($session);
             } else {
                 $this->_user = null;
             }
