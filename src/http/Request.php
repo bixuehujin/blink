@@ -57,8 +57,8 @@ class Request extends Object implements ShouldBeRefreshed
      *
      * **deprecated**
      *
-     * The sessionKey configuration is deprecated since v0.4.0, please using CookieAuthenticator or custom middleware to
-     * resolve the session of a request.
+     * The sessionKey configuration is deprecated since v0.3.1, which will be removed in future release, please using
+     * CookieAuthenticator or custom middleware to resolve the session of a request.
      *
      * @var string|callable
      * @deprecated
