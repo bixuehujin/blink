@@ -10,7 +10,7 @@ Blink 提供了一套轻量级的*认证授权框架*，通过这套框架我们
 定义 User Identity
 -----------------
 
-为了定义一个 User Identity 类，我们需要实现 `blink\auth\Authenticatable` 接口，下面的例子展示了如何利用静态用户数据定义 User Identiry：
+为了定义一个 User Identity 类，我们需要实现 `blink\auth\Authenticatable` 接口，下面的例子展示了如何利用静态用户数据定义 User Identity：
 
 ```php
 namespace app;
