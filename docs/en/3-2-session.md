@@ -42,3 +42,14 @@ Session Storage
 By default, files are be used to storage session data in Blink, it is possible to change this behavior by using custom
 session storage class. To implement our own session storage class, we need implement the `blink\session\StorageContract`
 interface. For more detailed information, you can refer the implementation of `blink\session\FileStorage` class.
+
+Extending Session
+-----------------
+
+Starting from v0.3.1, Blink added the ability to subclass `blink\session\Session`, which can be configured through
+`blink\session\Manager::$sessionClass` in `src/config/services.php` config file by default.
+
+By utilizing this, it would be easier to implement custom authentiction mechanisms such as the AccessToken and 
+RefreshToken of OAuth2 for the Blink framework.
+
+For more information, you can refer [Blink Passport](https://github.com/rethinkphp/blink-passport/tree/master/src/oauth) for detail usage examples.
