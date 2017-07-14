@@ -1,6 +1,19 @@
 Blink Framework Change Log
 ==========================
 
+0.3.1 July xx, 2017
+--------------------
+
+- New: Added CookieAuthenticator for cookie based session handling
+- New: Added blink\session\Manager::$sessionClass configuration to subclass Session class
+- Enh: Supressed warning triggered by cli_set_process_title on macOS
+- Enh: Added $asArray parameter to RequestActor::asJson() to control json decoding 
+- Enh: Improved Auth::who() to accept Session object as argument
+- Bug: Fixed routes lazy loading not working
+- Chg: Deprecated Request::$sessionKey configuration
+
+
+
 0.3.0 March 19, 2017
 --------------------
 
