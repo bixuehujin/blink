@@ -55,7 +55,13 @@ class Request extends Object implements ShouldBeRefreshed
      * string function (Request $request);
      * ```
      *
+     * **deprecated**
+     *
+     * The sessionKey configuration is deprecated since v0.3.1, which will be removed in future release, please using
+     * CookieAuthenticator or custom middleware to resolve the session of a request.
+     *
      * @var string|callable
+     * @deprecated
      */
     public $sessionKey = 'X-Session-Id';
 
@@ -431,7 +437,7 @@ class Request extends Object implements ShouldBeRefreshed
 
         if ($this->_user === false) {
             if (($session = $this->getSession()) && $session->id) {
-                $this->_user = auth()->who($session->id);
+                $this->_user = auth()->who($session);
             } else {
                 $this->_user = null;
             }

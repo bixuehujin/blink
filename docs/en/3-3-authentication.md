@@ -118,6 +118,12 @@ class Controller extends Object
 
 ```
 
-Currently, Blink utilize http header `X-Session-Id` to transfer session id by default, if you do not want this, you can
-redefine the behavior by setting the `sessionKey` property of `blink\http\Request`, please checkout the corresponding
-comments of the class for more detailed information.
+Before v0.3.0, Blink utilize HTTP header `X-Session-Id` to transmit Session ID by default, and it is also 
+can be configured through the `$sessionKey` property of `blink\http\Request`.
+
+But starting from v0.3.1, this feature is now deprecated and will be removed in future release. At the same time,
+Blink introduced `CookieAuthenticator` middleware to implement cookie based Session handling, the default cookie name 
+is `BLINK_SESSION_ID`.
+
+If you want to have more control on how session id should be transmitted and handled, we recommend you to implement 
+you own middleware to achieve it.

@@ -1,6 +1,7 @@
 <?php
 
 namespace blink\auth;
+use blink\session\Session;
 
 /**
  * Interface used for `auth` service, all `auth` service should implement the interface.
@@ -53,7 +54,7 @@ interface Contract
     /**
      * Returns the user that associated with given sessionId.
      *
-     * @param $sessionId
+     * @param string|Session $sessionId
      * @return Authenticatable|null
      */
     public function who($sessionId);
