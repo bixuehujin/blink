@@ -1,7 +1,7 @@
 Blink Framework Change Log
 ==========================
 
-0.3.1 July xx, 2017
+0.3.1 July 16, 2017
 --------------------
 
 - New: Added CookieAuthenticator for cookie based session handling
