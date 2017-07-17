@@ -12,6 +12,13 @@ use blink\core\InvalidValueException;
  */
 class BaseServer extends Command
 {
+    /**
+     * We disabled app auto bootstrapping here to make lazy loading works.
+     *
+     * @var bool
+     */
+    public $bootstrap = false;
+
     protected function getServerDefinition()
     {
         if (isset($this->blink->server) && is_array($this->blink->server)) {
