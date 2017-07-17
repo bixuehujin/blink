@@ -2,13 +2,13 @@
 
 namespace blink\core\console;
 
+use blink\core\Application;
 use blink\core\Configurable;
 use blink\core\ObjectTrait;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\OutputStyle;
 
 /**
  * Class Command
@@ -40,6 +40,12 @@ class Command extends SymfonyCommand implements Configurable
      */
     public $description;
 
+    /**
+     * Whether or not bootstrap the application automatically, defaults to true.
+     *
+     * @var bool
+     */
+    public $bootstrap = true;
 
     /**
      * @var InputInterface
@@ -66,6 +72,10 @@ class Command extends SymfonyCommand implements Configurable
 
     public function run(InputInterface $input, OutputInterface $output)
     {
+        if ($this->bootstrap) {
+            $this->blink->bootstrapIfNeeded();
+        }
+
         $this->input = $input;
         $this->output = $output;
 
