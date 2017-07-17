@@ -19,11 +19,36 @@ class Command extends SymfonyCommand implements Configurable
 {
     use ObjectTrait;
 
+    /**
+     * The blink app instance.
+     *
+     * @var Application
+     */
     public $blink;
+
+    /**
+     * The name of the command.
+     *
+     * @var string
+     */
     public $name;
+
+    /**
+     * The description of the command.
+     *
+     * @var string
+     */
     public $description;
 
+
+    /**
+     * @var InputInterface
+     */
     public $input;
+
+    /**
+     * @var OutputInterface
+     */
     public $output;
 
     public function __construct($config = [])
