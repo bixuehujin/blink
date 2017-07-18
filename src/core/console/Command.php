@@ -2,7 +2,6 @@
 
 namespace blink\core\console;
 
-use blink\core\Application;
 use blink\core\Configurable;
 use blink\core\ObjectTrait;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -22,7 +21,7 @@ class Command extends SymfonyCommand implements Configurable
     /**
      * The blink app instance.
      *
-     * @var Application
+     * @var \blink\core\Application
      */
     public $blink;
 
