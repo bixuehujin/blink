@@ -159,13 +159,15 @@ class SwServer extends Server
     
     protected function setProcessTitle($title)
     {
-        if (@cli_set_process_title($title) === false) {
-            if (PHP_OS === 'Darwin') {
-                // Running "cli_get_process_title" as an unprivileged user is not supported on MacOS.
-            } else {
-                $error = error_get_last();
-                trigger_error($error['message'], E_USER_WARNING);
-            }
+        if (@cli_set_process_title($title) !== false) {
+            return;
+        }
+
+        if (PHP_OS !== 'Darwin') {
+            $error = error_get_last();
+            trigger_error($error['message'], E_USER_WARNING);
+        } else if (extension_loaded('proctitle')) {
+            setproctitle($title);
         }
     }
 
