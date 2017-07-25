@@ -250,7 +250,7 @@ class Request extends Object implements ShouldBeRefreshed
             return $host;
         }
 
-        $port = $parts[1];
+        $port = (int)$parts[1];
         $secure = $this->secure();
 
         if ((!$secure && $port === 80) || ($secure && $port === 443)) {
