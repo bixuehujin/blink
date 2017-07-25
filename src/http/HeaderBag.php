@@ -7,7 +7,6 @@ use IteratorAggregate;
 use blink\core\Object;
 use blink\support\BagTrait;
 
-
 class HeaderBag extends Object implements IteratorAggregate, Countable
 {
     use BagTrait;

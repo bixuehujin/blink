@@ -7,7 +7,6 @@
 
 namespace blink\tests\http;
 
-
 use blink\http\Cookie;
 use blink\tests\TestCase;
 

@@ -93,7 +93,7 @@ class CgiServer extends Server
     {
         foreach ($response->headers->all() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
-            foreach($values as $value) {
+            foreach ($values as $value) {
                 header($name . ': ' . $value, false, $response->statusCode);
             }
         }

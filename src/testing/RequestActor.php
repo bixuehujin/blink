@@ -15,7 +15,6 @@ use blink\http\HeaderBag;
  */
 class RequestActor
 {
-
     use AuthTrait;
 
     protected $phpunit;

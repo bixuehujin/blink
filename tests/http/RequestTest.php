@@ -9,7 +9,6 @@ use blink\tests\TestCase;
 
 class RequestTest extends TestCase
 {
-
     public function testDefault()
     {
         $request = new Request([]);

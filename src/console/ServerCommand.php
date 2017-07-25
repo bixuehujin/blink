@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class ServerCommand
  *
@@ -33,6 +32,5 @@ class ServerCommand extends BaseServer
         }
 
         return call_user_func([$this, 'handle' . $operation]);
-
     }
 }
