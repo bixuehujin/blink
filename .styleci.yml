@@ -1,5 +1,6 @@
 preset: PSR2
 
+risky: false
+
 enabled:
   - short_array_syntax
-  - strict
