@@ -23,7 +23,6 @@ use blink\console\ServerStopCommand;
  */
 class Application extends ServiceLocator
 {
-
     const VERSION = '0.4.0 (dev)';
 
     /**
@@ -474,7 +473,6 @@ class Application extends ServiceLocator
 
     protected function runAction($action, $args, $request, $response)
     {
-
         $this->beforeAction($action, $request);
 
         $data = $this->call($action, $args);

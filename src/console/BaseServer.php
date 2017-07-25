@@ -92,7 +92,7 @@ class BaseServer extends Command
         if (file_exists($pidFile) && posix_kill(file_get_contents($pidFile), 15)) {
             do {
                 usleep(100000);
-            } while(file_exists($pidFile));
+            } while (file_exists($pidFile));
             return 0;
         }
 

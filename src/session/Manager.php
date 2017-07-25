@@ -36,7 +36,7 @@ class Manager extends Object implements SessionContract
 
         $this->storage->timeout($this->expires);
 
-        if ($this->sessionClass != Session::class
+        if ($this->sessionClass !== Session::class
             && !is_subclass_of($this->sessionClass, Session::class)) {
             throw new InvalidConfigException(sprintf('The %s::$sessionClass config expects a subclass of "blink\session\Session" as its value'));
         }

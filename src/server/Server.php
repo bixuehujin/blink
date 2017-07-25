@@ -29,7 +29,7 @@ abstract class Server extends Object
     {
         if ($this->bootstrap instanceof Application) {
             $app = $this->bootstrap;
-        } else if (is_array($this->bootstrap)) {
+        } elseif (is_array($this->bootstrap)) {
             $app = new Application($this->bootstrap);
         } else {
             $app = require $this->bootstrap;

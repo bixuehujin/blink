@@ -5,7 +5,6 @@ namespace blink\tests\http;
 use blink\http\ParamBag;
 use blink\tests\TestCase;
 
-
 class ParamBagTest extends TestCase
 {
     public function testGetBoolean()

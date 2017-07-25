@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class ServerCommand
  *
@@ -28,11 +27,10 @@ class ServerCommand extends BaseServer
     {
         $operation = $input->getArgument('operation');
 
-        if (!in_array($operation, ['serve', 'start', 'reload', 'restart', 'stop'])) {
+        if (!in_array($operation, ['serve', 'start', 'reload', 'restart', 'stop'], true)) {
             throw new InvalidParamException('The <operation> argument is invalid');
         }
 
         return call_user_func([$this, 'handle' . $operation]);
-
     }
 }

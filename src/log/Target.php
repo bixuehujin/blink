@@ -8,12 +8,10 @@
 
 namespace blink\log;
 
-
 use blink\core\Object;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Formatter\FormatterInterface;
 use Psr\Log\LogLevel;
-
 
 abstract class Target extends Object implements HandlerInterface
 {

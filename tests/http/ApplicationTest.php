@@ -12,7 +12,6 @@ use blink\tests\TestCase;
 
 class ApplicationTest extends TestCase
 {
-
     protected function createApplication()
     {
         $application = new Application(['root' => '.']);
@@ -84,7 +83,6 @@ class ApplicationTest extends TestCase
 
 class TestController extends Object
 {
-
     public function __construct(Request $request, $config = [])
     {
         $request->params->set('foo', 'bar');

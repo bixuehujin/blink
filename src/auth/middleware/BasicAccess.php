@@ -30,11 +30,11 @@ class BasicAccess implements MiddlewareContract
         }
 
         $parts = preg_split('/\s+/', $value);
-        if (count($parts) < 2 && strtolower($parts[0]) != 'basic') {
+        if (count($parts) < 2 && strtolower($parts[0]) !== 'basic') {
             return;
         }
 
-        list($username, $password) = explode(':', base64_decode($parts[1]));
+        list($username, $password) = explode(':', base64_decode($parts[1], true));
 
         auth()->attempt([
             $this->identity => $username,

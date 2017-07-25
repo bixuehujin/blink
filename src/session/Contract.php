@@ -4,7 +4,7 @@ namespace blink\session;
 
 /**
  * Interface Contract
- * 
+ *
  * @package blink\session
  */
 interface Contract

@@ -18,7 +18,6 @@ use blink\tests\TestCase;
  */
 class FileTest extends TestCase
 {
-
     protected function fakeFile()
     {
         return make([

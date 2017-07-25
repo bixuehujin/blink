@@ -9,8 +9,7 @@ use blink\tests\TestCase;
 
 class SessionTest extends TestCase
 {
-
-    private  $sessionPath;
+    private $sessionPath;
 
     public function setUp()
     {
@@ -22,7 +21,7 @@ class SessionTest extends TestCase
 
     public function tearDown()
     {
-        foreach(new \DirectoryIterator($this->sessionPath) as $file) {
+        foreach (new \DirectoryIterator($this->sessionPath) as $file) {
             if (!$file->isDot()) {
                 unlink($file->getPathname());
             }

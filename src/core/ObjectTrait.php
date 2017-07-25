@@ -2,7 +2,6 @@
 
 namespace blink\core;
 
-
 /**
  * Trait ObjectTrait
  *
@@ -21,7 +20,6 @@ trait ObjectTrait
 
     public function init()
     {
-
     }
 
     public function __set($name, $value)

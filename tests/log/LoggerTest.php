@@ -11,7 +11,6 @@ use blink\core\Application;
 use blink\core\ErrorHandler;
 use blink\http\Request;
 
-
 class LoggerTest extends TestCase
 {
     protected $logFile;

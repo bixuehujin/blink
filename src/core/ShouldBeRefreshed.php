@@ -10,5 +10,4 @@ namespace blink\core;
  */
 interface ShouldBeRefreshed
 {
-
 }
