@@ -39,7 +39,7 @@ class File extends Object
 
     public function hasError()
     {
-        return $this->error != UPLOAD_ERR_OK;
+        return $this->error !== UPLOAD_ERR_OK;
     }
 
     public function saveAs($path)
