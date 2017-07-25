@@ -7,7 +7,6 @@
 
 namespace blink\http;
 
-
 use blink\core\Object;
 
 /**

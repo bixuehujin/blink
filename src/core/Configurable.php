@@ -9,5 +9,4 @@ namespace blink\core;
  */
 interface Configurable
 {
-
 }

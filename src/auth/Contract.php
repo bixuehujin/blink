@@ -1,6 +1,7 @@
 <?php
 
 namespace blink\auth;
+
 use blink\session\Session;
 
 /**

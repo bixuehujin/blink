@@ -2,7 +2,6 @@
 
 namespace blink\server;
 
-
 /**
  * A Swoole based server implementation.
  *
@@ -166,7 +165,7 @@ class SwServer extends Server
         if (PHP_OS !== 'Darwin') {
             $error = error_get_last();
             trigger_error($error['message'], E_USER_WARNING);
-        } else if (extension_loaded('proctitle')) {
+        } elseif (extension_loaded('proctitle')) {
             setproctitle($title);
         }
     }
@@ -178,12 +177,10 @@ class SwServer extends Server
 
     public function onTask($server, $taskId, $fromId, $data)
     {
-
     }
 
     public function onFinish($server, $taskId, $data)
     {
-
     }
 
     protected function normalizeFiles($files)
@@ -223,7 +220,7 @@ class SwServer extends Server
 
         foreach ($res->headers->all() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
-            foreach($values as $value) {
+            foreach ($values as $value) {
                 $response->header($name, $value);
             }
         }

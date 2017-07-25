@@ -21,7 +21,6 @@ use blink\core\ShouldBeRefreshed;
  */
 class Request extends Object implements ShouldBeRefreshed
 {
-
     use MiddlewareTrait;
 
     const METHOD_HEAD = 'HEAD';
@@ -100,12 +99,10 @@ class Request extends Object implements ShouldBeRefreshed
     public function secure()
     {
         if ($this->headers->first('x-forwarded-proto') === 'https') {
-
             return true;
         }
 
         if ((int)$this->headers->first('x-forwarded-port') === 443) {
-
             return true;
         }
 
@@ -332,9 +329,9 @@ class Request extends Object implements ShouldBeRefreshed
 
         if ($contentType == 'application/json') {
             $parsedBody = json_decode($body, true);
-        } else if ($contentType == 'application/x-www-form-urlencoded') {
+        } elseif ($contentType == 'application/x-www-form-urlencoded') {
             parse_str($body, $parsedBody);
-        } else if ($contentType == 'multipart/form-data') {
+        } elseif ($contentType == 'multipart/form-data') {
             // noop
         } else {
             throw new NotSupportedException("The content type: '$contentType' does not supported");

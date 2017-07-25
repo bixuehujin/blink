@@ -95,7 +95,7 @@ class TestUser extends Object implements Authenticatable
         if (is_numeric($id)) {
             $key = 'id';
             $value = $id;
-        } else if (is_array($id) && isset($id['name'])) {
+        } elseif (is_array($id) && isset($id['name'])) {
             $key = 'name';
             $value = $id['name'];
         } else {

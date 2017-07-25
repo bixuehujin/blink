@@ -73,10 +73,10 @@ class ServiceLocator extends Object
         $dependencies = $arguments;
         $parameters = array_slice($this->getCallerReflector($callback)->getParameters(), count($arguments));
 
-        foreach($parameters as $key => $parameter) {
+        foreach ($parameters as $key => $parameter) {
             if ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
-            } else if ($class = $parameter->getClass()) {
+            } elseif ($class = $parameter->getClass()) {
                 $dependencies[] = $this->get($class->getName());
             } else {
                 throw new InvalidParamException('Missing required argument: ' . $parameter->getName());

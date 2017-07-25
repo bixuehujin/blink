@@ -5,7 +5,6 @@ namespace blink\tests\http;
 use blink\http\HeaderBag;
 use blink\tests\TestCase;
 
-
 class HeaderBagTest extends TestCase
 {
     public function testBasic()

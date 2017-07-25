@@ -14,7 +14,6 @@ use blink\core\Application;
  */
 class ActorTest extends TestCase
 {
-
     public function createApplication()
     {
         $application = new Application(['root' => '.']);
@@ -28,11 +27,9 @@ class ActorTest extends TestCase
             ];
         })
                     ->route('GET', '/', function (Request $request, Response $response) {
-
                         return 'Hello, Blink!';
                     })
                     ->route('GET', '/json', function (Request $request, Response $response) {
-
                         return [
                             'name' => 'Blink',
                             'ext' => 'swoole',
@@ -40,7 +37,6 @@ class ActorTest extends TestCase
                         ];
                     })
                     ->route('GET', '/json_contains', function (Request $request, Response $response) {
-
                         return [
                             'status' => 'ok',
                             'data' => [
@@ -87,4 +83,3 @@ class ActorTest extends TestCase
              ->seeJsonStructure(['name', 'size']);
     }
 }
-

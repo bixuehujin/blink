@@ -27,7 +27,7 @@ class CookieAuthenticator implements MiddlewareContract
         if (!$cookie) {
             $session = session()->put([]);
             $this->handleNewSession($session);
-        } else if ($session = session()->get($cookie->value)) {
+        } elseif ($session = session()->get($cookie->value)) {
             // noop
         } else {
             $session = session()->put(new Session([], ['id' => $cookie->value]));

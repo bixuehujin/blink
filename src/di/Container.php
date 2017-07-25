@@ -365,7 +365,7 @@ class Container extends Object
     public function clear($class)
     {
         $concrete = $this->getAlias($class);
-        unset ($this->_aliases[$class]);
+        unset($this->_aliases[$class]);
 
         unset($this->_definitions[$concrete], $this->_singletons[$concrete]);
     }
@@ -420,7 +420,7 @@ class Container extends Object
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list ($reflection, $dependencies) = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;

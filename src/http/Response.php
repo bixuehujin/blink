@@ -16,7 +16,6 @@ use blink\core\InvalidParamException;
  */
 class Response extends Object implements ShouldBeRefreshed
 {
-
     use MiddlewareTrait;
 
     public $data;
