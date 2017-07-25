@@ -103,7 +103,7 @@ class TestUser extends Object implements Authenticatable
         }
 
         foreach (static::$users as $user) {
-            if ($user[$key] == $value) {
+            if ($user[$key] === $value) {
                 return new static($user);
             }
         }

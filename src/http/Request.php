@@ -253,7 +253,7 @@ class Request extends Object implements ShouldBeRefreshed
         $port = $parts[1];
         $secure = $this->secure();
 
-        if ((!$secure && $port == 80) || ($secure && $port == 443)) {
+        if ((!$secure && $port === 80) || ($secure && $port === 443)) {
             return $host;
         } else {
             return $host . ':' . $port;
@@ -327,11 +327,11 @@ class Request extends Object implements ShouldBeRefreshed
         $parsedBody = [];
         $contentType = $this->getContentType();
 
-        if ($contentType == 'application/json') {
+        if ($contentType === 'application/json') {
             $parsedBody = json_decode($body, true);
-        } elseif ($contentType == 'application/x-www-form-urlencoded') {
+        } elseif ($contentType === 'application/x-www-form-urlencoded') {
             parse_str($body, $parsedBody);
-        } elseif ($contentType == 'multipart/form-data') {
+        } elseif ($contentType === 'multipart/form-data') {
             // noop
         } else {
             throw new NotSupportedException("The content type: '$contentType' does not supported");

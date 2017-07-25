@@ -27,7 +27,7 @@ class ServerCommand extends BaseServer
     {
         $operation = $input->getArgument('operation');
 
-        if (!in_array($operation, ['serve', 'start', 'reload', 'restart', 'stop'])) {
+        if (!in_array($operation, ['serve', 'start', 'reload', 'restart', 'stop'], true)) {
             throw new InvalidParamException('The <operation> argument is invalid');
         }
 
