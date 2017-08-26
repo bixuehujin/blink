@@ -5,6 +5,7 @@ namespace blink\server;
 use blink\core\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Dotenv\Dotenv;
 
 /**
  * Class CliServer
@@ -16,6 +17,14 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class CliServer extends Server
 {
+
+    public function init()
+    {
+        if ($file = getenv('ENV_FILE')) {
+            (new Dotenv())->load($file);
+        }
+    }
+
     public function run()
     {
         $app = $this->startApp();

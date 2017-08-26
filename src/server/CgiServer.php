@@ -9,6 +9,7 @@ namespace blink\server;
 
 use blink\http\File;
 use blink\http\Response;
+use Symfony\Component\Dotenv\Dotenv;
 
 /**
  * The CgiServer makes it possible to run Blink application upon php-fpm or Apache's mod_php.
@@ -19,6 +20,13 @@ use blink\http\Response;
  */
 class CgiServer extends Server
 {
+    public function init()
+    {
+        if ($file = getenv('ENV_FILE')) {
+            (new Dotenv())->load($file);
+        }
+    }
+
     protected function extractHeaders()
     {
         $headers = [];
