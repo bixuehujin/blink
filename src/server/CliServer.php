@@ -17,7 +17,6 @@ use Symfony\Component\Dotenv\Dotenv;
  */
 class CliServer extends Server
 {
-
     public function init()
     {
         if ($file = getenv('ENV_FILE')) {
