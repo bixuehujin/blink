@@ -4,6 +4,8 @@ namespace blink\console;
 
 use blink\core\console\Command;
 use blink\core\InvalidValueException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Dotenv\Dotenv;
 
 /**
  * Class BaseServerCommand
@@ -18,6 +20,15 @@ class BaseServer extends Command
      * @var bool
      */
     public $bootstrap = false;
+
+    protected function loadEnvFile(InputInterface $input)
+    {
+        $file = $input->getOption('env-file');
+
+        if ($file) {
+            (new Dotenv())->load($file);
+        }
+    }
 
     protected function getServerDefinition()
     {
