@@ -20,6 +20,7 @@ class ServerServeCommand extends BaseServer
     {
         $this->addOption('cli', null, InputOption::VALUE_NONE, "Serve requests using php's built-in web server");
         $this->addOption('live-reload', null, InputOption::VALUE_NONE, "Reload server on every requests, useful on development environment");
+        $this->addOption('env-file', null, InputOption::VALUE_REQUIRED, 'The env file');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -30,6 +31,8 @@ class ServerServeCommand extends BaseServer
             $this->error('The Swoole extension is not installed, the PHP\'s built-in web server will be used');
             $cliMode = true;
         }
+
+        $this->loadEnvFile($input);
 
         if ($cliMode) {
             return $this->handleCliServe();
