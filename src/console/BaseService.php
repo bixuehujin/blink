@@ -20,7 +20,7 @@ class BaseService extends BaseServer
 
     protected function getServiceName()
     {
-        $serverConfig = $this->blink->root . '/config/server.php';
+        $serverConfig = $this->blink->root . '/src/config/server.php';
 
         $config = [];
 
