@@ -23,7 +23,7 @@ class ServiceUninstallCommand extends BaseService
         $unitFile = $this->getSystemUnitDir() . '/' . $this->serviceName . '.service';
 
         if (!file_exists($unitFile)) {
-           return;
+            return;
         }
 
         system('systemctl disable ' . $this->serviceName);
