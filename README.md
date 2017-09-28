@@ -17,7 +17,7 @@ our PHP application 100% faster in just a blink.
 ## Community
 
  * Gitter (Worldwide): [![Join the chat at https://gitter.im/bixuehujin/blink](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bixuehujin/blink?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- * QQ群 (China): 114632054
+ * QQ群 (China): 114632054 (暗号: blink)
 
 ## Why build this?
 
