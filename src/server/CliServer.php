@@ -26,7 +26,7 @@ class CliServer extends Server
 
     public function run()
     {
-        $app = $this->startApp();
+        $app = $this->createApplication();
 
         $runner = new \blink\core\console\Application([
             'name' => 'Blink Command Runner',

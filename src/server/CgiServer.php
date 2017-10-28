@@ -115,9 +115,9 @@ class CgiServer extends Server
 
     public function run()
     {
-        $this->startApp();
+        $app = $this->createApplication();
 
-        $response = $this->handleRequest($this->extractRequest());
+        $response = $app->handleRequest($this->extractRequest());
 
         $this->response($response);
     }

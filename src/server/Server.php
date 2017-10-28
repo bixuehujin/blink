@@ -25,7 +25,10 @@ abstract class Server extends Object
      */
     public $bootstrap;
 
-    public function startApp()
+    /**
+     * @return Application
+     */
+    public function createApplication()
     {
         if ($this->bootstrap instanceof Application) {
             $app = $this->bootstrap;
@@ -38,14 +41,9 @@ abstract class Server extends Object
         return $app;
     }
 
-    public function stopApp()
+    public function shutdownApplication()
     {
         app()->shutdown();
-    }
-
-    public function handleRequest($request)
-    {
-        return app()->handleRequest($request);
     }
 
     abstract public function run();

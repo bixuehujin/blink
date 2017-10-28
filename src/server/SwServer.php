@@ -153,7 +153,7 @@ class SwServer extends Server
     {
         $this->setProcessTitle($this->name . ': worker');
 
-        $this->startApp();
+        $this->createApplication();
     }
     
     protected function setProcessTitle($title)
@@ -172,7 +172,7 @@ class SwServer extends Server
 
     public function onWorkerStop()
     {
-        $this->stopApp();
+        $this->shutdownApplication();
     }
 
     public function onTask($server, $taskId, $fromId, $data)
@@ -214,7 +214,7 @@ class SwServer extends Server
 
     public function onRequest($request, $response)
     {
-        $res = $this->handleRequest($this->prepareRequest($request));
+        $res = app()->handleRequest($this->prepareRequest($request));
 
         $content = $res->content();
 
