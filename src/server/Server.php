@@ -38,6 +38,8 @@ abstract class Server extends Object
             $app = require $this->bootstrap;
         }
 
+        $app->server = $this;
+
         return $app;
     }
 
