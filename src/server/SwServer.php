@@ -224,7 +224,6 @@ class SwServer extends Server
                 $response->header($name, $value);
             }
         }
-        $response->header('Content-Length', strlen($content));
         foreach ($res->cookies as $cookie) {
             $response->header('Set-Cookie', $cookie->toString());
         }
