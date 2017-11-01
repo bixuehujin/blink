@@ -2,7 +2,7 @@
 
 namespace blink\tests\http;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\ErrorHandler;
 use blink\core\Application;
 use blink\http\Request;
@@ -81,7 +81,7 @@ class ApplicationTest extends TestCase
 }
 
 
-class TestController extends Object
+class TestController extends BaseObject
 {
     public function __construct(Request $request, $config = [])
     {

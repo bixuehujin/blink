@@ -2,7 +2,7 @@
 
 namespace blink\auth;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\auth\Contract as AuthContract;
 use blink\session\Session;
 
@@ -11,7 +11,7 @@ use blink\session\Session;
  *
  * @package blink\auth
  */
-class Auth extends Object implements AuthContract
+class Auth extends BaseObject implements AuthContract
 {
     /**
      * The class that implements Authenticatable interface.

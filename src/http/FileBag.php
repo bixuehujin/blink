@@ -4,7 +4,7 @@ namespace blink\http;
 
 use Countable;
 use ArrayIterator;
-use blink\core\Object;
+use blink\core\BaseObject;
 use IteratorAggregate;
 
 /**
@@ -12,7 +12,7 @@ use IteratorAggregate;
  *
  * @package blink\http
  */
-class FileBag extends Object implements IteratorAggregate, Countable
+class FileBag extends BaseObject implements IteratorAggregate, Countable
 {
     private $files;
 

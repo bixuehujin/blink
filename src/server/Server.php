@@ -2,7 +2,7 @@
 
 namespace blink\server;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\Application;
 
 /**
@@ -10,7 +10,7 @@ use blink\core\Application;
  *
  * @package blink\server
  */
-abstract class Server extends Object
+abstract class Server extends BaseObject
 {
     public $host = '0.0.0.0';
     public $port = 7788;

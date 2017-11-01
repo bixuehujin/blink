@@ -3,11 +3,11 @@
 namespace blink\core;
 
 /**
- * Class Object
+ * Class BaseObject
  *
  * @package blink\core
  */
-class Object implements Configurable
+class BaseObject implements Configurable
 {
     use ObjectTrait;
 }

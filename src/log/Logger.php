@@ -3,7 +3,7 @@
 namespace blink\log;
 
 use blink\core\InvalidParamException;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\di\Instance;
 use Monolog\Formatter\JsonFormatter;
 use Psr\Log\LoggerInterface;
@@ -16,7 +16,7 @@ use Monolog\Handler\HandlerInterface;
  *
  * @package blink\log
  */
-class Logger extends Object implements LoggerInterface
+class Logger extends BaseObject implements LoggerInterface
 {
     use LoggerTrait;
 
@@ -71,7 +71,7 @@ class MonoLogger extends BaseMonoLogger
      */
     public function pushHandler(HandlerInterface $handler)
     {
-        if ($handler instanceof Object) {
+        if ($handler instanceof BaseObject) {
             array_unshift($this->handlers, $handler);
         }
 

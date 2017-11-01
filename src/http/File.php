@@ -7,7 +7,7 @@
 
 namespace blink\http;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 
 /**
  * File represents an uploaded file.
@@ -19,7 +19,7 @@ use blink\core\Object;
  * @author Jin Hu <bixuehujin@gmail.com>
  * @since 0.2.0
  */
-class File extends Object
+class File extends BaseObject
 {
     public $name;
     public $tmpName;

@@ -9,7 +9,7 @@ namespace blink\http;
 
 use ArrayIterator;
 use IteratorAggregate;
-use blink\core\Object;
+use blink\core\BaseObject;
 
 /**
  * Class CookieBag
@@ -17,7 +17,7 @@ use blink\core\Object;
  * @package blink\http
  * @since 0.2.0
  */
-class CookieBag extends Object implements IteratorAggregate
+class CookieBag extends BaseObject implements IteratorAggregate
 {
     private $cookies;
 

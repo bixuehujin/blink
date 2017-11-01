@@ -10,7 +10,7 @@
 namespace blink\di;
 
 use ReflectionClass;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\InvalidConfigException;
 
 /**
@@ -95,7 +95,7 @@ use blink\core\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Container extends Object
+class Container extends BaseObject
 {
     /**
      * @var static

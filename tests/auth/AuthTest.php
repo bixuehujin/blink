@@ -5,7 +5,7 @@ namespace blink\tests\auth;
 use blink\auth\Auth;
 use blink\auth\Authenticatable;
 use blink\core\InvalidParamException;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\Application;
 use blink\testing\TestCase;
 use blink\session\Manager;
@@ -76,7 +76,7 @@ class AuthTest extends TestCase
     }
 }
 
-class TestUser extends Object implements Authenticatable
+class TestUser extends BaseObject implements Authenticatable
 {
     public static $users = [
         ['id' => 1, 'name' => 'user1', 'password' => 'user1'],

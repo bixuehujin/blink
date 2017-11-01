@@ -7,7 +7,7 @@
 
 namespace blink\http;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 
 /**
  * Class Cookie
@@ -15,7 +15,7 @@ use blink\core\Object;
  * @package blink\http
  * @since 0.2.0
  */
-class Cookie extends Object
+class Cookie extends BaseObject
 {
     /**
      * The name of the cookie.

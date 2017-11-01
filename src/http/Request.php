@@ -5,7 +5,7 @@ namespace blink\http;
 use blink\auth\Authenticatable;
 use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
 
 /**
@@ -19,7 +19,7 @@ use blink\core\ShouldBeRefreshed;
  * @property \blink\session\Session $session The session associated to the request
  * @package blink\http
  */
-class Request extends Object implements ShouldBeRefreshed
+class Request extends BaseObject implements ShouldBeRefreshed
 {
     use MiddlewareTrait;
 

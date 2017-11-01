@@ -4,10 +4,10 @@ namespace blink\http;
 
 use Countable;
 use IteratorAggregate;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\support\BagTrait;
 
-class HeaderBag extends Object implements IteratorAggregate, Countable
+class HeaderBag extends BaseObject implements IteratorAggregate, Countable
 {
     use BagTrait;
 

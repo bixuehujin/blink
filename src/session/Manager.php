@@ -3,7 +3,7 @@
 namespace blink\session;
 
 use blink\core\InvalidConfigException;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\session\Contract as SessionContract;
 
 /**
@@ -11,7 +11,7 @@ use blink\session\Contract as SessionContract;
  *
  * @package blink\session
  */
-class Manager extends Object implements SessionContract
+class Manager extends BaseObject implements SessionContract
 {
     /**
      * The backend session storage.

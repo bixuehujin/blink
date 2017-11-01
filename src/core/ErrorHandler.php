@@ -9,7 +9,7 @@ use Psr\Log\LogLevel;
  *
  * @package blink\core
  */
-class ErrorHandler extends Object
+class ErrorHandler extends BaseObject
 {
     public $memoryReserveSize = 262144;
     public $exception;

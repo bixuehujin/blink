@@ -9,7 +9,7 @@ use blink\di\Container;
  *
  * @package blink\core
  */
-class ServiceLocator extends Object
+class ServiceLocator extends BaseObject
 {
     /**
      * Bind a service definition to this service locator.

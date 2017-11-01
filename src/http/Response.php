@@ -3,7 +3,7 @@
 namespace blink\http;
 
 use blink\core\MiddlewareTrait;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
 use blink\support\Json;
 use blink\core\InvalidParamException;
@@ -14,7 +14,7 @@ use blink\core\InvalidParamException;
  * @property CookieBag $cookies
  * @package blink\http
  */
-class Response extends Object implements ShouldBeRefreshed
+class Response extends BaseObject implements ShouldBeRefreshed
 {
     use MiddlewareTrait;
 
