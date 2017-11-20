@@ -200,7 +200,7 @@ class SwServer extends Server
             'method' => $request->server['request_method'],
             'path' => $request->server['request_uri'],
             'headers' => $request->header,
-            'params' => isset($request->get) ? $request->get : [],
+            'queryString' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'cookies' => isset($request->cookie) ? $request->cookie : [],
             'content' => $request->rawContent()
         ];
