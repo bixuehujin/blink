@@ -169,9 +169,12 @@ class Response extends BaseObject implements ShouldBeRefreshed
     public function prepare()
     {
         if (!$this->prepared) {
-            $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
-            if ($this->data !== null && !is_string($this->data) && !$this->headers->has('Content-Type')) {
-                $this->headers->set('Content-Type', 'application/json');
+
+            if ($this->data !== null) {
+                $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
+                if (!is_string($this->data) && !$this->headers->has('Content-Type')) {
+                    $this->headers->set('Content-Type', 'application/json');
+                }
             }
 
             $this->prepared = true;
