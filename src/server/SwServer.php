@@ -49,7 +49,7 @@ class SwServer extends Server
     /**
      * The dispatch mode for swoole, defaults to 3 for http server.
      * 
-     * @var int 
+     * @var int
      * @see https://wiki.swoole.com/wiki/page/277.html
      */
     public $dispatchMode = 3;
