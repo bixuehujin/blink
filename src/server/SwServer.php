@@ -47,6 +47,14 @@ class SwServer extends Server
     public $asDaemon = false;
 
     /**
+     * The dispatch mode for swoole, defaults to 3 for http server.
+     * 
+     * @var int 
+     * @see https://wiki.swoole.com/wiki/page/277.html
+     */
+    public $dispatchMode = 3;
+
+    /**
      * Specifies the path where logs should be stored in.
      *
      * @var string
@@ -67,6 +75,7 @@ class SwServer extends Server
 
         $config['max_request'] = $this->maxRequests;
         $config['daemonize'] = $this->asDaemon;
+        $config['dispatch_mode'] = $this->dispatchMode;
 
         if ($this->numWorkers) {
             $config['worker_num'] = $this->numWorkers;
