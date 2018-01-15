@@ -2,7 +2,7 @@
 
 namespace blink\tests\server;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\server\SwServer;
 use blink\tests\TestCase;
 
@@ -53,7 +53,7 @@ class SwooleTest extends TestCase
     }
 }
 
-class MockedSwServer extends Object
+class MockedSwServer extends BaseObject
 {
     public $header;
     public $server;
