@@ -2,7 +2,7 @@
 
 namespace blink\session;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\support\BagTrait;
 
 /**
@@ -10,7 +10,7 @@ use blink\support\BagTrait;
  *
  * @package blink\session
  */
-class Session extends Object
+class Session extends BaseObject
 {
     use BagTrait;
 

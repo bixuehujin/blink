@@ -17,7 +17,6 @@ use blink\http\Uri;
  */
 class RequestActor
 {
-
     use AuthTrait;
 
     protected $phpunit;
@@ -261,11 +260,11 @@ class RequestActor
     {
         $expected = json_encode([$key => $value]);
 
-        if ($expected[0] == '{') {
+        if ($expected[0] === '{') {
             $expected = substr($expected, 1);
         }
 
-        if ($expected[strlen($expected) - 1] == '}') {
+        if ($expected[strlen($expected) - 1] === '}') {
             $expected = substr($expected, 0, -1);
         }
 
@@ -383,7 +382,7 @@ class RequestActor
             $values = $headers->get($name);
             $strValues = implode(', ', $values);
 
-            $this->phpunit->assertTrue(in_array($value, $values),
+            $this->phpunit->assertTrue(in_array($value, $values, true),
                 "Header [{$name}] was found, but value [{$strValues}] does not match [{$value}].");
         }
 
@@ -499,15 +498,16 @@ class RequestActor
     /**
      * Returns the response as json.
      *
+     * @param boolean $asArray Converts object to associative arrays, defaults to true.
      * @return mixed
      */
-    public function asJson()
+    public function asJson($asArray = true)
     {
         if (!$this->isJsonMessage($this->response->headers)) {
             throw new \RuntimeException('The response is not a valid json response');
         }
 
-        return json_decode($this->response->content(), true);
+        return json_decode($this->response->content(), $asArray);
     }
 
     /**

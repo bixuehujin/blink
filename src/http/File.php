@@ -8,7 +8,7 @@
 namespace blink\http;
 
 use RuntimeException;
-use blink\core\Object;
+use blink\core\BaseObject;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**
@@ -21,7 +21,7 @@ use Psr\Http\Message\UploadedFileInterface;
  * @author Jin Hu <bixuehujin@gmail.com>
  * @since 0.2.0
  */
-class File extends Object implements UploadedFileInterface
+class File extends BaseObject implements UploadedFileInterface
 {
     public $name;
     public $tmpName;
@@ -44,7 +44,7 @@ class File extends Object implements UploadedFileInterface
 
     public function hasError()
     {
-        return $this->error != UPLOAD_ERR_OK;
+        return $this->error !== UPLOAD_ERR_OK;
     }
 
     public function saveAs($path)

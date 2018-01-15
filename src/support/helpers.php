@@ -110,3 +110,7 @@ function abort($status, $message = null)
 {
     throw new HttpException($status, $message);
 }
+
+if (version_compare(PHP_VERSION, '7.2') < 0) {
+    class_alias(blink\core\BaseObject::class, blink\core\Object::class);
+}

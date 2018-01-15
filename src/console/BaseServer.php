@@ -4,6 +4,8 @@ namespace blink\console;
 
 use blink\core\console\Command;
 use blink\core\InvalidValueException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Dotenv\Dotenv;
 
 /**
  * Class BaseServerCommand
@@ -12,6 +14,22 @@ use blink\core\InvalidValueException;
  */
 class BaseServer extends Command
 {
+    /**
+     * We disabled app auto bootstrapping here to make lazy loading works.
+     *
+     * @var bool
+     */
+    public $bootstrap = false;
+
+    protected function loadEnvFile(InputInterface $input)
+    {
+        $file = $input->getOption('env-file');
+
+        if ($file) {
+            (new Dotenv())->load($file);
+        }
+    }
+
     protected function getServerDefinition()
     {
         if (isset($this->blink->server) && is_array($this->blink->server)) {
@@ -85,7 +103,7 @@ class BaseServer extends Command
         if (file_exists($pidFile) && posix_kill(file_get_contents($pidFile), 15)) {
             do {
                 usleep(100000);
-            } while(file_exists($pidFile));
+            } while (file_exists($pidFile));
             return 0;
         }
 

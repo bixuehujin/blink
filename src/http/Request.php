@@ -2,11 +2,11 @@
 
 namespace blink\http;
 
-use blink\core\Object;
 use blink\auth\Authenticatable;
 use blink\core\InvalidParamException;
 use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
+use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,28 +14,17 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Class Request
  *
-<<<<<<< 048d4ef900a09fc7a66d33973887b4f598646f89
  * @property ParamBag               $params  The collection of query parameters
  * @property HeaderBag              $headers The collection of request headers
  * @property ParamBag               $body    The collection of request body
  * @property FileBag                $files   The collection of uploaded files
  * @property CookieBag              $cookies The collection of received cookies.
-=======
- * @property ParamBag $params The collection of query parameters
- * @property HeaderBag $headers The collection of request headers
- * @property ParamBag $payload The collection of request body
- * @property ParamBag $attributes The collection of attributes
- * @property FileBag $files The collection of uploaded files
- * @property CookieBag $cookies The collection of received cookies.
- * @property Uri $uri The uri instance of the request
- *
->>>>>>> Implemented PSR-7 Reqeust & Response
+ * @property Uri                    $uri     The uri instance of the request
  * @property \blink\session\Session $session The session associated to the request
  * @package blink\http
  */
-class Request extends Object implements ShouldBeRefreshed, ServerRequestInterface
+class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInterface
 {
-
     use MiddlewareTrait;
     use MessageTrait;
 
@@ -48,7 +37,13 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
      * string function (Request $request);
      * ```
      *
+     * **deprecated**
+     *
+     * The sessionKey configuration is deprecated since v0.3.1, which will be removed in future release, please using
+     * CookieAuthenticator or custom middleware to resolve the session of a request.
+     *
      * @var string|callable
+     * @deprecated
      */
     public $sessionKey = 'X-Session-Id';
 
@@ -87,12 +82,10 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
     public function secure()
     {
         if ($this->headers->first('x-forwarded-proto') === 'https') {
-
             return true;
         }
 
         if ((int)$this->headers->first('x-forwarded-port') === 443) {
-
             return true;
         }
 
@@ -240,7 +233,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
         $secure = $this->secure();
 
-        if ((!$secure && $uri->port == 80) || ($secure && $uri->port == 443)) {
+        if ((!$secure && $uri->port === 80) || ($secure && $uri->port === 443)) {
             return $uri->host;
         }else {
             return $uri->host . ':' . $uri->port;
@@ -313,11 +306,11 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
         $parsedBody = [];
         $contentType = $this->getContentType();
 
-        if ($contentType == 'application/json') {
+        if ($contentType === 'application/json') {
             $parsedBody = json_decode($body, true);
-        } else if ($contentType == 'application/x-www-form-urlencoded') {
+        } elseif ($contentType === 'application/x-www-form-urlencoded') {
             parse_str($body, $parsedBody);
-        } else if ($contentType == 'multipart/form-data') {
+        } elseif ($contentType === 'multipart/form-data') {
             // noop
         } else {
             throw new NotSupportedException("The content type: '$contentType' does not supported");
@@ -420,7 +413,7 @@ class Request extends Object implements ShouldBeRefreshed, ServerRequestInterfac
 
         if ($this->_user === false) {
             if (($session = $this->getSession()) && $session->id) {
-                $this->_user = auth()->who($session->id);
+                $this->_user = auth()->who($session);
             } else {
                 $this->_user = null;
             }

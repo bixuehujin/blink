@@ -3,7 +3,7 @@
 namespace blink\http;
 
 use blink\core\MiddlewareTrait;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
 use blink\support\Json;
 use blink\core\InvalidParamException;
@@ -16,9 +16,8 @@ use Psr\Http\Message\StreamInterface;
  * @property CookieBag $cookies
  * @package blink\http
  */
-class Response extends Object implements ShouldBeRefreshed, ResponseInterface
+class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterface
 {
-
     use MiddlewareTrait;
     use MessageTrait;
 
@@ -181,9 +180,11 @@ class Response extends Object implements ShouldBeRefreshed, ResponseInterface
     public function prepare()
     {
         if (!$this->prepared) {
-            $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
-            if ($this->data !== null && !is_string($this->data) && !$this->headers->has('Content-Type')) {
-                $this->headers->set('Content-Type', 'application/json');
+            if ($this->data !== null) {
+                $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
+                if (!is_string($this->data) && !$this->headers->has('Content-Type')) {
+                    $this->headers->set('Content-Type', 'application/json');
+                }
             }
 
             $this->prepared = true;

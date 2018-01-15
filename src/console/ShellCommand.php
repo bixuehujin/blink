@@ -8,7 +8,6 @@ use blink\core\console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class ShellCommand
  *
@@ -23,8 +22,6 @@ class ShellCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->blink->bootstrapIfNeeded();
-
         $config = new Configuration();
         $config->getPresenter()->addCasters($this->casters);
 

@@ -2,7 +2,7 @@
 
 namespace blink\server;
 
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\Application;
 
 /**
@@ -10,7 +10,7 @@ use blink\core\Application;
  *
  * @package blink\server
  */
-abstract class Server extends Object
+abstract class Server extends BaseObject
 {
     public $host = '0.0.0.0';
     public $port = 7788;
@@ -25,27 +25,27 @@ abstract class Server extends Object
      */
     public $bootstrap;
 
-    public function startApp()
+    /**
+     * @return Application
+     */
+    public function createApplication()
     {
         if ($this->bootstrap instanceof Application) {
             $app = $this->bootstrap;
-        } else if (is_array($this->bootstrap)) {
+        } elseif (is_array($this->bootstrap)) {
             $app = new Application($this->bootstrap);
         } else {
             $app = require $this->bootstrap;
         }
 
+        $app->server = $this;
+
         return $app;
     }
 
-    public function stopApp()
+    public function shutdownApplication()
     {
         app()->shutdown();
-    }
-
-    public function handleRequest($request)
-    {
-        return app()->handleRequest($request);
     }
 
     abstract public function run();

@@ -10,7 +10,7 @@ Blink 提供了一套轻量级的*认证授权框架*，通过这套框架我们
 定义 User Identity
 -----------------
 
-为了定义一个 User Identity 类，我们需要实现 `blink\auth\Authenticatable` 接口，下面的例子展示了如何利用静态用户数据定义 User Identiry：
+为了定义一个 User Identity 类，我们需要实现 `blink\auth\Authenticatable` 接口，下面的例子展示了如何利用静态用户数据定义 User Identity：
 
 ```php
 namespace app;
@@ -115,5 +115,8 @@ class Controller extends Object
 
 ```
 
-目前，Blink 默认采用 `X-Session-Id` Http 头来传输 Session Id。当然，这也是可以配置的，我们可以通过设置 `blink\http\Request`
-的 `sessionKey` 属性来改变这个行为，关于如何设置该属性，请查看对应类实现的注释。
+在 v0.3.0 之前， Blink 默认采用 `X-Session-Id` HTTP 头来传输 Session Id，同时也可以通过`blink\http\Request::$sessionKey` 属性进行配置。
+
+不过从 v0.3.1 开始，该特性正式被废弃，未来版本将会被彻底移除。同时，Blink 新添加 `CookieAuthenticator` 中间件实现基于 Cookie 的 Session 存储机制，默认使用 `BLINK_SESSION_ID` 这个 Cookie 传递 Session ID。
+
+如果开发者想要自定义 Session ID 的传输及存储机制，比如基于 OAuth2 的 Bearer Token，我们推荐编写对应的 Middleware 进行处理。

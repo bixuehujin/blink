@@ -42,3 +42,8 @@ Blink 中文文档
 
 * [开发与部署](5-1-development-and-deploymnet.md)
 
+附录
+----
+
+* [代码写诗](10-1-artisan-in-coding.md)
+

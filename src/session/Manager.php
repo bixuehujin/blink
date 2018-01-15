@@ -2,7 +2,8 @@
 
 namespace blink\session;
 
-use blink\core\Object;
+use blink\core\InvalidConfigException;
+use blink\core\BaseObject;
 use blink\session\Contract as SessionContract;
 
 /**
@@ -10,7 +11,7 @@ use blink\session\Contract as SessionContract;
  *
  * @package blink\session
  */
-class Manager extends Object implements SessionContract
+class Manager extends BaseObject implements SessionContract
 {
     /**
      * The backend session storage.
@@ -25,6 +26,7 @@ class Manager extends Object implements SessionContract
      */
     public $expires = 1296000;
 
+    public $sessionClass = Session::class;
 
     public function init()
     {
@@ -33,6 +35,11 @@ class Manager extends Object implements SessionContract
         }
 
         $this->storage->timeout($this->expires);
+
+        if ($this->sessionClass !== Session::class
+            && !is_subclass_of($this->sessionClass, Session::class)) {
+            throw new InvalidConfigException(sprintf('The %s::$sessionClass config expects a subclass of "blink\session\Session" as its value'));
+        }
     }
 
     /**
@@ -41,14 +48,18 @@ class Manager extends Object implements SessionContract
     public function put($attributes = [])
     {
         if ($attributes instanceof Session) {
+            $id = $attributes->id;
             $attributes = $attributes->all();
         }
 
-        $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
+        if (!isset($id)) {
+            $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
+        }
 
         $this->storage->write($id, $attributes);
 
-        return new Session($attributes, ['id' => $id]);
+        $class = $this->sessionClass;
+        return new $class($attributes, ['id' => $id]);
     }
 
     /**
@@ -59,7 +70,8 @@ class Manager extends Object implements SessionContract
         if ($id) {
             $data = $this->storage->read($id);
             if ($data !== null) {
-                return new Session($data, ['id' => $id]);
+                $class = $this->sessionClass;
+                return new $class($data, ['id' => $id]);
             }
         }
     }

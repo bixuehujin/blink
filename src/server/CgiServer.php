@@ -12,6 +12,7 @@ use blink\http\Request;
 use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
+use Symfony\Component\Dotenv\Dotenv;
 
 /**
  * The CgiServer makes it possible to run Blink application upon php-fpm or Apache's mod_php.
@@ -22,6 +23,13 @@ use blink\http\Uri;
  */
 class CgiServer extends Server
 {
+    public function init()
+    {
+        if ($file = getenv('ENV_FILE')) {
+            (new Dotenv())->load($file);
+        }
+    }
+
     protected function extractHeaders()
     {
         $headers = [];
@@ -94,7 +102,7 @@ class CgiServer extends Server
             'uri' => new Uri('', $uriConfig),
             'method' => strtoupper($_SERVER['REQUEST_METHOD']),
             'headers' => $this->extractHeaders(),
-            'params' => $_GET,
+            'queryString' => isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '',
             'cookies' => $_COOKIE,
             'body' => $body,
         ];
@@ -110,7 +118,7 @@ class CgiServer extends Server
     {
         foreach ($response->headers->all() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
-            foreach($values as $value) {
+            foreach ($values as $value) {
                 header($name . ': ' . $value, false, $response->statusCode);
             }
         }
@@ -124,9 +132,9 @@ class CgiServer extends Server
 
     public function run()
     {
-        $this->startApp();
+        $app = $this->createApplication();
 
-        $response = $this->handleRequest($this->extractRequest());
+        $response = $app->handleRequest($this->extractRequest());
 
         $this->response($response);
     }

@@ -2,8 +2,8 @@
 
 namespace blink\http;
 
+use blink\core\BaseObject;
 use blink\core\InvalidParamException;
-use blink\core\Object;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -14,7 +14,7 @@ use Psr\Http\Message\UriInterface;
  * @package blink\http
  * @since 0.3
  */
-class Uri extends Object implements UriInterface
+class Uri extends BaseObject implements UriInterface
 {
     /**
      * @var string

@@ -9,7 +9,7 @@ use Psr\Log\LogLevel;
  *
  * @package blink\core
  */
-class ErrorHandler extends Object
+class ErrorHandler extends BaseObject
 {
     public $memoryReserveSize = 262144;
     public $exception;
@@ -98,7 +98,7 @@ class ErrorHandler extends Object
             $trace = debug_backtrace(0);
             array_shift($trace);
             foreach ($trace as $frame) {
-                if ($frame['function'] == '__toString') {
+                if ($frame['function'] === '__toString') {
                     $this->handleException($exception);
                     return true;
                 }
@@ -140,7 +140,7 @@ class ErrorHandler extends Object
 
     protected function report($exception)
     {
-        if (in_array(get_class($exception), $this->notReport)) {
+        if (in_array(get_class($exception), $this->notReport, true)) {
             return;
         }
 

@@ -5,11 +5,11 @@ namespace blink\http;
 use Countable;
 use ArrayAccess;
 use IteratorAggregate;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\support\BagTrait;
 
 
-class HeaderBag extends Object implements IteratorAggregate, Countable, ArrayAccess
+class HeaderBag extends BaseObject implements IteratorAggregate, Countable, ArrayAccess
 {
     use BagTrait;
 

@@ -8,7 +8,6 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\OutputStyle;
 
 /**
  * Class Command
@@ -19,11 +18,42 @@ class Command extends SymfonyCommand implements Configurable
 {
     use ObjectTrait;
 
+    /**
+     * The blink app instance.
+     *
+     * @var \blink\core\Application
+     */
     public $blink;
+
+    /**
+     * The name of the command.
+     *
+     * @var string
+     */
     public $name;
+
+    /**
+     * The description of the command.
+     *
+     * @var string
+     */
     public $description;
 
+    /**
+     * Whether or not bootstrap the application automatically, defaults to true.
+     *
+     * @var bool
+     */
+    public $bootstrap = true;
+
+    /**
+     * @var InputInterface
+     */
     public $input;
+
+    /**
+     * @var OutputInterface
+     */
     public $output;
 
     public function __construct($config = [])
@@ -41,6 +71,10 @@ class Command extends SymfonyCommand implements Configurable
 
     public function run(InputInterface $input, OutputInterface $output)
     {
+        if ($this->bootstrap) {
+            $this->blink->bootstrapIfNeeded();
+        }
+
         $this->input = $input;
         $this->output = $output;
 

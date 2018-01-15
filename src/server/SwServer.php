@@ -1,10 +1,10 @@
 <?php
 
 namespace blink\server;
+
 use blink\http\Request;
 use blink\http\Stream;
 use blink\http\Uri;
-
 
 /**
  * A Swoole based server implementation.
@@ -51,6 +51,14 @@ class SwServer extends Server
     public $asDaemon = false;
 
     /**
+     * The dispatch mode for swoole, defaults to 3 for http server.
+     *
+     * @var int
+     * @see https://wiki.swoole.com/wiki/page/277.html
+     */
+    public $dispatchMode = 3;
+
+    /**
      * Specifies the path where logs should be stored in.
      *
      * @var string
@@ -71,6 +79,7 @@ class SwServer extends Server
 
         $config['max_request'] = $this->maxRequests;
         $config['daemonize'] = $this->asDaemon;
+        $config['dispatch_mode'] = $this->dispatchMode;
 
         if ($this->numWorkers) {
             $config['worker_num'] = $this->numWorkers;
@@ -134,7 +143,8 @@ class SwServer extends Server
 
     public function onServerStart($server)
     {
-        cli_set_process_title($this->name . ': master');
+        $this->setProcessTitle($this->name . ': master');
+
         if ($this->pidFile) {
             file_put_contents($this->pidFile, $server->master_pid);
         }
@@ -142,7 +152,7 @@ class SwServer extends Server
 
     public function onManagerStart($server)
     {
-        cli_set_process_title($this->name . ': manager');
+        $this->setProcessTitle($this->name . ': manager');
     }
 
     public function onServerStop()
@@ -154,23 +164,36 @@ class SwServer extends Server
 
     public function onWorkerStart()
     {
-        cli_set_process_title($this->name . ': worker');
-        $this->startApp();
+        $this->setProcessTitle($this->name . ': worker');
+
+        $this->createApplication();
+    }
+    
+    protected function setProcessTitle($title)
+    {
+        if (@cli_set_process_title($title) !== false) {
+            return;
+        }
+
+        if (PHP_OS !== 'Darwin') {
+            $error = error_get_last();
+            trigger_error($error['message'], E_USER_WARNING);
+        } elseif (extension_loaded('proctitle')) {
+            setproctitle($title);
+        }
     }
 
     public function onWorkerStop()
     {
-        $this->stopApp();
+        $this->shutdownApplication();
     }
 
     public function onTask($server, $taskId, $fromId, $data)
     {
-
     }
 
     public function onFinish($server, $taskId, $data)
     {
-
     }
 
     protected function normalizeFiles($files)
@@ -204,6 +227,7 @@ class SwServer extends Server
             'protocol' => $protocolParts[1],
             'method' => $request->server['request_method'],
             'headers' => $request->header,
+            'queryString' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'cookies' => isset($request->cookie) ? $request->cookie : [],
             'body' => $body,
         ];
@@ -217,17 +241,16 @@ class SwServer extends Server
 
     public function onRequest($request, $response)
     {
-        $res = $this->handleRequest($this->createRequest($request));
+        $res = app()->handleRequest($this->createRequest($request));
 
         $content = $res->content();
 
         foreach ($res->headers->all() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
-            foreach($values as $value) {
+            foreach ($values as $value) {
                 $response->header($name, $value);
             }
         }
-        $response->header('Content-Length', strlen($content));
         foreach ($res->cookies as $cookie) {
             $response->header('Set-Cookie', $cookie->toString());
         }

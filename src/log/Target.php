@@ -8,14 +8,12 @@
 
 namespace blink\log;
 
-
-use blink\core\Object;
+use blink\core\BaseObject;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Formatter\FormatterInterface;
 use Psr\Log\LogLevel;
 
-
-abstract class Target extends Object implements HandlerInterface
+abstract class Target extends BaseObject implements HandlerInterface
 {
     /**
      * Whether to enable this log target, Defaults to true.

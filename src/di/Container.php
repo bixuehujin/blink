@@ -10,7 +10,7 @@
 namespace blink\di;
 
 use ReflectionClass;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\core\InvalidConfigException;
 
 /**
@@ -95,7 +95,7 @@ use blink\core\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Container extends Object
+class Container extends BaseObject
 {
     /**
      * @var static
@@ -365,7 +365,7 @@ class Container extends Object
     public function clear($class)
     {
         $concrete = $this->getAlias($class);
-        unset ($this->_aliases[$class]);
+        unset($this->_aliases[$class]);
 
         unset($this->_definitions[$concrete], $this->_singletons[$concrete]);
     }
@@ -420,7 +420,7 @@ class Container extends Object
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list ($reflection, $dependencies) = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;

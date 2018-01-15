@@ -36,3 +36,10 @@ Since Blink is designed to be a generic framework, it is capable of supporting a
 * PHP 5.6 and above
 * Swoole Extension 1.7.19 and above
 
+
+## GitHub Repository
+--------------------
+
+https://github.com/bixuehujin/blink
+
+

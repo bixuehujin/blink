@@ -2,9 +2,7 @@
 
 namespace blink\support;
 
-
 use ArrayIterator;
-
 
 trait BagTrait
 {

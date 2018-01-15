@@ -5,10 +5,11 @@ namespace blink\http;
 use Countable;
 use ArrayAccess;
 use IteratorAggregate;
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\support\BagTrait;
 
-class ParamBag extends Object implements IteratorAggregate, Countable, ArrayAccess
+
+class ParamBag extends BaseObject implements IteratorAggregate, Countable, ArrayAccess
 {
     use BagTrait;
 
@@ -19,13 +20,13 @@ class ParamBag extends Object implements IteratorAggregate, Countable, ArrayAcce
         parent::__construct($config);
     }
 
-    public function filter($key, $default = null, $filter = FILTER_DEFAULT, $options = array())
+    public function filter($key, $default = null, $filter = FILTER_DEFAULT, $options = [])
     {
         $value = $this->get($key, $default);
 
         // Always turn $options into an array - this allows filter_var option shortcuts.
         if (!is_array($options) && $options) {
-            $options = array('flags' => $options);
+            $options = ['flags' => $options];
         }
 
         // Add a convenience check for arrays.

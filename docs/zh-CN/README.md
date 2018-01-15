@@ -31,3 +31,11 @@ Blink适用场景
 * PHP 5.6 以上版本
 * Swoole 扩展 1.7.19 以上版本
 
+
+项目地址
+-------
+
+https://github.com/bixuehujin/blink
+
+Blink 所有的开发讨论都在 GitHub 上进行, 欢迎开发者在 GitHub 上给我们提交 Issue 和 Pull Request。
+

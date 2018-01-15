@@ -17,7 +17,7 @@ our PHP application 100% faster in just a blink.
 ## Community
 
  * Gitter (Worldwide): [![Join the chat at https://gitter.im/bixuehujin/blink](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bixuehujin/blink?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
- * QQ群 (China): 114632054
+ * QQ群 (China): 114632054 (暗号: blink)
 
 ## Why build this?
 
@@ -53,11 +53,12 @@ composer create-project --prefer-dist blink/seed your-app
 
 Blink is fully documented in both English and Chinese:
 
- * [English Documentation](https://docs.rethinkphp.com/blink-framework/v0.3/en)
- * [简体中文文档](https://docs.rethinkphp.com/blink-framework/v0.3/zh-CN)
+ * [English Documentation](https://docs.rethinkphp.com/blink-framework/v0.3/en/)
+ * [简体中文文档](https://docs.rethinkphp.com/blink-framework/v0.3/zh-CN/)
 
 ## Related Projects
 
+ * [blink-redis](https://github.com/rethinkphp/blink-redis) A Redis component for the Blink Framework
  * [blink-sentry](https://github.com/bixuehujin/blink-sentry) The Sentry integration for Blink Framework.
  * [notejam_blink](https://github.com/Whyounes/notejam_blink) A notejam demo application for Blink.
 

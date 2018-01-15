@@ -1,0 +1,6 @@
+preset: PSR2
+
+enabled:
+  - strict
+  - strict_param
+  - short_array_syntax

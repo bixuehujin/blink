@@ -12,7 +12,6 @@ use Psr\Http\Message\UriInterface;
 
 class RequestTest extends TestCase
 {
-
     public function testDefault()
     {
         $request = new Request([]);

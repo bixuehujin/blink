@@ -1,2 +1,2 @@
 * [English](en/)
-* [中文](/zh-CN)
+* [中文](zh-CN/)
