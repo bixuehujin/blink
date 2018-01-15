@@ -227,7 +227,6 @@ class SwServer extends Server
             'protocol' => $protocolParts[1],
             'method' => $request->server['request_method'],
             'headers' => $request->header,
-            'queryString' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'cookies' => isset($request->cookie) ? $request->cookie : [],
             'body' => $body,
         ];
