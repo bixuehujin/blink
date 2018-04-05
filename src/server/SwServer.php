@@ -235,7 +235,7 @@ class SwServer extends Server
             $config['files'] = $this->normalizeFiles($request->files);
         }
 
-        return new Request($config);
+        return app()->makeRequest($config);
     }
 
     public function onRequest($request, $response)

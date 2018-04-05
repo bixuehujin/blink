@@ -337,7 +337,7 @@ class Application extends ServiceLocator
         }
 
         try {
-            $response->callMiddleware();
+            $this->callMiddleware('response', $response);
         } catch (\Exception $e) {
             $response->data = $e;
         } catch (\Throwable $e) {
@@ -392,7 +392,7 @@ class Application extends ServiceLocator
 
         $action = $this->createAction($handler);
 
-        $request->callMiddleware();
+        $this->callMiddleware('request', $request);
 
         $data = $this->runAction($action, $args, $request, $response);
 
@@ -401,6 +401,40 @@ class Application extends ServiceLocator
         }
     }
 
+
+    /**
+     * Call the middleware stack.
+     *
+     * @param string $id
+     * @param Request|Response $owner
+     * @throws InvalidConfigException
+     */
+    public function callMiddleware($id, $owner)
+    {
+        if ($owner->freezed) {
+            return;
+        }
+        $class = get_class($owner);
+
+        foreach ($owner->middleware as $definition) {
+            $middleware = make($definition);
+            if (!$middleware instanceof MiddlewareContract) {
+                throw new InvalidConfigException(sprintf("'%s' is not a valid middleware", get_class($middleware)));
+            }
+
+            $result = $middleware->handle($owner);
+            if ($result === false) {
+                break;
+            } else if ($result instanceof $class) {
+                $owner = $result;
+            }
+        }
+
+        $this->bind($id, $owner, true);
+        $owner->freeze();
+    }
+
+    
     protected function refreshServices()
     {
         foreach ($this->refreshing as $id => $_) {

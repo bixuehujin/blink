@@ -111,7 +111,7 @@ class CgiServer extends Server
             $config['files'] = $this->normalizeFiles($_FILES);
         }
 
-        return new Request($config);
+        return app()->makeRequest($config);
     }
 
     protected function response(Response $response)
