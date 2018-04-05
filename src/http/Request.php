@@ -625,7 +625,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
      */
     public function getParsedBody()
     {
-        return $this->getPayload();
+        return $this->getPayload()->all();
     }
 
     /**
