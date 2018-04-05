@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @property ParamBag               $params  The collection of query parameters
  * @property HeaderBag              $headers The collection of request headers
- * @property ParamBag               $body    The collection of request body
+ * @property ParamBag               $payload    The collection of request body
  * @property FileBag                $files   The collection of uploaded files
  * @property CookieBag              $cookies The collection of received cookies.
  * @property Uri                    $uri     The uri instance of the request
