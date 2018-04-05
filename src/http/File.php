@@ -50,7 +50,6 @@ class File extends BaseObject implements UploadedFileInterface
     public function saveAs($path)
     {
         if ($this->_saved) {
-
         }
         return copy($this->tmpName, $path);
     }

@@ -425,7 +425,7 @@ class Application extends ServiceLocator
             $result = $middleware->handle($owner);
             if ($result === false) {
                 break;
-            } else if ($result instanceof $class) {
+            } elseif ($result instanceof $class) {
                 $owner = $result;
             }
         }

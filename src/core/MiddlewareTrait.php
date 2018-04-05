@@ -35,7 +35,6 @@ trait MiddlewareTrait
     
     public function freeze()
     {
-        $this->freezed = true; 
+        $this->freezed = true;
     }
-    
 }

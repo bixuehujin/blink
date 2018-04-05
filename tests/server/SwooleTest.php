@@ -13,7 +13,6 @@ use blink\tests\TestCase;
  */
 class SwooleTest extends TestCase
 {
-
     public function swooleRequest()
     {
         $config = [

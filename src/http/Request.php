@@ -243,7 +243,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
 
         if ((!$secure && $uri->port === 80) || ($secure && $uri->port === 443)) {
             return $uri->host;
-        }else {
+        } else {
             return $uri->host . ':' . $uri->port;
         }
     }
@@ -513,7 +513,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
     {
         if (is_string($uri)) {
             $uri = new Uri($uri);
-        } else if ($uri === null) {
+        } elseif ($uri === null) {
             $uri = new Uri();
         }
 
