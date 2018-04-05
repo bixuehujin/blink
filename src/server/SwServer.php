@@ -244,17 +244,14 @@ class SwServer extends Server
 
         $content = (string)$res->getBody();
 
-        foreach ($res->headers->all() as $name => $values) {
+        foreach ($res->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             foreach ($values as $value) {
                 $response->header($name, $value);
             }
         }
-        foreach ($res->cookies as $cookie) {
-            $response->header('Set-Cookie', $cookie->toString());
-        }
 
-        $response->status($res->statusCode);
+        $response->status($res->getStatusCode());
         $response->end($content);
     }
 

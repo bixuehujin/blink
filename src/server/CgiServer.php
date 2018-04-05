@@ -116,15 +116,11 @@ class CgiServer extends Server
 
     protected function response(Response $response)
     {
-        foreach ($response->headers->all() as $name => $values) {
+        foreach ($response->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             foreach ($values as $value) {
                 header($name . ': ' . $value, false, $response->statusCode);
             }
-        }
-
-        foreach ($response->cookies as $cookie) {
-            setcookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
 
         echo (string)$response->getBody();
