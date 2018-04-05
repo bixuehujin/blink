@@ -127,7 +127,7 @@ class CgiServer extends Server
             setcookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
 
-        echo $response->content();
+        echo (string)$response->getBody();
     }
 
     public function run()

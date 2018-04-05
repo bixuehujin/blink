@@ -242,7 +242,7 @@ class SwServer extends Server
     {
         $res = app()->handleRequest($this->createRequest($request));
 
-        $content = $res->content();
+        $content = (string)$res->getBody();
 
         foreach ($res->headers->all() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));

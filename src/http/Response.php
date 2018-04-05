@@ -102,10 +102,6 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
         511 => 'Network Authentication Required',
     ];
 
-    protected $content;
-
-    protected $prepared = false;
-
     public function __construct($body = 'php://memory', $status = 200, $config = [])
     {
         $this->setBody($body);
@@ -175,37 +171,6 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
     }
 
     /**
-     * Prepare the response to ready to send to client.
-     */
-    public function prepare()
-    {
-        if (!$this->prepared) {
-            if ($this->data !== null) {
-                $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
-                if (!is_string($this->data) && !$this->headers->has('Content-Type')) {
-                    $this->headers->set('Content-Type', 'application/json');
-                }
-            }
-
-            $this->prepared = true;
-        }
-    }
-
-    /**
-     * Gets the raw response content.
-     *
-     * @return string
-     */
-    public function content()
-    {
-        if (!$this->prepared) {
-            $this->prepare();
-        }
-
-        return $this->content;
-    }
-
-    /**
      * @inheritDoc
      */
     public function getHeaders()
@@ -218,7 +183,7 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
      */
     public function getBody()
     {
-        // TODO: Implement getBody() method.
+        return $this->_body;
     }
 
     /**

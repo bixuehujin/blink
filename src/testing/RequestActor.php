@@ -224,7 +224,7 @@ class RequestActor
     {
         if (is_null($data)) {
             $this->phpunit->assertJson(
-                $this->response->content(), "Failed asserting that JSON returned [{$this->request->uri->path}]."
+                (string)$this->response->getBody(), "Failed asserting that JSON returned [{$this->request->uri->path}]."
             );
 
             return $this;
@@ -244,7 +244,7 @@ class RequestActor
     {
         $method = $negate ? 'assertFalse' : 'assertTrue';
 
-        $actual = json_encode($this->sortRecursive(json_decode($this->response->content(), true)));
+        $actual = json_encode($this->sortRecursive(json_decode((string)$this->response->getBody(), true)));
 
         foreach ($this->sortRecursive($data) as $key => $value) {
             $expected = $this->formatToExpectedJson($key, $value);
@@ -285,20 +285,14 @@ class RequestActor
     }
 
     /**
-<<<<<<< 770a308cb12cf112cff17e47be4ce66e64bbe8cb
-     * Asserts that the content of the response matches the given content.
-     *
-     * @param string $content
-=======
      * Asserts the content of the response matches the given value.
      *
      * @param $content
->>>>>>> Added RequestActor::seeContent()
      * @return $this
      */
     public function seeContent($content)
     {
-        $this->phpunit->assertEquals($content, $this->response->content());
+        $this->phpunit->assertEquals($content, (string)$this->response->getBody());
 
         return $this;
     }
@@ -323,7 +317,7 @@ class RequestActor
      */
     public function seeJsonEquals(array $data)
     {
-        $actual = json_encode($this->sortRecursive(json_decode($this->response->content(), true)));
+        $actual = json_encode($this->sortRecursive(json_decode((string)$this->response->getBody(), true)));
 
         $this->phpunit->assertEquals(json_encode($this->sortRecursive($data)), $actual);
 
@@ -344,7 +338,7 @@ class RequestActor
         }
 
         if (!$responseData) {
-            $responseData = json_decode($this->response->content(), true);
+            $responseData = json_decode((string)$this->response->getBody(), true);
         }
 
         foreach ($structure as $key => $value) {
@@ -507,7 +501,7 @@ class RequestActor
             throw new \RuntimeException('The response is not a valid json response');
         }
 
-        return json_decode($this->response->content(), $asArray);
+        return json_decode((string)$this->response->getBody(), $asArray);
     }
 
     /**
