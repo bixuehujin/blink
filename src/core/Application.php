@@ -8,6 +8,7 @@ use FastRoute;
 use blink\log\Logger;
 use blink\http\Request;
 use blink\http\Response;
+use blink\support\Json;
 use blink\console\ShellCommand;
 use blink\console\ServerCommand;
 use blink\console\ServerReloadCommand;
@@ -15,6 +16,7 @@ use blink\console\ServerRestartCommand;
 use blink\console\ServerServeCommand;
 use blink\console\ServerStartCommand;
 use blink\console\ServerStopCommand;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Application
@@ -310,10 +312,10 @@ class Application extends ServiceLocator
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return ResponseInterface
      * @throws \Exception
      */
-    public function handleRequest($request)
+    public function handleRequest($request): ResponseInterface
     {
         if ($this->lastError) {
             return $this->internalServerError();
@@ -325,7 +327,7 @@ class Application extends ServiceLocator
         $response = $this->get('response');
 
         try {
-            $this->exec($request, $response);
+            $response = $this->exec($request, $response);
         } catch (\Exception $e) {
             $response->data = $e;
             $this->get('errorHandler')
@@ -337,7 +339,7 @@ class Application extends ServiceLocator
         }
 
         try {
-            $response->callMiddleware();
+            $response = $this->callMiddleware('response', $response);
         } catch (\Exception $e) {
             $response->data = $e;
         } catch (\Throwable $e) {
@@ -346,7 +348,7 @@ class Application extends ServiceLocator
 
         $this->formatException($response->data, $response);
 
-        $response->prepare();
+        $response = $this->prepareResponse($response);
         $this->refreshServices();
 
         $this->currentRequest = null;
@@ -362,8 +364,25 @@ class Application extends ServiceLocator
 
         $this->formatException($response->data, $response);
 
-        $response->prepare();
+        return $this->prepareResponse($response);
+    }
+    
+    protected function prepareResponse($response)
+    {
+        if ($response instanceof Response) {
+            if ($response->data !== null) {
+                $content = is_string($response->data) ? $response->data : Json::encode($response->data);
+                if (!is_string($response->data) && !$response->headers->has('Content-Type')) {
+                    $response->headers->set('Content-Type', 'application/json');
+                }
+                $response->getBody()->write($content);
+            }
+        }
 
+        foreach ($response->cookies as $cookie) {
+            $response->headers->with('Set-Cookie', $cookie->toString());
+        }
+        
         return $response;
     }
 
@@ -392,15 +411,47 @@ class Application extends ServiceLocator
 
         $action = $this->createAction($handler);
 
-        $request->callMiddleware();
+        $request = $this->callMiddleware('request', $request);
 
-        $data = $this->runAction($action, $args, $request, $response);
-
-        if (!$data instanceof Response && $data !== null) {
-            $response->with($data);
-        }
+        return $this->runAction($action, $args, $request, $response);
     }
 
+
+    /**
+     * Call the middleware stack.
+     *
+     * @param string $id
+     * @param Request|Response $owner
+     * @throws InvalidConfigException
+     */
+    public function callMiddleware($id, $owner)
+    {
+        if ($owner->freezed) {
+            return $owner;
+        }
+
+        $class = get_class($owner);
+        foreach ($owner->middleware as $definition) {
+            $middleware = make($definition);
+            if (!$middleware instanceof MiddlewareContract) {
+                throw new InvalidConfigException(sprintf("'%s' is not a valid middleware", get_class($middleware)));
+            }
+
+            $result = $middleware->handle($owner);
+            if ($result === false) {
+                break;
+            } elseif ($result instanceof $class) {
+                $owner = $result;
+            }
+        }
+
+        $this->bind($id, $owner, true);
+        $owner->freeze();
+
+        return $owner;
+    }
+
+    
     protected function refreshServices()
     {
         foreach ($this->refreshing as $id => $_) {
@@ -434,7 +485,7 @@ class Application extends ServiceLocator
 
     protected function dispatch($request)
     {
-        $info = $this->getDispatcher()->dispatch($request->method, $request->path);
+        $info = $this->getDispatcher()->dispatch($request->method, $request->uri->path);
 
         switch ($info[0]) {
             case FastRoute\Dispatcher::NOT_FOUND:
@@ -476,10 +527,17 @@ class Application extends ServiceLocator
         $this->beforeAction($action, $request);
 
         $data = $this->call($action, $args);
+        
+        if ($data instanceof Response) {
+            $response = $data;
+            $this->bind('response', $data, true);
+        } elseif ($data !== null) {
+            $response->with($data);
+        }
 
         $this->afterAction($action, $request, $response);
 
-        return $data;
+        return $response;
     }
 
     protected function beforeAction($action, $request)

@@ -12,7 +12,7 @@ trait MiddlewareTrait
 {
     public $middleware = [];
 
-    private $_middlewareCalled = false;
+    public $freezed = false;
 
     /**
      * Add a new middleware to the middleware stack of the object.
@@ -22,7 +22,7 @@ trait MiddlewareTrait
      */
     public function middleware($definition, $prepend = false)
     {
-        if ($this->_middlewareCalled) {
+        if ($this->freezed) {
             throw new InvalidCallException('The middleware stack is already called, no middleware can be added');
         }
 
@@ -32,29 +32,9 @@ trait MiddlewareTrait
             $this->middleware[] = $definition;
         }
     }
-
-    /**
-     * Call the middleware stack.
-     *
-     * @throws InvalidConfigException
-     */
-    public function callMiddleware()
+    
+    public function freeze()
     {
-        if ($this->_middlewareCalled) {
-            return;
-        }
-
-        foreach ($this->middleware as $definition) {
-            $middleware = make($definition);
-            if (!$middleware instanceof MiddlewareContract) {
-                throw new InvalidConfigException(sprintf("'%s' is not a valid middleware", get_class($middleware)));
-            }
-
-            if ($middleware->handle($this) === false) {
-                break;
-            }
-        }
-
-        $this->_middlewareCalled = true;
+        $this->freezed = true;
     }
 }

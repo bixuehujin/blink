@@ -2,10 +2,13 @@
 
 namespace blink\tests\http;
 
+use blink\http\Stream;
+use blink\http\Uri;
 use blink\http\HeaderBag;
 use blink\http\ParamBag;
 use blink\http\Request;
 use blink\tests\TestCase;
+use Psr\Http\Message\UriInterface;
 
 class RequestTest extends TestCase
 {
@@ -15,19 +18,36 @@ class RequestTest extends TestCase
 
         $this->assertInstanceOf(ParamBag::class, $request->params);
         $this->assertInstanceOf(HeaderBag::class, $request->headers);
-        $this->assertInstanceOf(ParamBag::class, $request->body);
+        $this->assertInstanceOf(ParamBag::class, $request->payload);
 
-        $this->assertEquals('GET', $request->method());
-        $this->assertEquals('localhost', $request->host());
-        $this->assertEquals('http://localhost/', $request->url());
+        $this->assertEquals('', $request->method());
+        $this->assertEquals('', $request->getMethod());
+
+        $uri = $request->getUri();
+        $this->assertInstanceOf(UriInterface::class, $uri);
+        $this->assertInstanceOf(Uri::class, $uri);
+
+        $this->assertEmpty($uri->getScheme());
+        $this->assertEmpty($uri->getUserInfo());
+        $this->assertEmpty($uri->getHost());
+        $this->assertNull($uri->getPort());
+        $this->assertEmpty($uri->getPath());
+        $this->assertEmpty($uri->getQuery());
+        $this->assertEmpty($uri->getFragment());
+
+        $this->assertEquals('', $request->host());
+        $this->assertEquals('', $request->url());
     }
 
     public function testBasic()
     {
+        $body = new Stream('php://memory', 'w+');
+        $body->write(json_encode(['foo' => 'bar']));
+
         $request = new Request([
             'method' => 'POST',
-            'queryString' => 'a=b&b=c',
-            'content' => json_encode(['foo' => 'bar']),
+            'uri' => new Uri('', ['query' => 'a=b&b=c']),
+            'body' => $body,
             'headers' => [
                 'Content-Type' => 'application/json; Charset=utf8',
                 'x-forwarded-proto' => 'https',
@@ -37,7 +57,7 @@ class RequestTest extends TestCase
 
         $this->assertTrue($request->is('post'));
         $this->assertEquals(['a' => 'b', 'b' => 'c'], $request->params->all());
-        $this->assertEquals(['foo' => 'bar'], $request->body->all());
+        $this->assertEquals(['foo' => 'bar'], $request->payload->all());
 
         $this->assertEquals('b', $request->input('a'));
         $this->assertEquals(true, $request->has('foo'));

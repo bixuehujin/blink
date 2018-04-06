@@ -6,6 +6,8 @@ use blink\core\Application;
 use blink\core\InvalidParamException;
 use blink\http\File;
 use blink\http\HeaderBag;
+use blink\http\Stream;
+use blink\http\Uri;
 
 /**
  * Class RequestActor
@@ -40,20 +42,25 @@ class RequestActor
     }
 
 
-    protected function doRequest($method, $uri, $query = '', $cookies = [], $files = [], $headers = [], $content = null)
+    protected function doRequest($method, $uri, $query = '', $cookies = [], $files = [], $headers = [], $content = '')
     {
         $this->request->headers->add($headers);
 
-        if ($this->isJsonMessage($this->request->headers) && is_array($content)) {
+        if (is_array($content)) {
             $content = json_encode($content);
         }
 
+        $body = new Stream('php://memory', 'w+');
+        $body->write($content);
+
         $config = [
             'method' => $method,
-            'path' => $uri,
-            'queryString' => is_array($query) ? http_build_query($query, '', '&') : $query,
+            'uri' => new Uri('', [
+                'path' => $uri,
+                'query' => is_array($query) ? http_build_query($query, '', '&') : $query
+            ]),
             'cookies' => $cookies,
-            'content' => $content,
+            'body' => $body,
         ];
 
         foreach ($config as $key => $value) {
@@ -216,8 +223,9 @@ class RequestActor
     public function seeJson(array $data = null, $negate = false)
     {
         if (is_null($data)) {
-            $this->phpunit->assertJson($this->response->content(),
-                "Failed asserting that JSON returned [{$this->request->path}].");
+            $this->phpunit->assertJson(
+                (string)$this->response->getBody(), "Failed asserting that JSON returned [{$this->request->uri->path}]."
+            );
 
             return $this;
         }
@@ -236,7 +244,7 @@ class RequestActor
     {
         $method = $negate ? 'assertFalse' : 'assertTrue';
 
-        $actual = json_encode($this->sortRecursive(json_decode($this->response->content(), true)));
+        $actual = json_encode($this->sortRecursive(json_decode((string)$this->response->getBody(), true)));
 
         foreach ($this->sortRecursive($data) as $key => $value) {
             $expected = $this->formatToExpectedJson($key, $value);
@@ -277,14 +285,14 @@ class RequestActor
     }
 
     /**
-     * Asserts that the content of the response matches the given content.
+     * Asserts the content of the response matches the given value.
      *
-     * @param string $content
+     * @param $content
      * @return $this
      */
     public function seeContent($content)
     {
-        $this->phpunit->assertEquals($content, $this->response->content());
+        $this->phpunit->assertEquals($content, (string)$this->response->getBody());
 
         return $this;
     }
@@ -309,7 +317,7 @@ class RequestActor
      */
     public function seeJsonEquals(array $data)
     {
-        $actual = json_encode($this->sortRecursive(json_decode($this->response->content(), true)));
+        $actual = json_encode($this->sortRecursive(json_decode((string)$this->response->getBody(), true)));
 
         $this->phpunit->assertEquals(json_encode($this->sortRecursive($data)), $actual);
 
@@ -330,7 +338,7 @@ class RequestActor
         }
 
         if (!$responseData) {
-            $responseData = json_decode($this->response->content(), true);
+            $responseData = json_decode((string)$this->response->getBody(), true);
         }
 
         foreach ($structure as $key => $value) {
@@ -493,7 +501,7 @@ class RequestActor
             throw new \RuntimeException('The response is not a valid json response');
         }
 
-        return json_decode($this->response->content(), $asArray);
+        return json_decode((string)$this->response->getBody(), $asArray);
     }
 
     /**

@@ -3,25 +3,30 @@
 namespace blink\http;
 
 use blink\auth\Authenticatable;
+use blink\core\InvalidParamException;
 use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
 use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
+use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Request
  *
  * @property ParamBag               $params  The collection of query parameters
  * @property HeaderBag              $headers The collection of request headers
- * @property ParamBag               $body    The collection of request body
+ * @property ParamBag               $payload    The collection of request body
  * @property FileBag                $files   The collection of uploaded files
  * @property CookieBag              $cookies The collection of received cookies.
+ * @property Uri                    $uri     The uri instance of the request
  * @property \blink\session\Session $session The session associated to the request
  * @package blink\http
  */
-class Request extends BaseObject implements ShouldBeRefreshed
+class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInterface
 {
     use MiddlewareTrait;
+    use MessageTrait;
 
     const METHOD_HEAD = 'HEAD';
     const METHOD_GET = 'GET';
@@ -30,22 +35,8 @@ class Request extends BaseObject implements ShouldBeRefreshed
     const METHOD_PATCH = 'PATCH';
     const METHOD_DELETE = 'DELETE';
     const METHOD_OPTIONS = 'OPTIONS';
-    const METHOD_OVERRIDE = '_METHOD';
 
-    public $protocol = 'HTTP/1.1';
-
-    public $path = '/';
-
-    /**
-     * The raw content.
-     *
-     * @var string
-     */
-    public $content;
-
-    public $queryString = '';
-
-    public $method = 'GET';
+    public $method = '';
 
     /**
      * The key of a header field that stores the session id, or a callable that will returns the session id.
@@ -88,7 +79,7 @@ class Request extends BaseObject implements ShouldBeRefreshed
      */
     public function match($pattern)
     {
-        return preg_match($pattern, $this->path);
+        return preg_match($pattern, $this->uri->path);
     }
 
     /**
@@ -106,7 +97,7 @@ class Request extends BaseObject implements ShouldBeRefreshed
             return true;
         }
 
-        return 'HTTPS' === explode('/', $this->protocol)[0];
+        return 'https' === $this->uri->scheme;
     }
 
     private $_params;
@@ -127,8 +118,8 @@ class Request extends BaseObject implements ShouldBeRefreshed
         }
 
         $params = [];
-        if ($this->queryString) {
-            parse_str($this->queryString, $params);
+        if ($query = $this->uri->getQuery()) {
+            parse_str($query, $params);
         }
 
         return $this->_params = new ParamBag($params);
@@ -154,24 +145,24 @@ class Request extends BaseObject implements ShouldBeRefreshed
         return $this->_headers;
     }
 
-    private $_body;
+    private $_payload;
 
-    public function getBody()
+    public function getPayload()
     {
-        if ($this->_body !== null) {
-            return $this->_body;
+        if ($this->_payload !== null) {
+            return $this->_payload;
         }
 
-        if ($this->content) {
-            $body = $this->parseBody($this->content);
+        if ($content = (string)$this->getBody()) {
+            $payload = $this->parseBody($content);
         } else {
-            $body = [];
+            $payload = [];
         }
 
-        return $this->_body = new ParamBag($body);
+        return $this->_payload = new ParamBag($payload);
     }
 
-    public function setBody($body = [])
+    public function setPayload($body = [])
     {
         if (!$body instanceof ParamBag) {
             $body = new ParamBag($body);
@@ -242,32 +233,28 @@ class Request extends BaseObject implements ShouldBeRefreshed
 
     public function host()
     {
-        $parts = explode(':', $this->headers->first('Host', 'localhost'));
+        $uri = $this->getUri();
 
-        $host = $parts[0];
-
-        if (!isset($parts[1])) {
-            return $host;
+        if (empty($uri->host) || empty($uri->port)) {
+            return '';
         }
 
-        $port = (int)$parts[1];
         $secure = $this->secure();
 
-        if ((!$secure && $port === 80) || ($secure && $port === 443)) {
-            return $host;
+        if ((!$secure && $uri->port === 80) || ($secure && $uri->port === 443)) {
+            return $uri->host;
         } else {
-            return $host . ':' . $port;
+            return $uri->host . ':' . $uri->port;
         }
-    }
-
-    public function path()
-    {
-        return $this->path;
     }
 
     public function root()
     {
-        return ($this->secure() ? 'https' : 'http') . '://' . $this->host();
+        if ($host = $this->host()) {
+            return ($this->secure() ? 'https' : 'http') . '://' . $this->host();
+        } else {
+            return '';
+        }
     }
 
     public function url($full = true)
@@ -282,7 +269,7 @@ class Request extends BaseObject implements ShouldBeRefreshed
             $params = '';
         }
 
-        return $this->root() . $this->path() . $params;
+        return $this->root() . $this->uri->path . $params;
     }
 
     /**
@@ -348,7 +335,7 @@ class Request extends BaseObject implements ShouldBeRefreshed
      */
     public function has($key)
     {
-        return $this->params->has($key) || $this->body->has($key);
+        return $this->params->has($key) || $this->payload->has($key);
     }
 
     /**
@@ -364,7 +351,7 @@ class Request extends BaseObject implements ShouldBeRefreshed
             return $value;
         }
 
-        if (($value = $this->body->get($key)) !== null) {
+        if (($value = $this->payload->get($key)) !== null) {
             return $value;
         }
 
@@ -373,14 +360,14 @@ class Request extends BaseObject implements ShouldBeRefreshed
 
     public function all()
     {
-        return array_replace_recursive($this->params->all(), $this->body->all());
+        return array_replace_recursive($this->params->all(), $this->payload->all());
     }
 
     public function only($keys)
     {
         $keys = is_array($keys) ? $keys : func_get_args();
 
-        return array_replace_recursive($this->params->only($keys), $this->body->only($keys));
+        return array_replace_recursive($this->params->only($keys), $this->payload->only($keys));
     }
 
 
@@ -451,5 +438,248 @@ class Request extends BaseObject implements ShouldBeRefreshed
     public function guest()
     {
         return $this->user() === null;
+    }
+
+    private $requestTarget;
+
+    /**
+     * @inheritDoc
+     */
+    public function getRequestTarget()
+    {
+        if (null !== $this->requestTarget) {
+            return $this->requestTarget;
+        }
+
+        $uri = $this->getUri();
+
+        $target = $uri->path;
+        if ($query = $uri->query) {
+            $target .= '?' . $query;
+        }
+
+        if (empty($target)) {
+            $target = '/';
+        }
+
+        return $target;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        $new = clone $this;
+        $new->requestTarget = $requestTarget;
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withMethod($method)
+    {
+        $new = clone  $this;
+        $new->method = $method;
+
+        return $new;
+    }
+
+    private $_uri;
+
+    /**
+     * @inheritDoc
+     */
+    public function getUri()
+    {
+        if (!$this->_uri) {
+            $this->_uri = new Uri();
+        }
+
+        return $this->_uri;
+    }
+
+    public function setUri($uri)
+    {
+        if (is_string($uri)) {
+            $uri = new Uri($uri);
+        } elseif ($uri === null) {
+            $uri = new Uri();
+        }
+
+        if (!$uri instanceof UriInterface) {
+            throw new InvalidParamException('Invalid URI provided');
+        }
+
+        $this->_uri = $uri;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        $new = clone $this;
+        $new->_uri = $uri;
+
+        if ($preserveHost && $this->headers->has('Host')) {
+            return $new;
+        }
+
+        if (!$uri->getHost()) {
+            return $new;
+        }
+
+        $host = $uri->getHost();
+        if ($uri->getPort()) {
+            $host .= ':' . $uri->getPort();
+        }
+        $new->headers->set('Host', $host);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getServerParams()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCookieParams()
+    {
+        $cookies = [];
+        foreach ($this->cookies as $name => $cookie) {
+            $cookies[$name] = $cookie->value;
+        }
+
+        return $cookies;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function withCookieParams(array $cookies)
+    {
+        $new = clone $this;
+        $new->cookies->replace($cookies);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getQueryParams()
+    {
+        return $this->params->all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withQueryParams(array $query)
+    {
+        $new = clone $this;
+        $new->params->replace($query);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUploadedFiles()
+    {
+        return $this->files->all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withUploadedFiles(array $uploadedFiles)
+    {
+        $new = clone $this;
+        $new->files->replace($uploadedFiles);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getParsedBody()
+    {
+        return $this->getPayload()->all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withParsedBody($data)
+    {
+        $new = clone $this;
+        $new->setPayload($data);
+
+        return $new;
+    }
+
+    private $_attributes;
+
+    /**
+     * @inheritDoc
+     */
+    public function getAttributes()
+    {
+        if (!$this->_attributes) {
+            $this->_attributes = new ParamBag();
+        }
+
+        return $this->_attributes;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAttribute($name, $default = null)
+    {
+        return $this->attributes->get($name, $default);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withAttribute($name, $value)
+    {
+        $new = clone $this;
+        $new->attributes->set($name, $value);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withoutAttribute($name)
+    {
+        $new = clone $this;
+        $new->attributes->remove($name);
+
+        return $new;
     }
 }

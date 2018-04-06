@@ -64,15 +64,18 @@ class AuthTest extends TestCase
 
     public function testBasicAccessMiddleware()
     {
-        $request = request();
+        $app = $this->createApplication();
+        $app->bootstrapIfNeeded();
+
+        $request = $app->get('request');
         $request->headers->set('Authorization', 'Basic ' . base64_encode('user1:user1'));
         $request->middleware([
             'class' => BasicAccess::class,
             'identity' => 'name',
         ]);
-        $request->callMiddleware();
+        $app->callMiddleware('request', $request);
 
-        $this->assertEquals(1, $request->user()->id);
+        $this->assertEquals(1, $app->get('request')->user()->id);
     }
 }
 

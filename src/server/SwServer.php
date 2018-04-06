@@ -2,6 +2,10 @@
 
 namespace blink\server;
 
+use blink\http\Request;
+use blink\http\Stream;
+use blink\http\Uri;
+
 /**
  * A Swoole based server implementation.
  *
@@ -202,16 +206,29 @@ class SwServer extends Server
         return $files;
     }
 
-    protected function prepareRequest($request)
+    public function createRequest($request)
     {
-        $config = [
-            'protocol' => $request->server['server_protocol'],
-            'method' => $request->server['request_method'],
+        $protocolParts = explode('/', $request->server['server_protocol']);
+        $hostParts = explode(':', $request->header['host']);
+
+        $uriConfig = [
+            'scheme' => strtolower($protocolParts[0]),
+            'query' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'path' => $request->server['request_uri'],
+            'host' => $hostParts[0],
+            'port' => isset($hostParts[1]) ? $hostParts[1] : 80,
+        ];
+
+        $body = new Stream('php://memory', 'w+');
+        $body->write($request->rawContent());
+
+        $config = [
+            'uri' => new Uri('', $uriConfig),
+            'protocol' => $protocolParts[1],
+            'method' => $request->server['request_method'],
             'headers' => $request->header,
-            'queryString' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'cookies' => isset($request->cookie) ? $request->cookie : [],
-            'content' => $request->rawContent()
+            'body' => $body,
         ];
 
         if (!empty($request->files)) {
@@ -223,21 +240,18 @@ class SwServer extends Server
 
     public function onRequest($request, $response)
     {
-        $res = app()->handleRequest($this->prepareRequest($request));
+        $res = app()->handleRequest($this->createRequest($request));
 
-        $content = $res->content();
+        $content = (string)$res->getBody();
 
-        foreach ($res->headers->all() as $name => $values) {
+        foreach ($res->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             foreach ($values as $value) {
                 $response->header($name, $value);
             }
         }
-        foreach ($res->cookies as $cookie) {
-            $response->header('Set-Cookie', $cookie->toString());
-        }
 
-        $response->status($res->statusCode);
+        $response->status($res->getStatusCode());
         $response->end($content);
     }
 

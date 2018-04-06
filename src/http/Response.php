@@ -7,6 +7,8 @@ use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
 use blink\support\Json;
 use blink\core\InvalidParamException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Class Response
@@ -14,9 +16,10 @@ use blink\core\InvalidParamException;
  * @property CookieBag $cookies
  * @package blink\http
  */
-class Response extends BaseObject implements ShouldBeRefreshed
+class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterface
 {
     use MiddlewareTrait;
+    use MessageTrait;
 
     public $data;
 
@@ -99,9 +102,13 @@ class Response extends BaseObject implements ShouldBeRefreshed
         511 => 'Network Authentication Required',
     ];
 
-    protected $content;
+    public function __construct($body = 'php://memory', $status = 200, $config = [])
+    {
+        $this->setBody($body);
+        $this->statusCode = $status;
 
-    protected $prepared = false;
+        parent::__construct($config);
+    }
 
     public function init()
     {
@@ -164,33 +171,45 @@ class Response extends BaseObject implements ShouldBeRefreshed
     }
 
     /**
-     * Prepare the response to ready to send to client.
+     * @inheritDoc
      */
-    public function prepare()
+    public function getHeaders()
     {
-        if (!$this->prepared) {
-            if ($this->data !== null) {
-                $this->content = is_string($this->data) ? $this->data : Json::encode($this->data);
-                if (!is_string($this->data) && !$this->headers->has('Content-Type')) {
-                    $this->headers->set('Content-Type', 'application/json');
-                }
-            }
-
-            $this->prepared = true;
-        }
+        return $this->headers;
     }
 
     /**
-     * Gets the raw response content.
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function content()
+    public function getBody()
     {
-        if (!$this->prepared) {
-            $this->prepare();
-        }
+        return $this->_body;
+    }
 
-        return $this->content;
+    /**
+     * @inheritDoc
+     */
+    public function getStatusCode()
+    {
+        return $this->statusCode;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        $new = clone $this;
+        $new->status($code, $reasonPhrase);
+
+        return $new;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getReasonPhrase()
+    {
+        return $this->statusText;
     }
 }
