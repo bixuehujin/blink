@@ -1,8 +1,16 @@
 Blink Framework Change Log
 ==========================
 
-0.4.0 xx xx, 2017
+0.4.0 xx xx, 2018
 -----------------
+
+
+0.3.2 April 6, 2018
+--------------------
+
+- Enh: Bootstrap app automatically in console command
+- Enh: Fixed possible namespace confliction
+- Bug: Fixed duplicated Content-Length header with Swoole
 
 
 0.3.1 July 16, 2017
@@ -15,7 +23,6 @@ Blink Framework Change Log
 - Enh: Improved Auth::who() to accept Session object as argument
 - Bug: Fixed routes lazy loading not working
 - Chg: Deprecated Request::$sessionKey configuration
-
 
 
 0.3.0 March 19, 2017
