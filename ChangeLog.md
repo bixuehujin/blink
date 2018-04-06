@@ -4,6 +4,13 @@ Blink Framework Change Log
 0.4.0 xx xx, 2018
 -----------------
 
+- New: Added ENV_FILE(like dotenv) support
+- New: Added service:install command to install blink app as a systemd service
+- New: Compatible with PHP 7.2
+- New: Added SwServer::$dispatchMode config to tune Swoole's dispatch_mode
+- Chg: The Swoole's dispatch_mode is changed to 3 by default
+- Bug: Null should not be encoded in response 
+
 
 0.3.2 April 6, 2018
 --------------------
