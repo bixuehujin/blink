@@ -8,7 +8,10 @@ Blink Framework Change Log
 - New: Added service:install command to install blink app as a systemd service
 - New: Compatible with PHP 7.2
 - New: Added SwServer::$dispatchMode config to tune Swoole's dispatch_mode
+- New: Compatible with PSR-7 http message interfaces
 - Chg: The Swoole's dispatch_mode is changed to 3 by default
+- Chg: The original Response::getBody() is now renamed to Response::getPayload()
+- Chg: Removed PHP 5.6 support
 - Bug: Null should not be encoded in response 
 
 
