@@ -339,7 +339,7 @@ class Application extends ServiceLocator
         }
 
         try {
-            $this->callMiddleware('response', $response);
+            $response = $this->callMiddleware('response', $response);
         } catch (\Exception $e) {
             $response->data = $e;
         } catch (\Throwable $e) {
@@ -411,7 +411,7 @@ class Application extends ServiceLocator
 
         $action = $this->createAction($handler);
 
-        $this->callMiddleware('request', $request);
+        $request = $this->callMiddleware('request', $request);
 
         return $this->runAction($action, $args, $request, $response);
     }
@@ -427,10 +427,10 @@ class Application extends ServiceLocator
     public function callMiddleware($id, $owner)
     {
         if ($owner->freezed) {
-            return;
+            return $owner;
         }
-        $class = get_class($owner);
 
+        $class = get_class($owner);
         foreach ($owner->middleware as $definition) {
             $middleware = make($definition);
             if (!$middleware instanceof MiddlewareContract) {
@@ -447,6 +447,8 @@ class Application extends ServiceLocator
 
         $this->bind($id, $owner, true);
         $owner->freeze();
+
+        return $owner;
     }
 
     
