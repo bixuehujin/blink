@@ -102,7 +102,6 @@ class CgiServer extends Server
             'uri' => new Uri('', $uriConfig),
             'method' => strtoupper($_SERVER['REQUEST_METHOD']),
             'headers' => $this->extractHeaders(),
-            'queryString' => isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '',
             'cookies' => $_COOKIE,
             'body' => $body,
         ];
