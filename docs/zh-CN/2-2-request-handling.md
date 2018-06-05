@@ -23,6 +23,11 @@ class Controller extends Object
 }
 ```
 
+**注意**
+
+Blink 不支持 Query String 中的如 `key[]=1&key[]=2` 数组名称形式的参数。如果存在，`key[]` 整体将会被作为一个键名，
+该参数将会被解析成 `$params['key[]']=2`。推荐使用 `key=1,2` 实现类似功能。
+
 更多有用的方法请参考 `\blink\http\Request` 的[源代码及注释](/src/http/Request.php)。
 
 

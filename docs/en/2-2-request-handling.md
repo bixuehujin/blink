@@ -26,6 +26,12 @@ class Controller extends Object
 }
 ```
 
+**Attention**
+
+Blink does not support the mutli-value/array key like `key[]=1&key[]=2` in Query String, it will be parsed 
+to `$params['key[]'] = 2`, because the `key[]` is treated as the whole parts of the key name. It's 
+recommended to use `key=1,2` to achieve the same goal.
+
 Please check out the [Implementation](/src/http/Request.php) of `\blink\http\Request` to find out more useful method to
 access request variables.
 
