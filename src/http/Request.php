@@ -127,20 +127,13 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
 
     private function parseQueryString($queryString)
     {
+
         $params = [];
         foreach (explode('&', $queryString) as $kvp) {
             $parts = explode('=', $kvp);
             $key = rawurldecode($parts[0]);
-            $isArray = (substr($key, -2) == '[]') !== false;
-            if ($isArray) {
-                $key = substr($key, 0, -2);
-            }
             $value = array_key_exists(1, $parts) ? rawurldecode($parts[1]) : null;
-            if ($isArray) {
-                $params[$key][] = $value;
-            } else {
-                $params[$key] = $value;
-            }
+            $params[$key] = $value;
         }
 
         return $params;

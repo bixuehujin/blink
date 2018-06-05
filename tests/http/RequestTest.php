@@ -46,7 +46,7 @@ class RequestTest extends TestCase
 
         $request = new Request([
             'method' => 'POST',
-            'uri' => new Uri('', ['query' => 'a=b&b=c&r.n=a&r-n=a&o[]=1&o[]=2']),
+            'uri' => new Uri('', ['query' => 'a=b&b=c&r.n=a&r-n=a']),
             'body' => $body,
             'headers' => [
                 'Content-Type' => 'application/json; Charset=utf8',
@@ -56,7 +56,7 @@ class RequestTest extends TestCase
         ]);
 
         $this->assertTrue($request->is('post'));
-        $this->assertEquals(['a' => 'b', 'b' => 'c', 'r.n' => 'a', 'r-n' => 'a', 'o' => [1, 2]], $request->params->all());
+        $this->assertEquals(['a' => 'b', 'b' => 'c', 'r.n' => 'a', 'r-n' => 'a'], $request->params->all());
         $this->assertEquals(['foo' => 'bar'], $request->payload->all());
 
         $this->assertEquals('b', $request->input('a'));
