@@ -420,7 +420,9 @@ class Application extends ServiceLocator
      *
      * @param string $id
      * @param Request|Response $owner
+     * @return Request|Response $result
      * @throws InvalidConfigException
+     * @throws InvalidValueException
      */
     public function callMiddleware($id, $owner)
     {
@@ -440,6 +442,11 @@ class Application extends ServiceLocator
                 break;
             } elseif ($result instanceof $class) {
                 $owner = $result;
+            } else {
+                throw new InvalidValueException(sprintf(
+                    'The return value of %s::handle() should be one of false, null and %s',
+                    get_class($middleware), $class
+                ));
             }
         }
 
