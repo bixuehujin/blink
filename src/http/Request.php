@@ -127,7 +127,6 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
 
     private function parseQueryString($queryString)
     {
-
         $params = [];
         foreach (explode('&', $queryString) as $kvp) {
             $parts = explode('=', $kvp);
