@@ -130,8 +130,8 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         $params = [];
         foreach (explode('&', $queryString) as $kvp) {
             $parts = explode('=', $kvp);
-            $key = rawurldecode($parts[0]);
-            $value = array_key_exists(1, $parts) ? rawurldecode($parts[1]) : null;
+            $key = urldecode($parts[0]);
+            $value = array_key_exists(1, $parts) ? urldecode($parts[1]) : null;
             $params[$key] = $value;
         }
 
