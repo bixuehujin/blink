@@ -367,16 +367,14 @@ class Application extends ServiceLocator
         return $this->prepareResponse($response);
     }
     
-    protected function prepareResponse($response)
+    protected function prepareResponse(Response $response)
     {
-        if ($response instanceof Response) {
-            if ($response->data !== null) {
-                $content = is_string($response->data) ? $response->data : Json::encode($response->data);
-                if (!is_string($response->data) && !$response->headers->has('Content-Type')) {
-                    $response->headers->set('Content-Type', 'application/json');
-                }
-                $response->getBody()->write($content);
+        if ($response->data !== null) {
+            $content = is_string($response->data) ? $response->data : Json::encode($response->data);
+            if (!is_string($response->data) && !$response->headers->has('Content-Type')) {
+                $response->headers->set('Content-Type', 'application/json');
             }
+            $response->getBody()->write($content);
         }
 
         foreach ($response->cookies as $cookie) {
@@ -386,7 +384,7 @@ class Application extends ServiceLocator
         return $response;
     }
 
-    protected function formatException($e, $response)
+    protected function formatException($e, Response $response)
     {
         if (!$response->data instanceof \Exception && !$response->data instanceof \Throwable) {
             return;
@@ -405,7 +403,7 @@ class Application extends ServiceLocator
         }
     }
 
-    protected function exec($request, $response)
+    protected function exec($request, $response): Response
     {
         list($handler, $args) = $this->dispatch($request);
 
@@ -522,7 +520,7 @@ class Application extends ServiceLocator
         return $action;
     }
 
-    protected function runAction($action, $args, $request, $response)
+    protected function runAction($action, $args, $request, $response): Response
     {
         $this->beforeAction($action, $request);
 
@@ -531,6 +529,8 @@ class Application extends ServiceLocator
         if ($data instanceof Response) {
             $response = $data;
             $this->bind('response', $data, true);
+        } else if ($data instanceof ResponseInterface) {
+            $this->convertPsrResponse($response, $data);
         } elseif ($data !== null) {
             $response->with($data);
         }
@@ -538,6 +538,16 @@ class Application extends ServiceLocator
         $this->afterAction($action, $request, $response);
 
         return $response;
+    }
+
+    protected function convertPsrResponse(Response $response, ResponseInterface $psrResponse)
+    {
+        $response->data = (string)$psrResponse->getBody();
+
+        foreach ($psrResponse->getHeaders() as $key => $value) {
+            $response->headers->set($key, $value);
+        }
+        $response->statusCode = $psrResponse->getStatusCode();
     }
 
     protected function beforeAction($action, $request)
