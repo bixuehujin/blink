@@ -442,7 +442,7 @@ class Application extends ServiceLocator
                 break;
             } elseif ($result instanceof $class) {
                 $owner = $result;
-            } else {
+            } elseif ($result !== null) {
                 throw new InvalidValueException(sprintf(
                     'The return value of %s::handle() should be one of false, null and %s',
                     get_class($middleware), $class
@@ -536,7 +536,7 @@ class Application extends ServiceLocator
         if ($data instanceof Response) {
             $response = $data;
             $this->bind('response', $data, true);
-        } else if ($data instanceof ResponseInterface) {
+        } elseif ($data instanceof ResponseInterface) {
             $this->convertPsrResponse($response, $data);
         } elseif ($data !== null) {
             $response->with($data);
