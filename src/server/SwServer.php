@@ -209,7 +209,7 @@ class SwServer extends Server
     public function createRequest($request)
     {
         $protocolParts = explode('/', $request->server['server_protocol']);
-        $hostParts = explode(':', $request->header['host']);
+        $hostParts = explode(':', $request->header['host'] ?? $this->host . ':' . $this->port);
 
         $uriConfig = [
             'scheme' => strtolower($protocolParts[0]),
