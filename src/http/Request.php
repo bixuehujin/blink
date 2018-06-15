@@ -89,14 +89,6 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
      */
     public function secure()
     {
-        if ($this->headers->first('x-forwarded-proto') === 'https') {
-            return true;
-        }
-
-        if ((int)$this->headers->first('x-forwarded-port') === 443) {
-            return true;
-        }
-
         return 'https' === $this->uri->scheme;
     }
 
@@ -244,45 +236,43 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         return $this->_cookies;
     }
 
+    /**
+     * Returns the host part of the request url, egg. rethinkphp.com:8888
+     *
+     * @return string
+     */
     public function host()
     {
-        $uri = $this->getUri();
-
-        if (empty($uri->host) || empty($uri->port)) {
-            return '';
-        }
-
-        $secure = $this->secure();
-
-        if ((!$secure && $uri->port === 80) || ($secure && $uri->port === 443)) {
-            return $uri->host;
-        } else {
-            return $uri->host . ':' . $uri->port;
-        }
+        return $this->getUri()->getAuthority();
     }
 
+    /**
+     * Returns the root url of the request url, egg. http://rethinkphp.com:8888
+     *
+     * @return string
+     */
     public function root()
     {
         if ($host = $this->host()) {
-            return ($this->secure() ? 'https' : 'http') . '://' . $this->host();
+            return $this->uri->scheme . '://' . $host;
         } else {
             return '';
         }
     }
 
-    public function url($full = true)
+    /**
+     * Returns the url of the request.
+     *
+     * @param bool $withParams Returns with query params.
+     * @return string
+     */
+    public function url($withParams = true)
     {
-        if ($full) {
-            $params = $this->getParams();
-            $params = http_build_query($params->all());
-            if ($params) {
-                $params = '?' . $params;
-            }
+        if ($withParams) {
+            return (string)$this->uri;
         } else {
-            $params = '';
+            return $this->root() . $this->uri->path;
         }
-
-        return $this->root() . $this->uri->path . $params;
     }
 
     /**

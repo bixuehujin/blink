@@ -2,7 +2,7 @@
 
 namespace blink\server;
 
-use blink\http\Request;
+use blink\http\HeaderBag;
 use blink\http\Stream;
 use blink\http\Uri;
 
@@ -206,18 +206,32 @@ class SwServer extends Server
         return $files;
     }
 
+    protected function resolveSchema(HeaderBag $headers, $default)
+    {
+        if ($headers->first('x-forwarded-proto') === 'https'
+            || (int)$headers->first('x-forwarded-port') === 443) {
+            return 'https';
+        }
+
+        return $default;
+    }
+
     public function createRequest($request)
     {
         $protocolParts = explode('/', $request->server['server_protocol']);
         $hostParts = explode(':', $request->header['host'] ?? $this->host . ':' . $this->port);
+        $headers = new HeaderBag($request->header);
 
         $uriConfig = [
-            'scheme' => strtolower($protocolParts[0]),
+            'scheme' => $this->resolveSchema($headers, strtolower($protocolParts[0])),
             'query' => isset($request->server['query_string']) ? $request->server['query_string'] : '',
             'path' => $request->server['request_uri'],
             'host' => $hostParts[0],
-            'port' => isset($hostParts[1]) ? $hostParts[1] : 80,
         ];
+
+        if (isset($hostParts[1])) {
+            $uriConfig['port'] = $hostParts[1];
+        }
 
         $body = new Stream('php://memory', 'w+');
         $body->write($request->rawContent());
@@ -226,7 +240,7 @@ class SwServer extends Server
             'uri' => new Uri('', $uriConfig),
             'protocol' => $protocolParts[1],
             'method' => $request->server['request_method'],
-            'headers' => $request->header,
+            'headers' => $headers,
             'cookies' => isset($request->cookie) ? $request->cookie : [],
             'body' => $body,
         ];
