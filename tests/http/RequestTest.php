@@ -46,12 +46,10 @@ class RequestTest extends TestCase
 
         $request = new Request([
             'method' => 'POST',
-            'uri' => new Uri('', ['query' => 'a=b&b=c&r.n=a&r-n=a']),
+            'uri' => new Uri('', ['query' => 'a=b&b=c&r.n=a&r-n=a', 'scheme' => 'https']),
             'body' => $body,
             'headers' => [
                 'Content-Type' => 'application/json; Charset=utf8',
-                'x-forwarded-proto' => 'https',
-                'x-forwarded-port' => 443
             ]
         ]);
 
