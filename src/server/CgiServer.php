@@ -8,6 +8,7 @@
 namespace blink\server;
 
 use blink\http\File;
+use blink\http\HeaderBag;
 use blink\http\Request;
 use blink\http\Response;
 use blink\http\Stream;
@@ -76,7 +77,17 @@ class CgiServer extends Server
         return $this->_files;
     }
 
-    protected function extractRequest()
+    protected function resolveSchema(HeaderBag $headers, $default)
+    {
+        if ($headers->first('x-forwarded-proto') === 'https'
+            || (int)$headers->first('x-forwarded-port') === 443) {
+            return 'https';
+        }
+
+        return $default;
+    }
+
+    public function extractRequest()
     {
         $requestUri = $_SERVER['REQUEST_URI'];
         if ($requestUri !== '' && $requestUri[0] !== '/') {
@@ -84,15 +95,19 @@ class CgiServer extends Server
         }
 
         $protocolParts = explode('/', $_SERVER['SERVER_PROTOCOL']);
-        $hostParts = explode(':', $_SERVER['HTTP_HOST']);
+        $hostParts = explode(':', $_SERVER['HTTP_HOST'] ?? 'localhost');
+        $headers = new HeaderBag($this->extractHeaders());
 
         $uriConfig = [
-            'scheme' => strtolower($protocolParts[0]),
+            'scheme' => $this->resolveSchema($headers, strtolower($protocolParts[0])),
             'query' => isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '',
             'path' => parse_url($requestUri, PHP_URL_PATH),
             'host' => $hostParts[0],
-            'port' => isset($hostParts[1]) ? $hostParts[1] : 80,
         ];
+
+        if (isset($hostParts[1])) {
+            $uriConfig['port'] = $hostParts[1];
+        }
 
         $body = new Stream('php://memory', 'w+');
         $body->write(file_get_contents('php://input'));
@@ -101,7 +116,7 @@ class CgiServer extends Server
             'protocol' => $protocolParts[1],
             'uri' => new Uri('', $uriConfig),
             'method' => strtoupper($_SERVER['REQUEST_METHOD']),
-            'headers' => $this->extractHeaders(),
+            'headers' => $headers,
             'cookies' => $_COOKIE,
             'body' => $body,
         ];
