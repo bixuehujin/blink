@@ -103,7 +103,7 @@ class CgiTest extends TestCase
     {
         $_SERVER = [];
 
-        foreach($reqeust['server'] as $key => $value) {
+        foreach ($reqeust['server'] as $key => $value) {
             $_SERVER[$key] = $value;
         }
     }
