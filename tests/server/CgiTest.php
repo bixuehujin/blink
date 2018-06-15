@@ -108,4 +108,3 @@ class CgiTest extends TestCase
         }
     }
 }
-
