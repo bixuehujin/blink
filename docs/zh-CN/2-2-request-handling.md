@@ -17,8 +17,8 @@ class Controller extends Object
         $type = $request->params->get('type'); // 获取 Query 参数 type
         $params = $request->params->all(); // 获取所有 Query 参数
 
-        $name = $request->body->get('name'); // 获取 Request Body 的 name 参数
-        $body = $request->body->all(); // 获取整个 Request Body
+        $name = $request->payload->get('name'); // 获取 Request Body 的 name 参数
+        $body = $request->payload->all(); // 获取整个 Request Body
     }
 }
 ```

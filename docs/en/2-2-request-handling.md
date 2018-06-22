@@ -20,8 +20,8 @@ class Controller extends Object
         $type = $request->params->get('type'); // accessing the `type` query parameter
         $params = $request->params->all(); // accessing all query parameters
 
-        $name = $request->body->get('name'); // accessing request body by key
-        $body = $request->body->all(); // accessing all request body
+        $name = $request->payload->get('name'); // accessing request body by key
+        $body = $request->payload->all(); // accessing all request body
     }
 }
 ```
