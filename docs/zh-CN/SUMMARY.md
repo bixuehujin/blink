@@ -37,10 +37,12 @@ Blink 中文文档
 * [插件](4-3-plugins.md)
 
 
-杂项
-----
+开发与部署
+--------
 
-* [开发与部署](5-1-development-and-deploymnet.md)
+* [环境配置](5-1-env-file.md)
+* [开发配置](5-2-development.md)
+* [应用部署](5-3-deployment.md)
 
 附录
 ----
