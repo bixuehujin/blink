@@ -37,9 +37,10 @@ Concepts & Architecture
 * [Plugins](4-3-plugins.md)
 
 
-Misc
-----
+开发与部署
+--------
 
-* [Development and Deployment](5-1-development-and-deploymnet.md)
-
+* [Environment Configuration](5-1-env-file.md)
+* [Development](5-2-development.md)
+* [Deployment](5-3-deployment.md)
 
