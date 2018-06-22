@@ -111,6 +111,20 @@ function abort($status, $message = null)
     throw new HttpException($status, $message);
 }
 
+/**
+ * Returns env configuration by it's name.
+ *
+ * @param string $name
+ * @param mixed $default
+ * @return mixed
+ */
+function env($name, $default = null)
+{
+    $value = getenv($name);
+
+    return $value !== false ? $value : $default;
+}
+
 if (version_compare(PHP_VERSION, '7.2') < 0) {
     class_alias(blink\core\BaseObject::class, blink\core\Object::class);
 }
