@@ -16,6 +16,8 @@ use blink\console\ServerRestartCommand;
 use blink\console\ServerServeCommand;
 use blink\console\ServerStartCommand;
 use blink\console\ServerStopCommand;
+use blink\console\ServiceInstallCommand;
+use blink\console\ServiceUninstallCommand;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -265,7 +267,13 @@ class Application extends ServiceLocator
             ],
             'shell' => [
                 'class' => ShellCommand::class,
-            ]
+            ],
+            'service:install' => [
+                'class' => ServiceInstallCommand::class,
+            ],
+            'service:uninstall' => [
+                'class' => ServiceUninstallCommand::class,
+            ],
         ];
     }
 
