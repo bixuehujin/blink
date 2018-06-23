@@ -53,8 +53,10 @@ composer create-project --prefer-dist blink/seed your-app
 
 Blink is fully documented in both English and Chinese:
 
- * [English Documentation](https://docs.rethinkphp.com/blink-framework/v0.3/en/)
- * [简体中文文档](https://docs.rethinkphp.com/blink-framework/v0.3/zh-CN/)
+ * [English Documentation](https://docs.rethinkphp.com/blink-framework/v0.4/en/)
+ * [简体中文文档](https://docs.rethinkphp.com/blink-framework/v0.4/zh-CN/)
+
+For the documentation of v0.3, please visit https://docs.rethinkphp.com/blink-framework/v0.3
 
 ## Related Projects
 

@@ -9,7 +9,7 @@ Blink Framework Change Log
 - New: Compatible with PHP 7.2
 - New: Added SwServer::$dispatchMode config to tune Swoole's dispatch_mode
 - New: Compatible with PSR-7 http message interfaces
-- Chg: The Request::getParams() method will not convert special characters into `_` any more, see [here](https://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays)
+- Chg: The Request::getParams() method will not convert special characters into `_` any more, see [here](https://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays) for more detail
 - Chg: The Swoole's dispatch_mode is changed to 3 by default
 - Chg: The original Response::getBody() is now renamed to Response::getPayload()
 - Chg: Removed PHP 5.6 support
