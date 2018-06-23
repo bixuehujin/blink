@@ -5,7 +5,7 @@ Introduction
 ------------
 
 * [What is Blink?](README.md)
-
+* [Upgrading to v0.4](0-1-upgrading.md)
 
 Installation and Setup
 ----------------------

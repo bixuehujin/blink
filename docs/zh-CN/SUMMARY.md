@@ -5,6 +5,7 @@ Blink 中文文档
 ---
 
 * [什么是 Blink?](README.md)
+* [升级到 v0.4](0-1-upgrading.md)
 
 安装与配置
 --------
