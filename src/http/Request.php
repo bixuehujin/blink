@@ -320,7 +320,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         if ($contentType === 'application/json') {
             $parsedBody = json_decode($body, true);
         } elseif ($contentType === 'application/x-www-form-urlencoded') {
-            parse_str($body, $parsedBody);
+            $parsedBody = $this->parseQueryString($body);
         } elseif ($contentType === 'multipart/form-data') {
             // noop
         } else {
