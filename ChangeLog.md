@@ -1,8 +1,8 @@
 Blink Framework Change Log
 ==========================
 
-0.4.0 xx xx, 2018
------------------
+0.4.0 June 24, 2018
+-------------------
 
 - New: Added ENV_FILE(like dotenv) support
 - New: Added service:install command to install blink app as a systemd service

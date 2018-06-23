@@ -27,7 +27,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Application extends ServiceLocator
 {
-    const VERSION = '0.4.0 (dev)';
+    const VERSION = '0.4.0';
 
     /**
      * The name for the application.
