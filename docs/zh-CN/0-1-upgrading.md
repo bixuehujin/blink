@@ -13,3 +13,6 @@
 
 如果代码中依赖这样的特性，则需要进行调整，更多情况可以查看[这里](https://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays)
 
+** 3. `blink\core\Object` 重命名为 `blink\core\BaseObject` **
+
+为了兼容 PHP 7.2, 之前的 Object 类重命名为 BaseObject, 对于需要升级到 7.2 的项目，需要将所有 Object 的引用改为 BaseObject。

@@ -16,3 +16,7 @@ So, you just need to replace all `$request->getBody()` or `$reqeust->body` to `$
 
 If you rely on this feature, you should change your code. For more detail you may have a look at [this](https://stackoverflow.com/questions/68651/get-php-to-stop-replacing-characters-in-get-or-post-arrays)
 
+** 3. `blink\core\Object` is now renamed to `blink\core\BaseObject` **
+
+To compatible with PHP 7.2, The `blink\core\Object` class is now renamed to `blink\core\BaseObject`. If your project requires
+PHP 7.2 and above, all references of `Object` should be replaced with `BaseObject`.
