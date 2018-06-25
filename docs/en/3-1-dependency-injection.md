@@ -45,9 +45,9 @@ a new object, you can provide a configuration which will be used by the containe
 the corresponding setters or properties. For example:
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 

@@ -9,17 +9,17 @@ Yii 的[相关文档](https://github.com/yiisoft/yii2/blob/master/docs/guide/con
 ----
 
 Blink 利用 PHP 的魔术方法实现了增强版的对象属性，通过增强版的属性实现，我们可以在读或者写属性的时候执行一些自定义的代码。Blink 通过
-`blink\core\Object` 这个类来提供这一特性，它通过定义类的 *getter* and *setter* 方法来定义这种属性，如果一个类需要这种功能，我们只需要
-继承 `blink\core\Object` 类或者他的子类即可。
+`blink\core\BaseObject` 这个类来提供这一特性，它通过定义类的 *getter* and *setter* 方法来定义这种属性，如果一个类需要这种功能，我们只需要
+继承 `blink\core\BaseObject` 类或者他的子类即可。
 
 在下面的实例中，我们通过定义 getLabel() 和 setLabel() 两个方法定义了 label 这个属性。相比 PHP 原生提供的属性，该属性可以在设置它的值时
 自动调用 trim 函数，实现自定义代码注入：
 
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     private $_label;
 
@@ -39,7 +39,7 @@ class Foo extends Object
 异常；同样的，只定义 setter 方法而不定义 getter 方法的属性叫做 write only 属性，如果尝试读取该类属性值也会触发异常。
 
 
-除了继承 `blink\core\Object` 这个类，Blink 也提供 `blink\core\ObjectTrait` 和 `blink\core\Configure` 接口，通过使用他们，
+除了继承 `blink\core\BaseObject` 这个类，Blink 也提供 `blink\core\ObjectTrait` 和 `blink\core\Configure` 接口，通过使用他们，
 我们可以很容易的让第三方库的代码与 Blink 兼容，使用 Blink 提供的 属性和配置 的特性。
 
 

@@ -7,10 +7,10 @@
 Blink 中 `\blink\http\Request` 承载了所有的用户输入，我们可以方便的获取请求头、URL参数、请求数据等信息：
 
 ```php
-use \bink\core\Object;
+use \bink\core\BaseObject;
 use \bink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
     public function index(Request $request)
     {
@@ -37,10 +37,10 @@ Blink 不支持 Query String 中的如 `key[]=1&key[]=2` 数组名称形式的�
 Blink 中，Action 方法可以直接返回数据给客户端，支持返回字符串和数组类型：
 
 ```php
-use \bink\core\Object;
+use \bink\core\BaseObject;
 use \bink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
 
     public function action1()

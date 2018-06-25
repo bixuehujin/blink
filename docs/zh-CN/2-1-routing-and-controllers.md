@@ -116,10 +116,10 @@ Blink 支持控制器的构造函数和普通方法两种注入方式。通过�
 框架本身自然会很好的处理好对象的创建。下面是一个简单的控制器注入案例：
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
     /**
      * 这里通过构造函数注入 Request 对象

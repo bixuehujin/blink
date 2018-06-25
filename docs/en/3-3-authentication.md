@@ -17,7 +17,7 @@ shows how can we implement a user identity using static user data:
 ```php
 namespace app;
 
-class User extends Object implements Authenticatable
+class User extends BaseObject implements Authenticatable
 {
     public static $users = [
         ['id' => 1, 'name' => 'user1', 'password' => 'user1'],
@@ -103,10 +103,10 @@ Authorization is the process of verifying that a user has enough permissions to 
 is implemented by `blink\http\Request` class, here is the example:
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
     public function actionFoo(Request $request)
     {

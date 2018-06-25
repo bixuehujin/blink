@@ -9,18 +9,18 @@ Properties
 ----------
 
 Blink enhanced the property implementation by utilizing PHP's magic method. With the enhanced property, is it possible
-to inject some custom code when reading or writing properties. Blink provides the feature by `blink\core\Object` class,
+to inject some custom code when reading or writing properties. Blink provides the feature by `blink\core\BaseObject` class,
 it implemented the enhanced property by defining *getter* and *setter* class method. If a class need this functionality,
-it should extend from `blink\core\Object` or its child class.
+it should extend from `blink\core\BaseObject` or its child class.
 
 A getter method is a method whose name starts with the word get; a setter method starts with set. The name after the 
 get or set prefix defines the name of a property. For example, a getter getLabel() and/or a setter setLabel() defines a
 property named label, as shown in the following code:
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     private $_label;
 
@@ -40,7 +40,7 @@ A property defined by a getter without a setter is read only. Trying to assign a
 `blink\core\InvalidCallException`. Similarly, a property defined by a setter without a getter is write only, and trying
 to read such a property will also cause an exception. 
 
-Besides the class `blink\core\Object`, Blink also provides `blink\core\ObjectTrait` trait and `blink\core\Configure`
+Besides the class `blink\core\BaseObject`, Blink also provides `blink\core\ObjectTrait` trait and `blink\core\Configure`
 interface, by using them, it is useful to making third-party classes compatible with Blink and utilizing the Properties
 and Configurations feature of Blink.
 

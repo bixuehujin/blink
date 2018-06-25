@@ -10,10 +10,10 @@ the current request instance will automatically be injected by the service locat
 The following example shows how to inject the request object and access its query parameter and request body:
 
 ```php
-use \bink\core\Object;
+use \bink\core\BaseObject;
 use \bink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
     public function index(Request $request)
     {
@@ -47,10 +47,10 @@ Here is the example:
 
 
 ```php
-use \bink\core\Object;
+use \bink\core\BaseObject;
 use \bink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
 
     public function action1()

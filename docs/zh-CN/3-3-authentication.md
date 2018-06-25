@@ -15,7 +15,7 @@ Blink 提供了一套轻量级的*认证授权框架*，通过这套框架我们
 ```php
 namespace app;
 
-class User extends Object implements Authenticatable
+class User extends BaseObject implements Authenticatable
 {
     public static $users = [
         ['id' => 1, 'name' => 'user1', 'password' => 'user1'],
@@ -100,10 +100,10 @@ $user = auth()->once($creditials);
 授权是检查一个用户具有足够权限做某事的过程，Blink 中，该功能由  `blink\http\Request` 类实现，下面是一个简单的例子：
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
     public function actionFoo(Request $request)
     {

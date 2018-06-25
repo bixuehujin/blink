@@ -134,10 +134,10 @@ very conveniently. The following is a simple example showing how dependency inje
 
 
 ```php
-use blink\core\Object;
+use blink\core\BaseObject;
 use blink\http\Request;
 
-class Controller extends Object
+class Controller extends BaseObject
 {
     /**
      * Inject Request object via class constructor
