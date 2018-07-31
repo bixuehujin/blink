@@ -120,7 +120,7 @@ class CgiServer extends Server
             'cookies' => $_COOKIE,
             'body' => $body,
             'serverParams' => [
-                'remote_addr' => $_SERVER['REMOTE_ADDR'] ?: '127.0.0.1',
+                'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
             ],
         ];
 
