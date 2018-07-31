@@ -243,6 +243,9 @@ class SwServer extends Server
             'headers' => $headers,
             'cookies' => isset($request->cookie) ? $request->cookie : [],
             'body' => $body,
+            'serverParams' => [
+                'remote_addr' => $request->server['remote_addr'] ?: '127.0.0.1',
+            ]
         ];
 
         if (!empty($request->files)) {

@@ -312,6 +312,20 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         return $contentTypeParams;
     }
 
+    /**
+     * Returns the client ip address of the request.
+     *
+     * @return null|string
+     */
+    public function ip()
+    {
+        if ($ip = $this->headers->get('X-Forwarded-For')) {
+            return $ip;
+        } else {
+            return $this->serverParams['remote_addr'] ?: null;
+        }
+    }
+
     private function parseBody($body)
     {
         $parsedBody = [];
@@ -552,12 +566,14 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         return $new;
     }
 
+    public $serverParams = [];
+
     /**
      * @inheritDoc
      */
     public function getServerParams()
     {
-        return [];
+        return $this->serverParams;
     }
 
     /**
