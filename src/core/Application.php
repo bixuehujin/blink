@@ -128,18 +128,10 @@ class Application extends ServiceLocator
                 $this->registerRoutes();
                 $this->bootstrapped = true;
             } catch (\Exception $e) {
-                if ($this->environment === 'test') {
-                    throw $e;
-                }
-
                 $this->lastError = $e;
                 $this->get('log')
                      ->emergency($e);
             } catch (\Throwable $e) {
-                if ($this->environment === 'test') {
-                    throw $e;
-                }
-
                 $this->lastError = $e;
                 $this->get('log')
                      ->emergency($e);
@@ -402,10 +394,6 @@ class Application extends ServiceLocator
             $response->status($e->statusCode);
             $response->data = $this->exceptionToArray($e);
         } else {
-            if ($this->environment === 'test') {
-                throw $e;
-            }
-
             $response->status(500);
             $response->data = $this->exceptionToArray($e);
         }
