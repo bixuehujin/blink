@@ -340,7 +340,7 @@ class Application extends ServiceLocator
                  ->handleException($e);
         }
 
-after_exec:
+        after_exec:
         try {
             $response = $this->callMiddleware('response', $response);
         } catch (\Exception $e) {
