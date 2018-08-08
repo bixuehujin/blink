@@ -58,6 +58,27 @@ class CgiTest extends TestCase
                     ],
                 ]
             ],
+            [ // test with $_SERVER['HTTPS']
+                [
+                    'server' => [
+                        'REQUEST_METHOD' => 'GET',
+                        'REQUEST_URI' => '/path',
+                        'SERVER_PROTOCOL' => 'HTTP/1.0',
+                        'HTTP_USER-AGENT' => 'curl/7.43.0',
+                        'HTTPS' => 'on',
+                        'HTTP_ACCEPT' => '*/*',
+                    ],
+                ],
+                [
+                    'url' => 'https://localhost/path',
+                    'root' => 'https://localhost',
+                    'method' => 'GET',
+                    'headers' => [
+                        'user-agent' => ['curl/7.43.0'],
+                        'accept' => ['*/*'],
+                    ],
+                ]
+            ],
             [ // test for x-forward-proto
                 [
                     'server' => [
