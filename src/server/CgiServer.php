@@ -98,8 +98,13 @@ class CgiServer extends Server
         $hostParts = explode(':', $_SERVER['HTTP_HOST'] ?? 'localhost');
         $headers = new HeaderBag($this->extractHeaders());
 
+        $serverProtocol = 'http';
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+            $serverProtocol = 'https';
+        }
+
         $uriConfig = [
-            'scheme' => $this->resolveSchema($headers, strtolower($protocolParts[0])),
+            'scheme' => $this->resolveSchema($headers, $serverProtocol),
             'query' => isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '',
             'path' => parse_url($requestUri, PHP_URL_PATH),
             'host' => $hostParts[0],
