@@ -8,11 +8,12 @@ use blink\core\Application;
 use blink\http\Request;
 use blink\http\Response;
 use blink\log\Logger;
+use blink\support\Json;
 use blink\tests\TestCase;
 
 class ApplicationTest extends TestCase
 {
-    protected function createApplication()
+    protected function createApplication($boot = true)
     {
         $application = new Application(['root' => '.']);
         $application->route('GET', '/', function () {
@@ -30,8 +31,11 @@ class ApplicationTest extends TestCase
                                 return 'orders';
                             }
                         ]
-                    ])
-                    ->bootstrapIfNeeded();
+                    ]);
+
+        if ($boot) {
+            $application->bootstrapIfNeeded();
+        }
 
         return $application;
     }
@@ -78,6 +82,26 @@ class ApplicationTest extends TestCase
         $response = $app->handleRequest($request = $this->createRequest($app, '/admin/orders'));
 
         $this->assertEquals('orders', (string)$response->getBody());
+    }
+
+    public function testBootstrapFailure()
+    {
+        $app = $this->createApplication(false);
+
+        // Add the `/` route again
+        $app->route('GET', '/', function () {
+            return 'hello';
+        });
+
+        $app->bootstrapIfNeeded();
+
+        $response = $app->handleRequest($this->createRequest($app));
+
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals(
+            'Cannot register two routes matching "/" for method "GET"',
+            Json::decode($response->getBody())['message']
+        );
     }
 }
 

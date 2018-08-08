@@ -194,9 +194,14 @@ class Application extends ServiceLocator
 
         foreach ($this->routes as $value) {
             if (!is_array($value[0]) && is_array($value[1])) {
-                $this->group($value[0], $value[1]);
+                $routes = $value[1];
+                $this->router->addGroup($value[0], function (FastRoute\RouteCollector $router) use ($routes) {
+                    foreach ($routes as list($method, $route, $handler)) {
+                        $router->addRoute($method, $route, $handler);
+                    }
+                });
             } else {
-                $this->route($value[0], $value[1], $value[2]);
+                $this->router->addRoute($value[0], $value[1], $value[2]);
             }
         }
     }
@@ -281,18 +286,14 @@ class Application extends ServiceLocator
 
     public function route($method, $route, $handler)
     {
-        $this->router->addRoute($method, $route, $handler);
+        $this->routes[] = [$method, $route, $handler];
 
         return $this;
     }
 
     public function group($group, $routes)
     {
-        $this->router->addGroup($group, function (FastRoute\RouteCollector $router) use ($routes) {
-            foreach ($routes as list($method, $route, $handler)) {
-                $router->addRoute($method, $route, $handler);
-            }
-        });
+        $this->routes[] = [$group, $routes];
 
         return $this;
     }
@@ -317,14 +318,15 @@ class Application extends ServiceLocator
      */
     public function handleRequest($request): ResponseInterface
     {
-        if ($this->lastError) {
-            return $this->internalServerError();
-        }
-
         $this->currentRequest = $request;
 
         /** @var Response $response */
         $response = $this->get('response');
+
+        if ($this->lastError) {
+            $response->data = $this->lastError;
+            goto after_exec;
+        }
 
         try {
             $response = $this->exec($request, $response);
@@ -338,6 +340,7 @@ class Application extends ServiceLocator
                  ->handleException($e);
         }
 
+after_exec:
         try {
             $response = $this->callMiddleware('response', $response);
         } catch (\Exception $e) {
@@ -356,17 +359,6 @@ class Application extends ServiceLocator
         return $response;
     }
 
-    protected function internalServerError()
-    {
-        $response = new Response([
-            'data' => $this->lastError ?: new HttpException(500, 'There was an internal server error'),
-        ]);
-
-        $this->formatException($response->data, $response);
-
-        return $this->prepareResponse($response);
-    }
-    
     protected function prepareResponse(Response $response)
     {
         if ($response->data !== null) {
