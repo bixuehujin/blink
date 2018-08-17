@@ -10,6 +10,7 @@ namespace blink\console;
 class BaseService extends BaseServer
 {
     public $serviceName;
+    public $bootstrap = true;
 
     public function init()
     {
