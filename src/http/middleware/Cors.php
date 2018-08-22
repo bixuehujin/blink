@@ -15,6 +15,7 @@ class Cors extends BaseObject implements MiddlewareContract
     public $allowOrigins = [];
     public $allowMethods = 'GET, PUT, POST, DELETE';
     public $allowHeaders = 'Authorization, Content-Type';
+    public $allowCredentials = false;
     public $exposeHeaders = 'Authorization';
     public $maxAge = 86400;
 
@@ -36,14 +37,20 @@ class Cors extends BaseObject implements MiddlewareContract
             return;
         }
 
-        $response->headers->add([
+        $headers = [
             'Vary' => 'Origin',
             'Access-Control-Allow-Origin' => $origin,
             'Access-Control-Allow-Methods' => $this->allowMethods,
             'Access-Control-Allow-Headers' => $this->allowHeaders,
             'Access-Control-Expose-Headers' => $this->exposeHeaders,
             'Access-Control-Max-Age' => $this->maxAge,
-        ]);
+        ];
+
+        if ($this->allowCredentials) {
+            $headers['Access-Control-Allow-Credentials'] = 'true';
+        }
+
+        $response->headers->add($headers);
     }
 
     protected function matchOrigin($target, $allowOrigins)
