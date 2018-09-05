@@ -7,6 +7,7 @@
 
 namespace blink\server;
 
+use blink\http\Cookie;
 use blink\http\File;
 use blink\http\HeaderBag;
 use blink\http\Request;
@@ -143,6 +144,11 @@ class CgiServer extends Server
             foreach ($values as $value) {
                 header($name . ': ' . $value, false, $response->statusCode);
             }
+        }
+
+        /** @var Cookie $cookie */
+        foreach ($response->getCookies() as $cookie) {
+            header('Set-Cookie: ' . $cookie->toString(), false);
         }
 
         echo (string)$response->getBody();

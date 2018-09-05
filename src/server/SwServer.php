@@ -2,7 +2,9 @@
 
 namespace blink\server;
 
+use blink\http\Cookie;
 use blink\http\HeaderBag;
+use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
 
@@ -257,6 +259,7 @@ class SwServer extends Server
 
     public function onRequest($request, $response)
     {
+        /** @var Response $res */
         $res = app()->handleRequest($this->createRequest($request));
 
         $content = (string)$res->getBody();
@@ -266,6 +269,11 @@ class SwServer extends Server
             foreach ($values as $value) {
                 $response->header($name, $value);
             }
+        }
+
+        /** @var Cookie $cookie */
+        foreach ($res->getCookies() as $cookie) {
+            $response->cookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
 
         $response->status($res->getStatusCode());

@@ -369,10 +369,6 @@ class Application extends ServiceLocator
             $response->getBody()->write($content);
         }
 
-        foreach ($response->cookies as $cookie) {
-            $response->headers->with('Set-Cookie', $cookie->toString());
-        }
-        
         return $response;
     }
 
