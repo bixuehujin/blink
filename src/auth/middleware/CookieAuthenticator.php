@@ -36,7 +36,7 @@ class CookieAuthenticator implements MiddlewareContract
         $request->setSession($session);
     }
 
-    protected function handleNewSession($session)
+    public function handleNewSession($session)
     {
         $cookie = new Cookie($this->cookieParams + [
             'name' => $this->sessionKey,

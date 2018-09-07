@@ -2,6 +2,7 @@
 
 namespace blink\auth;
 
+use blink\auth\middleware\CookieAuthenticator;
 use blink\core\BaseObject;
 use blink\auth\Contract as AuthContract;
 use blink\session\Session;
@@ -71,6 +72,14 @@ class Auth extends BaseObject implements AuthContract
         if (!$once) {
             $session = session()->put(['auth_id' => $user->getAuthId()]);
             $request->session = $session;
+
+            foreach ($request->middleware as $middleware) {
+                $middleware = make($middleware);
+                if ($middleware instanceof CookieAuthenticator) {
+                    $middleware->handleNewSession($session);
+                    break;
+                }
+            }
         }
 
         $request->user($user);
