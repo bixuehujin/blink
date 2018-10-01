@@ -33,7 +33,11 @@
       "src/support/helpers.php"
     ],
     "psr-4": {
-      "blink\\": "src",
+      "blink\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "blink\\tests\\": "tests"
     }
   },
