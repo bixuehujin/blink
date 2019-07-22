@@ -366,6 +366,7 @@ class Application extends ServiceLocator
             if (!is_string($response->data) && !$response->headers->has('Content-Type')) {
                 $response->headers->set('Content-Type', 'application/json');
             }
+            $response->getBody()->rewind();
             $response->getBody()->write($content);
         }
 
