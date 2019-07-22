@@ -680,6 +680,13 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         return $this->attributes->get($name, $default);
     }
 
+    public function setAttribute($name, $value)
+    {
+        $this->attributes->set($name, $value);
+
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */

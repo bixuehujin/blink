@@ -394,9 +394,15 @@ class Application extends ServiceLocator
 
         $action = $this->createAction($handler);
 
+        $this->bindRoutingArgs($request, $args);
         $request = $this->callMiddleware('request', $request);
 
         return $this->runAction($action, $args, $request, $response);
+    }
+
+    protected function bindRoutingArgs(Request $request, $args)
+    {
+        $request->setAttribute('routing', $args);
     }
 
 
