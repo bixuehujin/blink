@@ -1,6 +1,21 @@
 Blink Framework Change Log
 ==========================
 
+0.4.1 June 28, 2019
+-------------------
+
+- New: Added a Cors middleware for Cross Origin handling
+- New: Added CookieAuthenticator to set cookie automatically
+- New: Added Request::ip() method to get client ip address
+- New: Added support to retrieve routing parameters through $request->getAttribute('routing')
+- Enh: Upgraded the version of symfony/console and psysh
+- Enh: Added the support of PHPUnit 6 and above
+- Bug: Fixed https may not detected correctly
+- Bug: Fixed the errors on bootstraping would never returns to client
+- Bug: Fixed Service related command not booted automatically
+- Bug: Fixed unable to Set-Cookie multiple times on SwServer
+
+
 0.4.0 June 24, 2018
 -------------------
 
