@@ -8,6 +8,7 @@ use blink\http\File;
 use blink\http\HeaderBag;
 use blink\http\Stream;
 use blink\http\Uri;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class RequestActor
@@ -33,7 +34,7 @@ class RequestActor
      */
     protected $response;
 
-    public function __construct(\PHPUnit_Framework_TestCase $phpunit, Application $app)
+    public function __construct(TestCase $phpunit, Application $app)
     {
         $this->phpunit = $phpunit;
         $this->app = $app;
