@@ -13,7 +13,7 @@ interface Authenticatable
      * Find model by it's identifiers.
      *
      * @param mixed $id
-     * @return static
+     * @return static|null
      */
     public static function findIdentity($id);
 
