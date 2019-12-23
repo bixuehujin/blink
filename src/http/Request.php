@@ -322,7 +322,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         if ($ip = $this->headers->first('X-Forwarded-For')) {
             return $ip;
         } else {
-            return $this->serverParams['remote_addr'] ?: null;
+            return $this->serverParams['remote_addr'] ?? null;
         }
     }
 
