@@ -1,0 +1,5 @@
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    checkUnionTypes: true
+    reportMaybes: true
+    checkNullables: true

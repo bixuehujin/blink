@@ -23,7 +23,8 @@
     "symfony/dotenv": "^3.3 || ^4.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~6.0"
+    "phpunit/phpunit": "~9.0",
+    "phpstan/phpstan": "^0.12.18"
   },
   "suggest": {
     "ext-swoole": "Run blink application under Swoole with visible performance improvements"
