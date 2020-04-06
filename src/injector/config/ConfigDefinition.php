@@ -2,17 +2,30 @@
 
 namespace blink\injector\config;
 
-use blink\injector\Definition;
-
 /**
  * Class ConfigDefinition
  *
  * @package blink\injector\config
  */
-class ConfigDefinition implements Definition
+class ConfigDefinition
 {
+    /**
+     * The name of the config.
+     *
+     * @var string
+     */
     protected string $name;
+    /**
+     * Is this config required.
+     *
+     * @var bool
+     */
     protected bool   $required = false;
+    /**
+     * The default value if the config is not required.
+     *
+     * @var mixed
+     */
     protected        $default;
 
     /**

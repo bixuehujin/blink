@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace blink\tests\injector;
 
 use blink\injector\CompositeStore;
-use blink\injector\config\ConfigStore;
-use blink\injector\Injector;
+use blink\injector\config\ConfigContainer;
+use blink\injector\Container;
+use blink\injector\exceptions\Exception;
+use blink\injector\exceptions\NotFoundException;
 use blink\injector\object\ObjectCreator;
 use blink\injector\object\ObjectDefinition;
 use blink\tests\TestCase;
@@ -18,22 +20,17 @@ use blink\tests\TestCase;
  */
 class InjectorTest extends TestCase
 {
-    protected function createConfigStore(): ConfigStore
+    protected function createConfigContainer(): ConfigContainer
     {
-        $configStore = new ConfigStore();
+        $container = new ConfigContainer();
 
-        $configStore->define('mysql.host')->default('localhost');
-        $configStore->define('mysql.password')->required();
-        $configStore->define('mysql.port')->required();
-        $configStore->appendConfigMap([
+        $container->define('mysql.host')->default('localhost');
+        $container->define('mysql.password')->required();
+        $container->define('mysql.port')->required();
+        $container->apply([
             'mysql.port' => 3306,
         ]);
-        return $configStore;
-    }
-
-    protected function createConfigInjector()
-    {
-        return new Injector($this->createConfigStore());
+        return $container;
     }
 
     public function configInjectCases()
@@ -41,12 +38,12 @@ class InjectorTest extends TestCase
         return [
             [
                 'name'            => 'unknown',
-                'expectException' => \Exception::class,
+                'expectException' => NotFoundException::class,
                 'expectResult'    => null,
             ],
             [
                 'name'            => 'mysql.password',
-                'expectException' => \Exception::class,
+                'expectException' => Exception::class,
                 'expectResult'    => null,
             ],
             [
@@ -67,13 +64,13 @@ class InjectorTest extends TestCase
      */
     public function testConfigInject(string $id, ?string $expectException, $expectResult = null)
     {
-        $injector = $this->createConfigInjector();
+        $injector = $this->createConfigContainer();
 
         if ($expectException) {
             $this->expectException($expectException);
         }
 
-        $result = $injector->make($id);
+        $result = $injector->get($id);
         if ($expectResult) {
             $this->assertEquals($expectResult, $result);
         }
@@ -81,14 +78,16 @@ class InjectorTest extends TestCase
 
     protected function createObjectInjector()
     {
-        $creator = new ObjectCreator();
+        $container = new Container([
+            $this->createConfigContainer(),
+        ]);
 
-        $creator->extend(DemoClassA::class, function (ObjectDefinition $definition) {
+        $container->extend(DemoClassA::class, function (ObjectDefinition $definition) {
             $definition->haveProperty('host')->referenceTo('mysql.host');
             $definition->haveProperty('port')->referenceTo('mysql.port')->guarded();
         });
 
-        return new Injector(new CompositeStore($creator, $this->createConfigStore()));
+        return $container;
     }
 
     public function objectInjectCases()
@@ -97,7 +96,7 @@ class InjectorTest extends TestCase
             [
                 'name'            => DemoClassA::class,
                 'expectException' => null,
-                'expectResult'    => null,
+                'expectResult'    => DemoClassA::class,
             ],
         ];
     }
@@ -115,7 +114,7 @@ class InjectorTest extends TestCase
 
         $result = $injector->make($id);
         if ($expectResult) {
-            $this->assertEquals($expectResult, $result);
+            $this->assertInstanceOf($expectResult, $result);
         }
     }
 }

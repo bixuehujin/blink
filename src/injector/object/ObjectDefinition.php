@@ -2,7 +2,6 @@
 
 namespace blink\injector\object;
 
-use blink\injector\Definition;
 use blink\injector\Reference;
 
 /**
@@ -10,7 +9,7 @@ use blink\injector\Reference;
  *
  * @package blink\injector\object
  */
-class ObjectDefinition implements Definition
+class ObjectDefinition
 {
     protected string    $className;
     /**
