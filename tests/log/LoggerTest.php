@@ -15,14 +15,15 @@ class LoggerTest extends TestCase
 {
     protected $logFile;
 
-    public function setUp()
+    public function setUp(): void
     {
+
         parent::setUp();
 
         $this->logFile = __DIR__ . '/test.log';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists($this->logFile)) {
             unlink($this->logFile);
@@ -58,8 +59,8 @@ class LoggerTest extends TestCase
 
         $content = file_get_contents($this->logFile);
 
-        $this->assertContains('alert message', $content);
-        $this->assertNotContains('info message', $content);
+        $this->assertTrue(strpos($content, 'alert message') !== false);
+        $this->assertFalse(strpos($content, 'info message') !== false);
     }
 
     public function testLogException()
@@ -67,6 +68,8 @@ class LoggerTest extends TestCase
         $log = $this->createLogger($this->logFile);
 
         $log->alert(new Exception('my exception'));
+
+        $this->assertTrue(true);
     }
 
     protected function createApp($callback = null)

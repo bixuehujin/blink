@@ -2,8 +2,15 @@
 
 namespace blink\tests;
 
-use PHPUnit\Framework\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase
+use blink\core\Application;
+
+class TestCase extends \blink\testing\TestCase
 {
+    public function createApplication()
+    {
+        return new Application([
+            'root' => __DIR__,
+        ]);
+    }
 }

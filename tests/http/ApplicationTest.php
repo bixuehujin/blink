@@ -13,7 +13,7 @@ use blink\tests\TestCase;
 
 class ApplicationTest extends TestCase
 {
-    protected function createApplication($boot = true)
+    public function createApplication($boot = true)
     {
         $application = new Application(['root' => '.']);
         $application->route('GET', '/', function () {

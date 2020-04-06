@@ -4,7 +4,6 @@ namespace blink\injector;
 
 use ReflectionClass;
 use blink\injector\object\ObjectDefinition;
-use blink\injector\object\Method;
 use Psr\Container\ContainerInterface;
 use blink\injector\exceptions\Exception;
 use blink\injector\exceptions\NotFoundException;
@@ -23,6 +22,10 @@ class Container implements ContainerInterface
     protected array $loadedItems  = [];
     protected array $loadingItems = [];
     protected array $aliases      = [];
+    /**
+     * @var array<ObjectDefinition|null>
+     */
+    protected array $definitions = [];
 
     public function __construct(array $delegates)
     {
@@ -59,11 +62,6 @@ class Container implements ContainerInterface
         $this->aliases[$alias] = $name;
     }
 
-    /**
-     * @var array<ObjectDefinition|null>
-     */
-    protected array $definitions = [];
-
     public function define(string $className, ?callable $callback)
     {
         $definition = $this->definitions[$className] = new ObjectDefinition($className);
@@ -83,8 +81,6 @@ class Container implements ContainerInterface
 
             $callback($definition);
         }
-
-        assert($definition instanceof ObjectDefinition);
 
         return $definition;
     }

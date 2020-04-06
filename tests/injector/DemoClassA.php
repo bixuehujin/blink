@@ -22,6 +22,5 @@ class DemoClassA
      */
     public function __construct(DemoClassB $a, $value = 1)
     {
-        var_dump($a, $value);
     }
 }

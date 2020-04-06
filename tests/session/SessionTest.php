@@ -11,7 +11,7 @@ class SessionTest extends TestCase
 {
     private $sessionPath;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->sessionPath = __DIR__ . '/sessions';
         mkdir($this->sessionPath);
@@ -19,7 +19,7 @@ class SessionTest extends TestCase
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach (new \DirectoryIterator($this->sessionPath) as $file) {
             if (!$file->isDot()) {
