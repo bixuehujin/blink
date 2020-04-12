@@ -19,11 +19,11 @@ class Command extends SymfonyCommand implements Configurable
     use ObjectTrait;
 
     /**
-     * The blink app instance.
+     * The container instance.
      *
-     * @var \blink\core\Application
+     * @var \blink\injector\Container
      */
-    public $blink;
+    public $container;
 
     /**
      * The name of the command.

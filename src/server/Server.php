@@ -2,15 +2,15 @@
 
 namespace blink\server;
 
-use blink\core\BaseObject;
 use blink\core\Application;
+use blink\kernel\Kernel;
 
 /**
  * The base class for Application Server.
  *
  * @package blink\server
  */
-abstract class Server extends BaseObject
+abstract class Server extends Kernel
 {
     public $host = '0.0.0.0';
     public $port = 7788;
@@ -48,5 +48,5 @@ abstract class Server extends BaseObject
         app()->shutdown();
     }
 
-    abstract public function run();
+    public abstract function run();
 }

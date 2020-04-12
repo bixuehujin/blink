@@ -32,11 +32,8 @@ class BaseServer extends Command
 
     protected function getServerDefinition()
     {
-        if (isset($this->blink->server) && is_array($this->blink->server)) {
-            return $this->blink->server;
-        } else {
-            return require $this->blink->root . '/src/config/server.php';
-        }
+        $configFile = $this->container->get('server.config_file');
+        return require $configFile;
     }
 
     protected function getPidFile()
