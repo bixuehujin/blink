@@ -2,12 +2,14 @@
 
 namespace blink\injector;
 
+use blink\core\Configurable;
 use ReflectionClass;
 use blink\injector\object\ObjectDefinition;
 use Psr\Container\ContainerInterface;
 use blink\injector\exceptions\Exception;
 use blink\injector\exceptions\NotFoundException;
 use ReflectionException;
+use blink\core\InvalidConfigException;
 
 /**
  * Class Container
@@ -35,27 +37,55 @@ class Container implements ContainerInterface
     /**
      * @param string $name
      * @param array $parameters
+     * @param array $config
      * @return mixed
      * @throws Exception
      */
-    public function make(string $name, array $parameters = [])
+    public function make(string $name, array $parameters = [], array $config = [])
     {
-        $concrete   = $this->aliases[$name] ?? $name;
-        $definition = $this->loadDefinition($concrete);
+//        $concrete   = $this->aliases[$name] ?? $name;
+        $definition = $this->loadDefinition($name);
         if (!$definition) {
             throw new Exception("Unable to load definition for '$name'");
         }
 
-        if (isset($this->loadingItems[$concrete])) {
-            throw new Exception('circular reference');
+        if (isset($this->loadingItems[$name])) {
+//            throw new Exception('circular reference');
         }
 
-        $this->loadingItems[$concrete] = true;
-        $value                         = $this->createObject($definition, $parameters);
+        $this->loadingItems[$name] = true;
+        $value                         = $this->createObject($definition, $parameters, $config);
 
-        unset($this->loadingItems[$concrete]);
+        unset($this->loadingItems[$name]);
         return $value;
     }
+
+    /**
+     * @param mixed $type
+     * @param array $arguments
+     * @return mixed
+     * @throws Exception
+     */
+    public function make2($type, $arguments = [])
+    {
+        if (is_string($type)) {
+            return $this->make($type, $arguments);
+        } else if (is_callable($type)) {
+            return $type();
+        } else if (is_object($type)) {
+            return $type;
+        } else if (is_array($type) && isset($type['class'])) {
+            $className = $type['class'];
+            unset($type['class']);
+
+            return $this->make($className, $arguments, $type);
+        } elseif (is_array($type)) {
+            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+        } else {
+            throw new InvalidConfigException("Unsupported configuration type: " . gettype($type));
+        }
+    }
+
 
     public function alias(string $name, string $alias)
     {
@@ -73,7 +103,7 @@ class Container implements ContainerInterface
         return $definition;
     }
 
-    public function extend(string $name, ?callable $callback): ?ObjectDefinition
+    public function extend(string $name, ?callable $callback = null): ?ObjectDefinition
     {
         $definition = $this->loadDefinition($name);
 
@@ -83,6 +113,11 @@ class Container implements ContainerInterface
         }
 
         return $definition;
+    }
+
+    public function withDefinition(string $name): ?ObjectDefinition
+    {
+        return $this->definitions[$name] = new ObjectDefinition('');
     }
 
     public function loadDefinition(string $name): ?ObjectDefinition
@@ -119,7 +154,7 @@ class Container implements ContainerInterface
         return $definition;
     }
 
-    protected function createObject(ObjectDefinition $definition, array $parameters)
+    protected function createObject(ObjectDefinition $definition, array $parameters, array $config = [])
     {
         if ($factory = $definition->getFactory()) {
             return $factory($this);
@@ -140,10 +175,18 @@ class Container implements ContainerInterface
                 }
             }
 
+            if (is_subclass_of($class, Configurable::class)) {
+                $arguments[count($arguments) - 1] = $config;
+            }
+
             $object = new $class(...$arguments);
         }
 
         $this->injectProperties($object, $definition->getProperties());
+
+        if ($object instanceof ContainerAware) {
+            $object->setContainer($this);
+        }
 
         return $object;
     }
@@ -202,6 +245,12 @@ class Container implements ContainerInterface
         return false;
     }
 
+    public function unset(string $id)
+    {
+        $id = $this->aliases[$id] ?? $id;
+        unset($this->loadedItems[$id]);
+    }
+
     /**
      * Finds an entry of the container by its identifier and returns it.
      *
@@ -213,6 +262,8 @@ class Container implements ContainerInterface
      */
     public function get($id)
     {
+        $id = $this->aliases[$id] ?? $id;
+
         if (array_key_exists($id, $this->loadedItems)) {
             return $this->loadedItems[$id];
         }

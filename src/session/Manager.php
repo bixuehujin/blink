@@ -4,6 +4,8 @@ namespace blink\session;
 
 use blink\core\InvalidConfigException;
 use blink\core\BaseObject;
+use blink\injector\ContainerAware;
+use blink\injector\ContainerAwareTrait;
 use blink\session\Contract as SessionContract;
 
 /**
@@ -11,8 +13,10 @@ use blink\session\Contract as SessionContract;
  *
  * @package blink\session
  */
-class Manager extends BaseObject implements SessionContract
+class Manager extends BaseObject implements SessionContract, ContainerAware
 {
+    use ContainerAwareTrait;
+
     /**
      * The backend session storage.
      *
@@ -30,16 +34,20 @@ class Manager extends BaseObject implements SessionContract
 
     public function init()
     {
-        if (!$this->storage instanceof StorageContract) {
-            $this->storage = make($this->storage);
-        }
-
-        $this->storage->timeout($this->expires);
-
         if ($this->sessionClass !== Session::class
             && !is_subclass_of($this->sessionClass, Session::class)) {
             throw new InvalidConfigException(sprintf('The %s::$sessionClass config expects a subclass of "blink\session\Session" as its value'));
         }
+    }
+
+    protected function getStorage(): StorageContract
+    {
+        if (!$this->storage instanceof StorageContract) {
+            $this->storage = $this->getContainer()->make2($this->storage);
+            $this->storage->timeout($this->expires);
+        }
+
+        return $this->storage;
     }
 
     /**
@@ -56,7 +64,7 @@ class Manager extends BaseObject implements SessionContract
             $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
         }
 
-        $this->storage->write($id, $attributes);
+        $this->getStorage()->write($id, $attributes);
 
         $class = $this->sessionClass;
         return new $class($attributes, ['id' => $id]);
@@ -68,7 +76,7 @@ class Manager extends BaseObject implements SessionContract
     public function get($id)
     {
         if ($id) {
-            $data = $this->storage->read($id);
+            $data = $this->getStorage()->read($id);
             if ($data !== null) {
                 $class = $this->sessionClass;
                 return new $class($data, ['id' => $id]);
@@ -85,7 +93,7 @@ class Manager extends BaseObject implements SessionContract
             $attributes = $attributes->all();
         }
 
-        return $this->storage->write($id, $attributes);
+        return $this->getStorage()->write($id, $attributes);
     }
 
     /**
@@ -93,6 +101,6 @@ class Manager extends BaseObject implements SessionContract
      */
     public function destroy($id)
     {
-        return $this->storage->destroy($id);
+        return $this->getStorage()->destroy($id);
     }
 }

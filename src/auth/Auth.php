@@ -5,6 +5,8 @@ namespace blink\auth;
 use blink\auth\middleware\CookieAuthenticator;
 use blink\core\BaseObject;
 use blink\auth\Contract as AuthContract;
+use blink\injector\ContainerAware;
+use blink\injector\ContainerAwareTrait;
 use blink\session\Session;
 
 /**
@@ -12,8 +14,10 @@ use blink\session\Session;
  *
  * @package blink\auth
  */
-class Auth extends BaseObject implements AuthContract
+class Auth extends BaseObject implements AuthContract, ContainerAware
 {
+    use ContainerAwareTrait;
+
     /**
      * The class that implements Authenticatable interface.
      *
@@ -74,7 +78,7 @@ class Auth extends BaseObject implements AuthContract
             $request->session = $session;
 
             foreach ($request->middleware as $middleware) {
-                $middleware = make($middleware);
+                $middleware = $this->getContainer()->make2($middleware);
                 if ($middleware instanceof CookieAuthenticator) {
                     $middleware->handleNewSession($session);
                     break;

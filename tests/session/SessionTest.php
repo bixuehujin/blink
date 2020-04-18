@@ -34,7 +34,7 @@ class SessionTest extends TestCase
 
     protected function createSession()
     {
-        return make([
+        return $this->createApplication()->getContainer()->make2([
             'class' => Manager::class,
             'storage' => [
                 'class' => FileStorage::class,

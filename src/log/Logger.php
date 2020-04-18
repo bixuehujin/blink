@@ -5,6 +5,8 @@ namespace blink\log;
 use blink\core\InvalidParamException;
 use blink\core\BaseObject;
 use blink\di\Instance;
+use blink\injector\ContainerAware;
+use blink\injector\ContainerAwareTrait;
 use Monolog\Formatter\JsonFormatter;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
@@ -16,9 +18,10 @@ use Monolog\Handler\HandlerInterface;
  *
  * @package blink\log
  */
-class Logger extends BaseObject implements LoggerInterface
+class Logger extends BaseObject implements LoggerInterface, ContainerAware
 {
     use LoggerTrait;
+    use ContainerAwareTrait;
 
     public $name = 'blink';
     public $targets = [];

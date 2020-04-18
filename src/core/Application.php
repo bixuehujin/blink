@@ -2,6 +2,7 @@
 
 namespace blink\core;
 
+use blink\kernel\Kernel;
 use Closure;
 use blink\di\Container;
 use FastRoute;
@@ -25,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @package blink\http
  */
-class Application extends ServiceLocator
+class Application extends Kernel
 {
     const VERSION = '0.4.1';
 
@@ -173,7 +174,7 @@ class Application extends ServiceLocator
         }
 
         foreach ($this->plugins as $name => $definition) {
-            $this->plugins[$name] = $plugin = make($definition);
+            $this->plugins[$name] = $plugin = $this->getContainer()->make2($definition);
             $plugin->install($this);
         }
     }
@@ -272,16 +273,6 @@ class Application extends ServiceLocator
                 'class' => ServiceUninstallCommand::class,
             ],
         ];
-    }
-
-    /**
-     * Returns all console commands definitions.
-     *
-     * @return array
-     */
-    public function consoleCommands()
-    {
-        return array_merge_recursive($this->defaultCommands(), $this->commands);
     }
 
     public function route($method, $route, $handler)
@@ -423,7 +414,7 @@ class Application extends ServiceLocator
 
         $class = get_class($owner);
         foreach ($owner->middleware as $definition) {
-            $middleware = make($definition);
+            $middleware = $this->getContainer()->make2($definition);
             if (!$middleware instanceof MiddlewareContract) {
                 throw new InvalidConfigException(sprintf("'%s' is not a valid middleware", get_class($middleware)));
             }
