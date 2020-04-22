@@ -448,7 +448,7 @@ class Application extends ServiceLocator
     }
 
     
-    protected function refreshServices()
+    public function refreshServices()
     {
         foreach ($this->refreshing as $id => $_) {
             $this->unbind($id);
