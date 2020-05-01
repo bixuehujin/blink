@@ -10,21 +10,12 @@ use blink\log\Logger;
 use blink\http\Request;
 use blink\http\Response;
 use blink\support\Json;
-use blink\console\ShellCommand;
-use blink\console\ServerCommand;
-use blink\console\ServerReloadCommand;
-use blink\console\ServerRestartCommand;
-use blink\console\ServerServeCommand;
-use blink\console\ServerStartCommand;
-use blink\console\ServerStopCommand;
-use blink\console\ServiceInstallCommand;
-use blink\console\ServiceUninstallCommand;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Application
  *
- * @package blink\http
+ * @package blink\core
  */
 class Application extends Kernel
 {
@@ -35,50 +26,43 @@ class Application extends Kernel
      *
      * @var string
      */
-    public $name = 'blink';
+    public string $name = 'blink';
 
     /**
      * The root path for the application.
      *
      * @var string
      */
-    public $root;
+    public string $root;
 
     /**
      * The installed application plugins.
      *
      * @var array
      */
-    public $plugins = [];
+    public array $plugins = [];
 
-    /**
-     * Available console commands.
-     *
-     * @var string[]
-     */
-    public $commands = [];
-
-    public $routes = [];
+    public array $routes = [];
 
     /**
      * Application service definitions.
      *
      * @var array
      */
-    public $services = [];
+    public array $services = [];
 
-    public $debug = true;
+    public bool $debug = true;
 
     /**
      * The environment that the application is running on. dev, prod or test.
      *
      * @var string
      */
-    public $environment = 'dev';
+    public string $environment = 'dev';
 
-    public $timezone = 'UTC';
+    public string $timezone = 'UTC';
 
-    public $runtime;
+    public string $runtime;
 
     public $server;
 
@@ -88,9 +72,9 @@ class Application extends Kernel
 
     protected $dispatcher;
 
-    protected $bootstrapped = false;
+    protected bool $bootstrapped = false;
 
-    protected $refreshing = [];
+    protected array $refreshing = [];
 
     protected $lastError;
 
@@ -104,7 +88,7 @@ class Application extends Kernel
 
         $this->router = $this->createRouter();
 
-        Container::$app = $this;
+        Container::$app      = $this;
         Container::$instance = new Container();
     }
 
@@ -131,11 +115,11 @@ class Application extends Kernel
             } catch (\Exception $e) {
                 $this->lastError = $e;
                 $this->get('log')
-                     ->emergency($e);
+                    ->emergency($e);
             } catch (\Throwable $e) {
                 $this->lastError = $e;
                 $this->get('log')
-                     ->emergency($e);
+                    ->emergency($e);
             }
         }
 
@@ -225,52 +209,14 @@ class Application extends Kernel
             'errorHandler' => [
                 'class' => ErrorHandler::class,
             ],
-            'log' => [
+            'log'          => [
                 'class' => Logger::class,
             ],
-            'request' => [
+            'request'      => [
                 'class' => Request::class,
             ],
-            'response' => [
+            'response'     => [
                 'class' => Response::class,
-            ],
-        ];
-    }
-
-    /**
-     * Returns the default console commands definitions.
-     *
-     * @return array
-     */
-    public function defaultCommands()
-    {
-        return [
-            'server' => [
-                'class' => ServerCommand::class,
-            ],
-            'server:start' => [
-                'class' => ServerStartCommand::class,
-            ],
-            'server:stop' => [
-                'class' => ServerStopCommand::class,
-            ],
-            'server:restart' => [
-                'class' => ServerRestartCommand::class,
-            ],
-            'server:reload' => [
-                'class' => ServerReloadCommand::class,
-            ],
-            'server:serve' => [
-                'class' => ServerServeCommand::class,
-            ],
-            'shell' => [
-                'class' => ShellCommand::class,
-            ],
-            'service:install' => [
-                'class' => ServiceInstallCommand::class,
-            ],
-            'service:uninstall' => [
-                'class' => ServiceUninstallCommand::class,
             ],
         ];
     }
@@ -324,11 +270,11 @@ class Application extends Kernel
         } catch (\Exception $e) {
             $response->data = $e;
             $this->get('errorHandler')
-                 ->handleException($e);
+                ->handleException($e);
         } catch (\Throwable $e) {
             $response->data = $e;
             $this->get('errorHandler')
-                 ->handleException($e);
+                ->handleException($e);
         }
 
         after_exec:
@@ -438,7 +384,7 @@ class Application extends Kernel
         return $owner;
     }
 
-    
+
     protected function refreshServices()
     {
         foreach ($this->refreshing as $id => $_) {
@@ -450,16 +396,16 @@ class Application extends Kernel
     protected function exceptionToArray($exception)
     {
         $array = [
-            'name' => get_class($exception),
+            'name'    => get_class($exception),
             'message' => $exception->getMessage(),
-            'code' => $exception->getCode(),
+            'code'    => $exception->getCode(),
         ];
         if ($exception instanceof HttpException) {
             $array['status'] = $exception->statusCode;
         }
         if ($this->debug) {
-            $array['file'] = $exception->getFile();
-            $array['line'] = $exception->getLine();
+            $array['file']  = $exception->getFile();
+            $array['line']  = $exception->getLine();
             $array['trace'] = explode("\n", $exception->getTraceAsString());
         }
 
@@ -492,7 +438,7 @@ class Application extends Kernel
             $action = $handler;
         } else {
             if (($pos = strpos($handler, '@')) !== false) {
-                $class = substr($handler, 0, $pos);
+                $class  = substr($handler, 0, $pos);
                 $method = substr($handler, $pos + 1);
 
                 if ($class[0] !== '\\' && $this->controllerNamespace) {
@@ -514,7 +460,7 @@ class Application extends Kernel
         $this->beforeAction($action, $request);
 
         $data = $this->call($action, $args);
-        
+
         if ($data instanceof Response) {
             $response = $data;
             $this->bind('response', $data, true);
