@@ -3,54 +3,70 @@
 namespace blink\http\middleware;
 
 use blink\core\BaseObject;
-use blink\core\MiddlewareContract;
+use blink\http\Response;
+use blink\http\Stream;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Cors
  *
  * @package blink\http\middleware
  */
-class Cors extends BaseObject implements MiddlewareContract
+class Cors extends BaseObject implements MiddlewareInterface
 {
-    public $allowOrigins = [];
-    public $allowMethods = 'GET, PUT, POST, DELETE';
-    public $allowHeaders = 'Authorization, Content-Type';
-    public $allowCredentials = false;
-    public $exposeHeaders = 'Authorization';
-    public $maxAge = 86400;
+    public array  $allowOrigins     = [];
+    public string $allowMethods     = 'GET, PUT, POST, DELETE';
+    public string $allowHeaders     = 'Authorization, Content-Type';
+    public bool   $allowCredentials = false;
+    public string $exposeHeaders    = 'Authorization';
+    public int    $maxAge           = 86400;
 
-    /**
-     * @param \blink\http\Response $response
-     */
-    public function handle($response)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (request()->is('OPTIONS')) {
-            $response->data = '';
+        $response = $handler->handle($request);
+
+        if ($request->getMethod() === 'OPTIONS') {
+            static $emptyStream;
+            if (is_null($emptyStream)) {
+                $emptyStream = new Stream("php://memory", 'r');
+            }
+            $response = $response->withBody($emptyStream);
         }
 
-        $origin = request()->headers->first('Origin');
+        $origin = $request->getHeaderLine('Origin');
         if (!$origin) {
-            return;
+            return $response;
         }
 
         if (!$this->matchOrigin($origin, (array)$this->allowOrigins)) {
-            return;
+            return $response;
         }
 
         $headers = [
-            'Vary' => 'Origin',
-            'Access-Control-Allow-Origin' => $origin,
-            'Access-Control-Allow-Methods' => $this->allowMethods,
-            'Access-Control-Allow-Headers' => $this->allowHeaders,
+            'Vary'                          => 'Origin',
+            'Access-Control-Allow-Origin'   => $origin,
+            'Access-Control-Allow-Methods'  => $this->allowMethods,
+            'Access-Control-Allow-Headers'  => $this->allowHeaders,
             'Access-Control-Expose-Headers' => $this->exposeHeaders,
-            'Access-Control-Max-Age' => $this->maxAge,
+            'Access-Control-Max-Age'        => $this->maxAge,
         ];
 
         if ($this->allowCredentials) {
             $headers['Access-Control-Allow-Credentials'] = 'true';
         }
 
-        $response->headers->add($headers);
+        if ($response instanceof Response) {
+            $response->headers->add($headers);
+        } else {
+            foreach ($headers as $key => $value) {
+                $response = $response->withHeader($key, $value);
+            }
+        }
+
+        return $response;
     }
 
     protected function matchOrigin($target, $allowOrigins)
