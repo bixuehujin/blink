@@ -53,7 +53,7 @@ class ApplicationTest extends TestCase
     {
         $app = $this->createApplication();
 
-        $response = $app->handleRequest($this->createRequest($app));
+        $response = $app->handle($this->createRequest($app));
         $this->assertEquals('hello', (string)$response->getBody());
     }
 
@@ -61,7 +61,7 @@ class ApplicationTest extends TestCase
     {
         $app = $this->createApplication();
 
-        $response = $app->handleRequest($this->createRequest($app, '/10/plus/20'));
+        $response = $app->handle($this->createRequest($app, '/10/plus/20'));
         $this->assertEquals(30, (string)$response->getBody());
     }
 
@@ -69,7 +69,7 @@ class ApplicationTest extends TestCase
     {
         $app = $this->createApplication();
 
-        $response = $app->handleRequest($request = $this->createRequest($app, '/10/multi/20'));
+        $response = $app->handle($request = $this->createRequest($app, '/10/multi/20'));
 
         $this->assertEquals(200, (string)$response->getBody());
         $this->assertEquals('bar', $request->params->get('foo'));
@@ -79,7 +79,7 @@ class ApplicationTest extends TestCase
     {
         $app = $this->createApplication();
 
-        $response = $app->handleRequest($request = $this->createRequest($app, '/admin/orders'));
+        $response = $app->handle($request = $this->createRequest($app, '/admin/orders'));
 
         $this->assertEquals('orders', (string)$response->getBody());
     }
@@ -95,7 +95,7 @@ class ApplicationTest extends TestCase
 
         $app->bootstrapIfNeeded();
 
-        $response = $app->handleRequest($this->createRequest($app));
+        $response = $app->handle($this->createRequest($app));
 
         $this->assertEquals(500, $response->getStatusCode());
         $this->assertEquals(

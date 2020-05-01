@@ -260,7 +260,7 @@ class SwServer extends Server
     public function onRequest($request, $response)
     {
         /** @var Response $res */
-        $res = app()->handleRequest($this->createRequest($request));
+        $res = app()->handle($this->createRequest($request));
 
         $content = (string)$res->getBody();
 

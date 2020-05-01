@@ -11,13 +11,15 @@ use blink\http\Request;
 use blink\http\Response;
 use blink\support\Json;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Application
  *
  * @package blink\core
  */
-class Application extends Kernel
+class Application extends Kernel implements RequestHandlerInterface
 {
     const VERSION = '0.4.1';
 
@@ -248,12 +250,7 @@ class Application extends Kernel
         return $request;
     }
 
-    /**
-     * @param Request $request
-     * @return ResponseInterface
-     * @throws \Exception
-     */
-    public function handleRequest($request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->currentRequest = $request;
 

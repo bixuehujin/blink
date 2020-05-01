@@ -158,7 +158,7 @@ class CgiServer extends Server
     {
         $app = $this->createApplication();
 
-        $response = $app->handleRequest($this->extractRequest());
+        $response = $app->handle($this->extractRequest());
 
         $this->response($response);
     }

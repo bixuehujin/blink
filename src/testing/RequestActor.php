@@ -68,7 +68,7 @@ class RequestActor
             $this->request->{$key} = $value;
         }
 
-        $this->response = $this->app->handleRequest($this->request);
+        $this->response = $this->app->handle($this->request);
 
         return $this;
     }
