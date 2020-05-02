@@ -8,7 +8,7 @@ abstract class ServiceProvider
 {
     /**
      * @param Kernel $kernel
-     * @return mixed
+     * @return void
      */
-    abstract public function register($kernel);
+    abstract public function register($kernel): void;
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace blink\server;
 
+use blink\console\ShellCommand;
 use blink\kernel\ServiceProvider;
-use blink\kernel\Kernel;
 use blink\console\Application;
 use blink\console\ServerReloadCommand;
 use blink\console\ServerRestartCommand;
@@ -22,9 +22,9 @@ class ServerProvider extends ServiceProvider
 {
     /**
      * @param Application|Server $kernel
-     * @return mixed|void
+     * @return void
      */
-    public function register($kernel)
+    public function register($kernel): void
     {
         $kernel->define('server.config_file')->required();
         $kernel->define('server.host')->default('0.0.0.0');
@@ -36,6 +36,7 @@ class ServerProvider extends ServiceProvider
             $kernel->registerCommand(ServerStopCommand::class);
             $kernel->registerCommand(ServerRestartCommand::class);
             $kernel->registerCommand(ServerReloadCommand::class);
+            $kernel->registerCommand(ShellCommand::class);
         }
     }
 }
