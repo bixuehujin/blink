@@ -48,7 +48,7 @@ class MiddlewareStack implements RequestHandlerInterface
     {
         $chain = $this->defaultHandler;
 
-        foreach (array_reverse($this->chain) as $middleware) {
+        foreach ($this->chain as $middleware) {
             $chain = $this->wrap($middleware, $chain);
         }
 
