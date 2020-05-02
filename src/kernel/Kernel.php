@@ -14,6 +14,7 @@ abstract class Kernel extends BaseObject
 {
     protected Container       $container;
     protected ConfigContainer $configContainer;
+    protected Invoker         $invoker;
     /**
      * @var ServiceProvider[]
      */
@@ -23,6 +24,7 @@ abstract class Kernel extends BaseObject
     {
         $this->configContainer = new ConfigContainer();
         $this->container       = new Container([$this->configContainer]);
+        $this->invoker         = new Invoker($this->container);
 
         parent::__construct($config);
     }
@@ -81,56 +83,16 @@ abstract class Kernel extends BaseObject
         $this->providers[] = $provider;
     }
 
-    /**
-     * Call the given callback or class method with dependency injection.
-     *
-     * @param $callback
-     * @param array $arguments
-     * @return mixed
-     */
-    public function call($callback, $arguments = [])
-    {
-        $dependencies = $this->getMethodDependencies($callback, $arguments);
-
-        return call_user_func_array($callback, $dependencies);
-    }
-
-    protected function getMethodDependencies($callback, array $arguments = [])
-    {
-        $dependencies = $arguments;
-        $parameters = array_slice($this->getCallerReflector($callback)->getParameters(), count($arguments));
-
-        foreach ($parameters as $key => $parameter) {
-            if ($parameter->isDefaultValueAvailable()) {
-                $dependencies[] = $parameter->getDefaultValue();
-            } elseif ($class = $parameter->getClass()) {
-                $dependencies[] = $this->get($class->getName());
-            } else {
-                throw new InvalidParamException('Missing required argument: ' . $parameter->getName());
-            }
-        }
-
-        return $dependencies;
-    }
-
-    protected function getCallerReflector($callback)
-    {
-        if (is_string($callback) && strpos($callback, '::') !== false) {
-            $callback = explode('::', $callback);
-        }
-
-        if (is_array($callback)) {
-            return new \ReflectionMethod($callback[0], $callback[1]);
-        }
-
-        return new \ReflectionFunction($callback);
-    }
-
     public function bootstrap()
     {
         foreach ($this->providers as $provider) {
             $provider->register($this);
         }
+    }
+
+    public function getInvoker(): Invoker
+    {
+        return $this->invoker;
     }
 
     public function getContainer(): Container

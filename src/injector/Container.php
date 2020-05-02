@@ -19,7 +19,7 @@ class Container implements ContainerInterface
     /**
      * @var ContainerInterface[]
      */
-    protected $delegates = [];
+    protected array $delegates = [];
 
     protected array $loadedItems  = [];
     protected array $loadingItems = [];
@@ -29,7 +29,7 @@ class Container implements ContainerInterface
      */
     protected array $definitions = [];
 
-    public function __construct(array $delegates)
+    public function __construct(array $delegates = [])
     {
         $this->delegates = $delegates;
     }

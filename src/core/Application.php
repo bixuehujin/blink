@@ -456,7 +456,7 @@ class Application extends Kernel implements RequestHandlerInterface
     {
         $this->beforeAction($action, $request);
 
-        $data = $this->call($action, $args);
+        $data = $this->getInvoker()->call($action, $args);
 
         if ($data instanceof Response) {
             $response = $data;
