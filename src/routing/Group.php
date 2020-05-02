@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace blink\routing;
 
+use blink\routing\middleware\MiddlewareStack;
+use Psr\Http\Server\MiddlewareInterface;
+
 /**
  * Class Group
  *
@@ -17,22 +20,31 @@ class Group
     public string    $prefix;
     public array     $routes = [];
 
-    public function __construct(Router $router, string $prefix)
+    protected MiddlewareStack $stack;
+
+    public function __construct(Router $router, MiddlewareStack $stack, string $prefix)
     {
         $this->router = $router;
         $this->prefix = $prefix;
+        $this->stack  = clone $stack;
+    }
+
+    public function use(MiddlewareInterface $middleware)
+    {
+        $this->stack->add($middleware);
     }
 
     /**
      * Add a new route in the group.
      *
+     * @param MiddlewareStack $stack
      * @param array $verbs
      * @param string $path
      * @param mixed $handler
      * @return Route
      */
-    protected function addRoute(array $verbs, string $path, $handler): Route
+    protected function addRoute(MiddlewareStack $stack, array $verbs, string $path, $handler): Route
     {
-        return $this->router->addRoute($verbs, $this->prefix . $path, $handler);
+        return $this->router->addRoute($stack, $verbs, $this->prefix . $path, $handler);
     }
 }

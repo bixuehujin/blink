@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace blink\routing;
 
+use blink\routing\middleware\MiddlewareStack;
+use Psr\Http\Server\MiddlewareInterface;
+
 /**
  * Class Route
  *
@@ -17,6 +20,8 @@ class Route
     public string $name;
     public array  $arguments = [];
 
+    public MiddlewareStack  $stack;
+
     /**
      * Route constructor.
      *
@@ -24,11 +29,17 @@ class Route
      * @param string $path
      * @param mixed $handler
      */
-    public function __construct(array $verbs, string $path, $handler)
+    public function __construct(MiddlewareStack $stack, array $verbs, string $path, $handler)
     {
-        $this->verbs   = $verbs;
+        $this->stack = clone $stack;
+        $this->verbs = $verbs;
         $this->path    = $path;
         $this->handler = $handler;
+    }
+
+    public function use(MiddlewareInterface $middleware)
+    {
+        $this->stack->add($middleware);
     }
 
     /**
@@ -49,7 +60,7 @@ class Route
      */
     public function withArguments(array $arguments): Route
     {
-        $route = clone $this;
+        $route            = clone $this;
         $route->arguments = $arguments;
         return $route;
     }

@@ -1,33 +1,30 @@
 <?php
 
-namespace blink\http;
+namespace blink\routing\middleware;
 
+use blink\routing\middleware\MiddlewareHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 /**
- * Class MiddlewareChain
+ * Class MiddlewareStack
  *
- * @package blink\http
+ * @package blink\routing\middleware
  */
-class MiddlewareChain implements RequestHandlerInterface
+class MiddlewareStack implements RequestHandlerInterface
 {
     /**
      * @var MiddlewareInterface[]
      */
     protected array $chain = [];
 
-    protected ?RequestHandlerInterface $defaultHandler = null;
+    protected RequestHandlerInterface $defaultHandler;
 
-    public function __construct(?RequestHandlerInterface $defaultHandler = null)
+    public function setDefaultHandler(RequestHandlerInterface $handler)
     {
-        if ($defaultHandler === null) {
-            $defaultHandler = null;
-        }
-
-        $this->defaultHandler = $defaultHandler;
+        $this->defaultHandler = $handler;
     }
 
     /**
@@ -36,7 +33,7 @@ class MiddlewareChain implements RequestHandlerInterface
      * @param MiddlewareInterface $middleware
      * @return static
      */
-    public function add(MiddlewareInterface $middleware): static
+    public function add(MiddlewareInterface $middleware): self
     {
         $this->chain[] = $middleware;
         return $this;
@@ -47,7 +44,7 @@ class MiddlewareChain implements RequestHandlerInterface
      *
      * @return RequestHandlerInterface
      */
-    protected function buildChain(): RequestHandlerInterface
+    protected function buildStack(): RequestHandlerInterface
     {
         $chain = $this->defaultHandler;
 
@@ -65,8 +62,8 @@ class MiddlewareChain implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $chain = $this->buildChain();
+        $stack = $this->buildStack();
 
-        return $chain->handle($request);
+        return $stack->handle($request);
     }
 }

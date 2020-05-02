@@ -1,6 +1,6 @@
 <?php
 
-namespace blink\http;
+namespace blink\routing\middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

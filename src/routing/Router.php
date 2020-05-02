@@ -4,35 +4,49 @@ declare(strict_types=1);
 
 namespace blink\routing;
 
+use blink\core\Exception;
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;
 use blink\kernel\Invoker;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;
+use blink\routing\middleware\DefaultHandler;
+use blink\routing\middleware\CallbackHandler;
 use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as StdParser;
 use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedGenerator;
+use Prophecy\Call\Call;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use blink\routing\middleware\MiddlewareStack;
 
 /**
  * Class Router
  *
  * @package blink\routing
  */
-class Router implements RequestHandlerInterface, ContainerAware
+class Router implements ContainerAware
 {
     use RouterMethods;
     use ContainerAwareTrait;
 
     protected ?Dispatcher  $dispatcher = null;
     /**
+     * @var MiddlewareStack
+     */
+    protected MiddlewareStack $stack;
+    /**
      * @var Route[]
      */
     protected array $routes = [];
+
+    public function __construct()
+    {
+        $this->stack = new MiddlewareStack();
+    }
 
     protected function buildRouteData(): array
     {
@@ -60,6 +74,11 @@ class Router implements RequestHandlerInterface, ContainerAware
         return $this->dispatcher;
     }
 
+    public function use(MiddlewareInterface $middleware)
+    {
+        $this->stack->add($middleware);
+    }
+
     /**
      * Add a group of routes with a callback.
      *
@@ -69,26 +88,28 @@ class Router implements RequestHandlerInterface, ContainerAware
      */
     public function group(string $prefix, callable $callback): self
     {
-        $group = new Group($this, $prefix);
+        $group = new Group($this, $this->stack, $prefix);
 
         $callback($group);
 
         return $this;
     }
 
-
     /**
      * Add a new route.
      *
+     * @param MiddlewareStack $stack
      * @param array $verbs
      * @param string $path
      * @param mixed $handler
      * @return Route
      */
-    public function addRoute(array $verbs, string $path, $handler): Route
+    public function addRoute(MiddlewareStack $stack, array $verbs, string $path, $handler): Route
     {
-        $route                               = new Route($verbs, $path, $handler);
+        $route = new Route($stack, $verbs, $path, $handler);
+
         $this->routes[spl_object_id($route)] = $route;
+
         return $route;
     }
 
@@ -113,10 +134,21 @@ class Router implements RequestHandlerInterface, ContainerAware
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $route = $this->dispatch($request->getMethod(), $request->getUri()->getPath());
+        try {
+            $route = $this->dispatch($request->getMethod(), $request->getUri()->getPath());
+            $stack = $route->stack;
+            $handler = new CallbackHandler(function () use ($route) {
+                $invoker = new Invoker($this->getContainer());
+                return $invoker->call($route->handler, $route->arguments);
+            });
+            $stack->setDefaultHandler($handler);
+        } catch (\Throwable $exception) {
+            $stack = $this->stack;
+            $stack->setDefaultHandler(new CallbackHandler(function () use ($exception) {
+                throw $exception;
+            }));
+        }
 
-        $invoker = new Invoker($this->getContainer());
-
-        return $invoker->call($route->handler, $route->arguments);
+        return $stack->handle($request);
     }
 }

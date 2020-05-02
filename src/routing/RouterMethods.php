@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace blink\routing;
 
 /**
- * Trait RouterTrait
+ * Trait RouterMethods
  *
  * @package blink\routing
  */
@@ -20,7 +20,7 @@ trait RouterMethods
      */
     public function get(string $path, $handler): Route
     {
-        return $this->addRoute(['GET', 'HEAD'], $path, $handler);
+        return $this->addRoute($this->stack, ['GET', 'HEAD'], $path, $handler);
     }
 
     /**
@@ -32,7 +32,7 @@ trait RouterMethods
      */
     public function post(string $path, $handler): Route
     {
-        return $this->addRoute(['POST'], $path, $handler);
+        return $this->addRoute($this->stack, ['POST'], $path, $handler);
     }
 
     /**
@@ -44,7 +44,7 @@ trait RouterMethods
      */
     public function put(string $path, $handler): Route
     {
-        return $this->addRoute(['PUT'], $path, $handler);
+        return $this->addRoute($this->stack, ['PUT'], $path, $handler);
     }
 
     /**
@@ -56,7 +56,7 @@ trait RouterMethods
      */
     public function patch(string $path, $handler): Route
     {
-        return $this->addRoute(['PATCH'], $path, $handler);
+        return $this->addRoute($this->stack, ['PATCH'], $path, $handler);
     }
 
     /**
@@ -68,7 +68,7 @@ trait RouterMethods
      */
     public function delete(string $path, $handler): Route
     {
-        return $this->addRoute(['DELETE'], $path, $handler);
+        return $this->addRoute($this->stack, ['DELETE'], $path, $handler);
     }
 
     /**
@@ -80,6 +80,6 @@ trait RouterMethods
      */
     public function options(string $path, $handler): Route
     {
-        return $this->addRoute(['OPTIONS'], $path, $handler);
+        return $this->addRoute($this->stack, ['OPTIONS'], $path, $handler);
     }
 }
