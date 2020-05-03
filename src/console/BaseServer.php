@@ -2,7 +2,7 @@
 
 namespace blink\console;
 
-use blink\core\console\Command;
+use blink\console\Command;
 use blink\core\InvalidValueException;
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;

@@ -1,6 +1,6 @@
 <?php
 
-namespace blink\core\console;
+namespace blink\console;
 
 use blink\core\Configurable;
 use blink\core\ObjectTrait;
@@ -12,18 +12,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class Command
  *
- * @package blink\core
+ * @package blink\console
  */
 class Command extends SymfonyCommand implements Configurable
 {
     use ObjectTrait;
-
-    /**
-     * The container instance.
-     *
-     * @var \blink\injector\Container
-     */
-    public $container;
 
     /**
      * The name of the command.
@@ -72,7 +65,7 @@ class Command extends SymfonyCommand implements Configurable
     public function run(InputInterface $input, OutputInterface $output)
     {
         if ($this->bootstrap) {
-            $this->blink->bootstrapIfNeeded();
+//            $this->blink->bootstrapIfNeeded();
         }
 
         $this->input = $input;

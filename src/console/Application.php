@@ -6,7 +6,6 @@ namespace blink\console;
 
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;
-use blink\kernel\Kernel;
 use Symfony\Component\Console\Application as Runner;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;

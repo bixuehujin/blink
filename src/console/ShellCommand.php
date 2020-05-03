@@ -4,7 +4,7 @@ namespace blink\console;
 
 use Psy\Shell;
 use Psy\Configuration;
-use blink\core\console\Command;
+use blink\console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
