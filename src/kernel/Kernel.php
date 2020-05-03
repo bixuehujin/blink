@@ -4,29 +4,46 @@ declare(strict_types=1);
 
 namespace blink\kernel;
 
-use blink\core\BaseObject;
-use blink\core\InvalidParamException;
 use blink\injector\config\ConfigContainer;
 use blink\injector\config\ConfigDefinition;
 use blink\injector\Container;
+use blink\kernel\events\AppInitializing;
+use blink\kernel\events\RouteMounting;
+use blink\routing\Router;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
-abstract class Kernel extends BaseObject
+/**
+ * Class Kernel
+ *
+ * @package blink\kernel
+ */
+final class Kernel implements EventDispatcherInterface, ListenerProviderInterface
 {
-    protected Container       $container;
     protected ConfigContainer $configContainer;
+    protected Container       $container;
     protected Invoker         $invoker;
+
+    protected array $listeners = [];
     /**
      * @var ServiceProvider[]
      */
     protected array $providers = [];
 
-    public function __construct($config = [])
+    protected static ?Kernel $instance = null;
+
+    private function __construct()
     {
         $this->configContainer = new ConfigContainer();
         $this->container       = new Container([$this->configContainer]);
-        $this->invoker         = new Invoker($this->container);
+    }
 
-        parent::__construct($config);
+    public static function getInstance(): Kernel
+    {
+        if (self::$instance === null) {
+            self::$instance = new Kernel();
+        }
+        return self::$instance;
     }
 
     public function define(string $name): ConfigDefinition
@@ -81,22 +98,48 @@ abstract class Kernel extends BaseObject
     public function add(ServiceProvider $provider)
     {
         $this->providers[] = $provider;
+        $provider->register($this);
     }
 
-    public function bootstrap()
+    public function init()
     {
-        foreach ($this->providers as $provider) {
-            $provider->register($this);
-        }
+        $this->dispatch(new AppInitializing($this));
     }
 
-    public function getInvoker(): Invoker
+    public function mountRoutes(Router $router)
     {
-        return $this->invoker;
+        $this->dispatch(new RouteMounting($router));
+    }
+
+    /**
+     * Attach a handler to the given eventClass.
+     *
+     * @param string $eventClass
+     * @param callable $handler
+     */
+    public function attach(string $eventClass, callable $handler)
+    {
+        $this->listeners[$eventClass][] = $handler;
     }
 
     public function getContainer(): Container
     {
         return $this->container;
+    }
+
+    public function dispatch(object $event)
+    {
+        $listeners = $this->getListenersForEvent($event);
+
+        foreach ($listeners as $listener) {
+            $listener($event);
+        }
+
+        return $event;
+    }
+
+    public function getListenersForEvent(object $event): iterable
+    {
+        return $this->listeners[get_class($event)] ?? [];
     }
 }
