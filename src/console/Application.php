@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace blink\console;
 
+use blink\injector\ContainerAware;
+use blink\injector\ContainerAwareTrait;
 use blink\kernel\Kernel;
 use Symfony\Component\Console\Application as Runner;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -15,8 +17,10 @@ use Symfony\Component\Dotenv\Dotenv;
  *
  * @package blink\console
  */
-class Application extends Kernel
+class Application implements ContainerAware
 {
+    use ContainerAwareTrait;
+
     protected Runner $runner;
 
     public function __construct()
@@ -26,14 +30,11 @@ class Application extends Kernel
         if ($file = getenv('ENV_FILE')) {
             (new Dotenv())->load($file);
         }
-
-        parent::__construct();
     }
 
-    public function registerCommand($command)
+    public function registerCommand(string $command)
     {
-        $command = $this->container->get($command);
-        $command->container = $this->container;
+        $command = $this->getContainer()->get($command);
 
         $this->runner->add($command);
     }

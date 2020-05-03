@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace blink\server;
 
 use blink\console\ShellCommand;
+use blink\kernel\events\AppInitializing;
+use blink\kernel\Kernel;
 use blink\kernel\ServiceProvider;
 use blink\console\Application;
 use blink\console\ServerReloadCommand;
@@ -20,8 +22,21 @@ use blink\console\ServerStopCommand;
  */
 class ServerProvider extends ServiceProvider
 {
+    public function registerCommands(AppInitializing $event)
+    {
+        $container = $event->kernel->getContainer();
+        $app = $container->get(Application::class);
+
+        $app->registerCommand(ServerStartCommand::class);
+        $app->registerCommand(ServerServeCommand::class);
+        $app->registerCommand(ServerStopCommand::class);
+        $app->registerCommand(ServerRestartCommand::class);
+        $app->registerCommand(ServerReloadCommand::class);
+        $app->registerCommand(ShellCommand::class);
+    }
+
     /**
-     * @param Application|Server $kernel
+     * @param Kernel $kernel
      * @return void
      */
     public function register($kernel): void
@@ -30,13 +45,6 @@ class ServerProvider extends ServiceProvider
         $kernel->define('server.host')->default('0.0.0.0');
         $kernel->define('server.port')->default(7788);
 
-        if ($kernel instanceof Application) {
-            $kernel->registerCommand(ServerStartCommand::class);
-            $kernel->registerCommand(ServerServeCommand::class);
-            $kernel->registerCommand(ServerStopCommand::class);
-            $kernel->registerCommand(ServerRestartCommand::class);
-            $kernel->registerCommand(ServerReloadCommand::class);
-            $kernel->registerCommand(ShellCommand::class);
-        }
+        $kernel->attach(AppInitializing::class, [$this, 'registerCommands']);
     }
 }

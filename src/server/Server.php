@@ -2,50 +2,28 @@
 
 namespace blink\server;
 
-use blink\core\Application;
-use blink\kernel\Kernel;
+use blink\injector\ContainerAware;
+use blink\injector\ContainerAwareTrait;
+use blink\routing\Router;
 
 /**
  * The base class for Application Server.
  *
  * @package blink\server
  */
-abstract class Server extends Kernel
+abstract class Server implements ContainerAware
 {
-    public $host = '0.0.0.0';
-    public $port = 7788;
+    use ContainerAwareTrait;
 
-    public $name = 'blink-server';
-    public $pidFile;
+    public string $host = '0.0.0.0';
+    public int    $port = 7788;
 
-    /**
-     * A php file that application will boot from.
-     *
-     * @var string
-     */
-    public $bootstrap;
+    public string $name = 'blink-server';
+    public string $pidFile = '';
 
-    /**
-     * @return Application
-     */
-    public function createApplication()
+    public function getRouter(): Router
     {
-        if ($this->bootstrap instanceof Application) {
-            $app = $this->bootstrap;
-        } elseif (is_array($this->bootstrap)) {
-            $app = new Application($this->bootstrap);
-        } else {
-            $app = require $this->bootstrap;
-        }
-
-        $app->server = $this;
-
-        return $app;
-    }
-
-    public function shutdownApplication()
-    {
-        app()->shutdown();
+        return $this->getContainer()->get(Router::class);
     }
 
     public abstract function run();

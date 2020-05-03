@@ -4,9 +4,11 @@ namespace blink\server;
 
 use blink\http\Cookie;
 use blink\http\HeaderBag;
+use blink\http\Request;
 use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
+use blink\kernel\Kernel;
 
 /**
  * A Swoole based server implementation.
@@ -21,36 +23,36 @@ class SwServer extends Server
      *
      * @var int
      */
-    public $maxRequests = 10000;
+    public int $maxRequests = 10000;
 
     /**
      * The max package length in bytes for swoole, which is default to 2M (1024 * 1024 * 2). Please refer
      * http://wiki.swoole.com/wiki/page/301.html for more detailed information.
      *
-     * @var int
+     * @var int|null
      */
-    public $maxPackageLength;
+    public ?int $maxPackageLength = null;
 
     /**
      * The output buffer size, see http://wiki.swoole.com/wiki/page/440.html
      *
-     * @var int
+     * @var int|null
      */
-    public $outputBufferSize;
+    public ?int $outputBufferSize = null;
 
     /**
      * The number of workers should be started to serve requests.
      *
-     * @var int
+     * @var int|null
      */
-    public $numWorkers;
+    public ?int $numWorkers = null;
 
     /**
      * Detach the server process and run as daemon.
      *
      * @var bool
      */
-    public $asDaemon = false;
+    public bool $asDaemon = false;
 
     /**
      * The dispatch mode for swoole, defaults to 3 for http server.
@@ -58,15 +60,14 @@ class SwServer extends Server
      * @var int
      * @see https://wiki.swoole.com/wiki/page/277.html
      */
-    public $dispatchMode = 3;
+    public int $dispatchMode = 3;
 
     /**
      * Specifies the path where logs should be stored in.
      *
      * @var string
      */
-    public $logFile;
-
+    public string $logFile = '';
 
     public function init()
     {
@@ -168,7 +169,9 @@ class SwServer extends Server
     {
         $this->setProcessTitle($this->name . ': worker');
 
-        $this->createApplication();
+        $router = $this->getRouter();
+
+        Kernel::getInstance()->mountRoutes($router);
     }
     
     protected function setProcessTitle($title)
@@ -179,7 +182,9 @@ class SwServer extends Server
 
         if (PHP_OS !== 'Darwin') {
             $error = error_get_last();
-            trigger_error($error['message'], E_USER_WARNING);
+            if ($error) {
+                trigger_error($error['message'], E_USER_WARNING);
+            }
         } elseif (extension_loaded('proctitle')) {
             setproctitle($title);
         }
@@ -187,7 +192,6 @@ class SwServer extends Server
 
     public function onWorkerStop()
     {
-        $this->shutdownApplication();
     }
 
     public function onTask($server, $taskId, $fromId, $data)
@@ -254,13 +258,12 @@ class SwServer extends Server
             $config['files'] = $this->normalizeFiles($request->files);
         }
 
-        return app()->makeRequest($config);
+        return new Request($config);
     }
 
     public function onRequest($request, $response)
     {
-        /** @var Response $res */
-        $res = app()->handle($this->createRequest($request));
+        $res = $this->getRouter()->handle($this->createRequest($request));
 
         $content = (string)$res->getBody();
 
@@ -269,11 +272,6 @@ class SwServer extends Server
             foreach ($values as $value) {
                 $response->header($name, $value);
             }
-        }
-
-        /** @var Cookie $cookie */
-        foreach ($res->getCookies() as $cookie) {
-            $response->cookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
 
         $response->status($res->getStatusCode());

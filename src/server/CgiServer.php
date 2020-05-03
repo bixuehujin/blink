@@ -14,6 +14,7 @@ use blink\http\Request;
 use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Dotenv\Dotenv;
 
 /**
@@ -66,7 +67,7 @@ class CgiServer extends Server
     /**
      * Normalize the PHP $_FILE array.
      *
-     * @param $files
+     * @param array $files
      * @return array
      */
     protected function normalizeFiles($files)
@@ -116,7 +117,7 @@ class CgiServer extends Server
         }
 
         $body = new Stream('php://memory', 'w+');
-        $body->write(file_get_contents('php://input'));
+        $body->write((string)file_get_contents('php://input'));
 
         $config = [
             'protocol' => $protocolParts[1],
@@ -134,21 +135,16 @@ class CgiServer extends Server
             $config['files'] = $this->normalizeFiles($_FILES);
         }
 
-        return app()->makeRequest($config);
+        return new Request($config);
     }
 
-    protected function response(Response $response)
+    protected function response(ResponseInterface $response)
     {
         foreach ($response->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             foreach ($values as $value) {
-                header($name . ': ' . $value, false, $response->statusCode);
+                header($name . ': ' . $value, false, $response->getStatusCode());
             }
-        }
-
-        /** @var Cookie $cookie */
-        foreach ($response->getCookies() as $cookie) {
-            header('Set-Cookie: ' . $cookie->toString(), false);
         }
 
         echo (string)$response->getBody();
@@ -156,9 +152,9 @@ class CgiServer extends Server
 
     public function run()
     {
-        $app = $this->createApplication();
+        $router = $this->getRouter();
 
-        $response = $app->handle($this->extractRequest());
+        $response = $router->handle($this->extractRequest());
 
         $this->response($response);
     }

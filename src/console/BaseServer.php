@@ -4,6 +4,8 @@ namespace blink\console;
 
 use blink\core\console\Command;
 use blink\core\InvalidValueException;
+use blink\injector\ContainerAware;
+use blink\injector\ContainerAwareTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -12,14 +14,9 @@ use Symfony\Component\Dotenv\Dotenv;
  *
  * @package blink\console
  */
-class BaseServer extends Command
+class BaseServer extends Command implements ContainerAware
 {
-    /**
-     * We disabled app auto bootstrapping here to make lazy loading works.
-     *
-     * @var bool
-     */
-    public $bootstrap = false;
+    use ContainerAwareTrait;
 
     protected function loadEnvFile(InputInterface $input)
     {
@@ -32,7 +29,7 @@ class BaseServer extends Command
 
     protected function getServerDefinition()
     {
-        $configFile = $this->container->get('server.config_file');
+        $configFile = $this->getContainer()->get('server.config_file');
         return require $configFile;
     }
 
@@ -45,15 +42,15 @@ class BaseServer extends Command
 
     protected function handleServe($liveReload = false)
     {
-        $server = $this->getServerDefinition();
+        $server             = $this->getServerDefinition();
         $server['asDaemon'] = 0;
 
         if ($liveReload) {
             $server['maxRequests'] = 1;
-            $server['numWorkers'] = 1;
+            $server['numWorkers']  = 1;
         }
 
-        return make($server)->run();
+        return $this->getContainer()->make2($server)->run();
     }
 
     protected function handleStart()
@@ -66,7 +63,7 @@ class BaseServer extends Command
             throw new InvalidValueException('The pidfile exists, it seems the server is already started');
         }
         $server['asDaemon'] = 1;
-        $server['pidFile'] = $pidFile;
+        $server['pidFile']  = $pidFile;
 
         return make($server)->run();
     }
