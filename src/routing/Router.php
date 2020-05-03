@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace blink\routing;
 
-use blink\core\Exception;
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;
 use blink\kernel\Invoker;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;
-use blink\routing\middleware\DefaultHandler;
 use blink\routing\middleware\CallbackHandler;
 use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as StdParser;
 use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedGenerator;
-use Prophecy\Call\Call;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -62,10 +59,7 @@ class Router implements ContainerAware
         return $collector->getData();
     }
 
-    /**
-     * @return GroupCountBased
-     */
-    protected function getDispatcher()
+    protected function getDispatcher(): Dispatcher
     {
         if ($this->dispatcher === null) {
             $this->dispatcher = new GroupCountBased($this->buildRouteData());
