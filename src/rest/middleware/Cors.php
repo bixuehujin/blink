@@ -1,6 +1,6 @@
 <?php
 
-namespace blink\http\middleware;
+namespace blink\rest\middleware;
 
 use blink\core\BaseObject;
 use blink\http\Response;
@@ -13,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * Class Cors
  *
- * @package blink\http\middleware
+ * @package blink\rest\middleware
  */
 class Cors extends BaseObject implements MiddlewareInterface
 {
@@ -62,20 +62,21 @@ class Cors extends BaseObject implements MiddlewareInterface
             $response->headers->add($headers);
         } else {
             foreach ($headers as $key => $value) {
-                $response = $response->withHeader($key, $value);
+                $response = $response->withHeader($key, (string)$value);
             }
         }
 
         return $response;
     }
 
-    protected function matchOrigin($target, $allowOrigins)
+    protected function matchOrigin(string $target, array $allowOrigins)
     {
         if (empty($allowOrigins)) {
             return true;
         }
 
         $target = parse_url($target, PHP_URL_HOST);
+        assert(is_string($target));
 
         foreach ($allowOrigins as $origin) {
             $origin = strtr($origin, [
