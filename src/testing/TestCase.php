@@ -13,12 +13,10 @@ abstract class TestCase extends BaseTestCase
 {
     protected $app;
 
-    abstract public function createApplication();
-
     public function setUp(): void
     {
         if (!$this->app) {
-            $this->app = $this->createApplication()->bootstrapIfNeeded();
+//            $this->app = $this->createApplication()->bootstrapIfNeeded();
         }
     }
 
