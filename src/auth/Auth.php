@@ -80,7 +80,7 @@ class Auth extends BaseObject implements AuthContract, ContainerAware
             foreach ($request->middleware as $middleware) {
                 $middleware = $this->getContainer()->make2($middleware);
                 if ($middleware instanceof CookieAuthenticator) {
-                    $middleware->handleNewSession($session);
+                    $middleware->createNewCookie($session);
                     break;
                 }
             }
