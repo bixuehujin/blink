@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace blink\logging;
 
-use blink\injector\ContainerAware;
-use blink\injector\ContainerAwareTrait;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Monolog\Logger as MonoLogger;
 use Psr\Log\LogLevel;
@@ -15,9 +16,8 @@ use Psr\Log\LogLevel;
  *
  * @package blink\logging
  */
-class Logger implements ContainerAware
+class Logger implements LoggerInterface
 {
-    use ContainerAwareTrait;
     use LoggerTrait;
 
     //<<Inject('logger.name')>>
