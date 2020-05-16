@@ -32,7 +32,7 @@ final class Kernel implements EventDispatcherInterface, ListenerProviderInterfac
 
     protected static ?Kernel $instance = null;
 
-    private function __construct()
+    public function __construct()
     {
         $this->configContainer = new ConfigContainer();
         $this->container       = new Container([$this->configContainer]);
