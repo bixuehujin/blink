@@ -44,6 +44,16 @@ class EventBus implements EventDispatcherInterface, ListenerProviderInterface
         return $event;
     }
 
+    /**
+     * Starts a new transaction.
+     *
+     * @return Transaction
+     */
+    public function beginTransaction(): Transaction
+    {
+        return new Transaction($this);
+    }
+
     public function getListenersForEvent(object $event): iterable
     {
         yield from $this->listenersFor(get_class($event));
