@@ -6,6 +6,7 @@ namespace blink\eventbus;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
  * Class EventBus
@@ -38,6 +39,9 @@ class EventBus implements EventDispatcherInterface, ListenerProviderInterface
         $listeners = $this->getListenersForEvent($event);
 
         foreach ($listeners as $listener) {
+            if ($event instanceof StoppableEventInterface && $event->isPropagationStopped()) {
+                return $event;
+            }
             $listener($event);
         }
 
