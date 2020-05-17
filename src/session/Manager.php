@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 namespace blink\session;
 
 use blink\core\InvalidConfigException;
@@ -28,15 +31,15 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
      *
      * @var int
      */
-    public $expires = 1296000;
+    public int $expires = 1296000;
 
-    public $sessionClass = Session::class;
+    public string $sessionClass = Session::class;
 
     public function init()
     {
         if ($this->sessionClass !== Session::class
             && !is_subclass_of($this->sessionClass, Session::class)) {
-            throw new InvalidConfigException(sprintf('The %s::$sessionClass config expects a subclass of "blink\session\Session" as its value'));
+            throw new InvalidConfigException(sprintf('The %s::$sessionClass config expects a subclass of "blink\session\Session" as its value', get_class($this)));
         }
     }
 
@@ -53,7 +56,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
     /**
      * @inheritDoc
      */
-    public function put($attributes = [])
+    public function put($attributes = []): Session
     {
         if ($attributes instanceof Session) {
             $id = $attributes->id;
@@ -73,7 +76,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
     /**
      * @inheritDoc
      */
-    public function get($id)
+    public function get(string $id): ?Session
     {
         if ($id) {
             $data = $this->getStorage()->read($id);
@@ -82,12 +85,13 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
                 return new $class($data, ['id' => $id]);
             }
         }
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function set($id, $attributes)
+    public function set(string $id, $attributes): bool
     {
         if ($attributes instanceof Session) {
             $attributes = $attributes->all();
@@ -99,7 +103,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
     /**
      * @inheritDoc
      */
-    public function destroy($id)
+    public function destroy(string $id): bool
     {
         return $this->getStorage()->destroy($id);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace blink\session;
 
 use blink\core\BaseObject;
@@ -19,9 +21,9 @@ class Session extends BaseObject
      *
      * @var string|null
      */
-    public $id;
+    public ?string $id;
 
-    public function __construct(array $attributes = [], $config = [])
+    public function __construct(array $attributes = [], array $config = [])
     {
         $this->replace($attributes);
 

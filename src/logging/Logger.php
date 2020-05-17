@@ -46,7 +46,7 @@ class Logger implements LoggerInterface
 
     public function log($level, $message, array $context = [])
     {
-        return $this->getMonoLogger()->log($level, $message, $context);
+        $this->getMonoLogger()->log($level, $message, $context);
     }
 
     protected function getHandlers(): array

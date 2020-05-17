@@ -27,19 +27,24 @@ class BasicAccess implements MiddlewareInterface
     //<<Inject('auth.basic-access.identity')>>
     public string $identity = 'name';
 
-    protected function authorize(ServerRequestInterface$request): ServerRequestInterface
+    protected function authorize(ServerRequestInterface $request): ServerRequestInterface
     {
         $value = $request->getHeader('Authorization');
         if (!$value) {
-            return;
+            return $request;
         }
 
         $parts = preg_split('/\s+/', $value[0]);
+        assert($parts !== false);
         if (count($parts) < 2 && strtolower($parts[0]) !== 'basic') {
-            return;
+            return $request;
         }
 
-        list($username, $password) = explode(':', base64_decode($parts[1], true));
+        $parts = explode(':', (string) base64_decode($parts[1], true));
+        if (! $parts) {
+            return $request;
+        }
+        list($username, $password) = $parts;
 
         $this->auth->attempt([
             $this->identity => $username,
@@ -53,6 +58,6 @@ class BasicAccess implements MiddlewareInterface
     {
         $request = $this->authorize($request);
 
-        return $handler->handle($request, $handler);
+        return $handler->handle($request);
     }
 }

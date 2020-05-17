@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace blink\logging;
 
+use blink\injector\object\ObjectDefinition;
 use blink\kernel\ServiceProvider;
 use Psr\Log\LogLevel;
 
@@ -20,9 +21,10 @@ class LoggerServiceProvider extends ServiceProvider
         $kernel->define('logger.log_file')->required();
         $kernel->define('logger.log_level')->default(LogLevel::INFO);
 
-        $logger = $kernel->getContainer()->extend(Logger::class);
-        $logger->haveProperty('name')->referenceTo('logger.name');
-        $logger->haveProperty('logFile')->referenceTo('logger.log_file');
-        $logger->haveProperty('logLevel')->referenceTo('logger.log_level');
+        $kernel->getContainer()->extend(Logger::class, function (ObjectDefinition $logger) {
+            $logger->haveProperty('name')->referenceTo('logger.name');
+            $logger->haveProperty('logFile')->referenceTo('logger.log_file');
+            $logger->haveProperty('logLevel')->referenceTo('logger.log_level');
+        });
     }
 }

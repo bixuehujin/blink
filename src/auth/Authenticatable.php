@@ -27,8 +27,8 @@ interface Authenticatable
     /**
      * Check whether the given password is correct.
      *
-     * @param $password
+     * @param string $password
      * @return boolean
      */
-    public function validatePassword($password);
+    public function validatePassword(string $password);
 }

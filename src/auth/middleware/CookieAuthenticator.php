@@ -48,12 +48,12 @@ class CookieAuthenticator implements MiddlewareInterface
         } elseif ($session = $this->session->get($cookie->value)) {
             // noop
         } else {
-            $session = $this->session->put(new Session([], ['id' => $cookie->value]));
+            $session = $this->session->put(['id' => $cookie->value]);
         }
 
         $request->setSession($session);
 
-        $response = $handler->handle($request, $handler);
+        $response = $handler->handle($request);
         assert($response instanceof Response);
 
         if (isset($newCookie)) {

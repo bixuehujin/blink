@@ -47,10 +47,10 @@ interface Contract
     /**
      * Destroy session by given sessionId, this will make the corresponding user logout.
      *
-     * @param $sessionId
+     * @param string $sessionId
      * @return boolean
      */
-    public function logout($sessionId);
+    public function logout(string $sessionId);
 
     /**
      * Returns the user that associated with given sessionId.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace blink\session;
 
 use blink\core\InvalidConfigException;
@@ -13,10 +15,10 @@ use blink\session\Contract as SessionContract;
  */
 class FileStorage extends BaseObject implements StorageContract
 {
-    public $path;
-    public $divisor = 1000;
+    public ?string $path    = null;
+    public int     $divisor = 1000;
 
-    protected $timeout;
+    protected int $timeout;
 
     public function init()
     {
@@ -40,17 +42,22 @@ class FileStorage extends BaseObject implements StorageContract
     /**
      * @inheritDoc
      */
-    public function read($id)
+    public function read(string $id): ?array
     {
         if (file_exists($this->path . '/' . $id)) {
-            return unserialize(file_get_contents($this->path . '/' . $id));
+            $content = file_get_contents($this->path . '/' . $id);
+            if ($content === false) {
+                return null;
+            }
+            return unserialize($content);
         }
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function write($id, array $data)
+    public function write(string $id, array $data): bool
     {
         return file_put_contents($this->path . '/' . $id, serialize($data)) !== false;
     }
@@ -58,7 +65,7 @@ class FileStorage extends BaseObject implements StorageContract
     /**
      * @inheritDoc
      */
-    public function destroy($id)
+    public function destroy(string $id): bool
     {
         if (file_exists($this->path . '/' . $id)) {
             return unlink($this->path . '/' . $id);
@@ -77,15 +84,18 @@ class FileStorage extends BaseObject implements StorageContract
 
     protected function gc()
     {
+        assert($this->path !== null);
         $iterator = new \DirectoryIterator($this->path);
-        $now = time();
+        $now      = time();
 
         foreach ($iterator as $file) {
             if ($file->isDot()) {
                 continue;
             }
             if ($file->getMTime() < $now - $this->timeout) {
-                @unlink($file->getRealPath());
+                if ($path = $file->getRealPath()) {
+                    @unlink($path);
+                }
             }
         }
     }
