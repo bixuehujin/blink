@@ -30,15 +30,21 @@ class Invoker
      */
     public function call($callback, $arguments = [])
     {
-        $dependencies = $this->getMethodDependencies($callback, $arguments);
+        $caller = $this->getCallerReflector($callback);
+
+        if (!$caller->isStatic() && is_array($callback) && count($callback) === 2) {
+            $callback[0] = $this->container->get($callback[0]);
+        }
+
+        $parameters   = $caller->getParameters();
+        $dependencies = $this->getMethodDependencies($parameters, $arguments);
 
         return call_user_func_array($callback, $dependencies);
     }
 
-    protected function getMethodDependencies($callback, array $arguments = [])
+    protected function getMethodDependencies($parameters, array $arguments = [])
     {
         $dependencies = [];
-        $parameters = $this->getCallerReflector($callback)->getParameters();
 
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
@@ -67,10 +73,5 @@ class Invoker
         }
 
         return new \ReflectionFunction($callback);
-    }
-
-    public function make(string $class, array $arguments)
-    {
-
     }
 }
