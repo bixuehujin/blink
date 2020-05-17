@@ -68,8 +68,15 @@ class Router implements ContainerAware
         return $this->dispatcher;
     }
 
-    public function use(MiddlewareInterface $middleware)
+    /**
+     * @param MiddlewareInterface|string $middleware
+     */
+    public function use($middleware)
     {
+        if (!$middleware instanceof MiddlewareInterface) {
+            $middleware = $this->getContainer()->get($middleware);
+        }
+
         $this->stack->add($middleware);
     }
 
@@ -129,8 +136,8 @@ class Router implements ContainerAware
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
-            $route = $this->dispatch($request->getMethod(), $request->getUri()->getPath());
-            $stack = $route->stack;
+            $route   = $this->dispatch($request->getMethod(), $request->getUri()->getPath());
+            $stack   = $route->stack;
             $handler = new CallbackHandler(function () use ($route) {
                 $invoker = new Invoker($this->getContainer());
                 return $invoker->call($route->handler, $route->arguments);

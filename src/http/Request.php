@@ -4,7 +4,6 @@ namespace blink\http;
 
 use blink\auth\Authenticatable;
 use blink\core\InvalidParamException;
-use blink\core\MiddlewareTrait;
 use blink\core\NotSupportedException;
 use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
@@ -25,7 +24,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInterface
 {
-    use MiddlewareTrait;
     use MessageTrait;
 
     const METHOD_HEAD = 'HEAD';

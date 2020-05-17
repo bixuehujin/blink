@@ -2,13 +2,10 @@
 
 namespace blink\http;
 
-use blink\core\MiddlewareTrait;
 use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
-use blink\support\Json;
 use blink\core\InvalidParamException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * Class Response
@@ -18,7 +15,6 @@ use Psr\Http\Message\StreamInterface;
  */
 class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterface
 {
-    use MiddlewareTrait;
     use MessageTrait;
 
     public $data;
