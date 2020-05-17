@@ -7,24 +7,18 @@ namespace blink\kernel;
 use blink\injector\config\ConfigContainer;
 use blink\injector\config\ConfigDefinition;
 use blink\injector\Container;
-use blink\kernel\events\AppInitializing;
-use blink\kernel\events\RouteMounting;
-use blink\routing\Router;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
  * Class Kernel
  *
  * @package blink\kernel
  */
-final class Kernel implements EventDispatcherInterface, ListenerProviderInterface
+final class Kernel
 {
     protected ConfigContainer $configContainer;
     protected Container       $container;
     protected Invoker         $invoker;
 
-    protected array $listeners = [];
     /**
      * @var ServiceProvider[]
      */
@@ -101,45 +95,8 @@ final class Kernel implements EventDispatcherInterface, ListenerProviderInterfac
         $provider->register($this);
     }
 
-    public function init()
-    {
-        $this->dispatch(new AppInitializing($this));
-    }
-
-    public function mountRoutes(Router $router)
-    {
-        $this->dispatch(new RouteMounting($router));
-    }
-
-    /**
-     * Attach a handler to the given eventClass.
-     *
-     * @param string $eventClass
-     * @param callable $handler
-     */
-    public function attach(string $eventClass, callable $handler)
-    {
-        $this->listeners[$eventClass][] = $handler;
-    }
-
     public function getContainer(): Container
     {
         return $this->container;
-    }
-
-    public function dispatch(object $event)
-    {
-        $listeners = $this->getListenersForEvent($event);
-
-        foreach ($listeners as $listener) {
-            $listener($event);
-        }
-
-        return $event;
-    }
-
-    public function getListenersForEvent(object $event): iterable
-    {
-        return $this->listeners[get_class($event)] ?? [];
     }
 }

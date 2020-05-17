@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace blink\server;
 
 use blink\console\ShellCommand;
+use blink\eventbus\EventBus;
 use blink\kernel\events\AppInitializing;
 use blink\kernel\Kernel;
 use blink\kernel\ServiceProvider;
@@ -45,6 +46,6 @@ class ServerProvider extends ServiceProvider
         $kernel->define('server.host')->default('0.0.0.0');
         $kernel->define('server.port')->default(7788);
 
-        $kernel->attach(AppInitializing::class, [$this, 'registerCommands']);
+        $kernel->getContainer()->get(EventBus::class)->attach(AppInitializing::class, [$this, 'registerCommands']);
     }
 }

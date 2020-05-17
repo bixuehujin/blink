@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace blink\routing;
 
+use blink\eventbus\EventBus;
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;
+use blink\kernel\events\RouteMounting;
 use blink\kernel\Invoker;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;
@@ -35,14 +37,16 @@ class Router implements ContainerAware
      * @var MiddlewareStack
      */
     protected MiddlewareStack $stack;
+    protected EventBus        $eventBus;
     /**
      * @var Route[]
      */
     protected array $routes = [];
 
-    public function __construct()
+    public function __construct(EventBus $eventBus)
     {
-        $this->stack = new MiddlewareStack();
+        $this->eventBus = $eventBus;
+        $this->stack    = new MiddlewareStack();
     }
 
     protected function buildRouteData(): array
@@ -66,6 +70,11 @@ class Router implements ContainerAware
         }
 
         return $this->dispatcher;
+    }
+
+    public function mountRoutes()
+    {
+        $this->eventBus->dispatch(new RouteMounting($this));
     }
 
     /**

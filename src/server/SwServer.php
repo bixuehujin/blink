@@ -170,8 +170,7 @@ class SwServer extends Server
         $this->setProcessTitle($this->name . ': worker');
 
         $router = $this->getRouter();
-
-        Kernel::getInstance()->mountRoutes($router);
+        $router->mountRoutes();
     }
     
     protected function setProcessTitle($title)
