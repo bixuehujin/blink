@@ -9,9 +9,7 @@ use blink\console\ShellCommand;
 use blink\eventbus\EventBus;
 use blink\injector\config\ConfigContainer;
 use blink\injector\Container;
-use blink\kernel\events\AppInitializing;
 use blink\injector\ServiceProvider;
-use blink\console\Application;
 use blink\console\ServerReloadCommand;
 use blink\console\ServerRestartCommand;
 use blink\console\ServerServeCommand;
@@ -25,6 +23,13 @@ use blink\console\ServerStopCommand;
  */
 class ServerProvider extends ServiceProvider
 {
+    protected EventBus $eventBus;
+
+    public function __construct(EventBus $eventBus)
+    {
+        $this->eventBus = $eventBus;
+    }
+
     public function registerCommands(CommandRegistering $event)
     {
         $app = $event->app;
@@ -44,11 +49,9 @@ class ServerProvider extends ServiceProvider
         $store->define('server.host')->default('0.0.0.0');
         $store->define('server.port')->default(7788);
 
-        $container
-            ->get(EventBus::class)
-            ->attach(
-                CommandRegistering::class,
-                [$this, 'registerCommands']
-            );
+        $this->eventBus->attach(
+            CommandRegistering::class,
+            [$this, 'registerCommands']
+        );
     }
 }

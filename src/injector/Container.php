@@ -288,10 +288,14 @@ class Container implements ContainerInterface
     /**
      * Add a new service provider to the container.
      *
-     * @param ServiceProvider $provider
+     * @param ServiceProvider|string $provider
      */
-    public function add(ServiceProvider $provider)
+    public function add($provider)
     {
+        if (! $provider instanceof ServiceProvider) {
+            $provider = $this->get($provider);
+        }
+
         $provider->register($this);
     }
 
