@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace blink\console;
 
+use blink\console\events\CommandRegistering;
+use blink\eventbus\EventBus;
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;
 use Symfony\Component\Console\Application as Runner;
@@ -40,6 +42,9 @@ class Application implements ContainerAware
 
     public function run()
     {
+        $this->container->get(EventBus::class)
+            ->dispatch(new CommandRegistering($this));
+
         return $this->runner->run(
             new ArgvInput(),
             new ConsoleOutput()

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace blink\server;
 
+use blink\console\events\CommandRegistering;
 use blink\console\ShellCommand;
 use blink\eventbus\EventBus;
 use blink\injector\config\ConfigContainer;
@@ -24,10 +25,9 @@ use blink\console\ServerStopCommand;
  */
 class ServerProvider extends ServiceProvider
 {
-    public function registerCommands(AppInitializing $event)
+    public function registerCommands(CommandRegistering $event)
     {
-        $container = $event->container;
-        $app       = $container->get(Application::class);
+        $app = $event->app;
 
         $app->registerCommand(ServerStartCommand::class);
         $app->registerCommand(ServerServeCommand::class);
@@ -47,7 +47,7 @@ class ServerProvider extends ServiceProvider
         $container
             ->get(EventBus::class)
             ->attach(
-                AppInitializing::class,
+                CommandRegistering::class,
                 [$this, 'registerCommands']
             );
     }
