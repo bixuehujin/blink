@@ -6,7 +6,7 @@ namespace blink\tests\routing;
 
 use blink\http\Request;
 use blink\http\Response;
-use blink\injector\Container;
+use blink\di\Container;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;
 use blink\routing\Group;

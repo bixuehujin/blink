@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace blink\tests\injector;
+namespace blink\tests\di;
 
-use blink\injector\CompositeStore;
-use blink\injector\config\ConfigContainer;
-use blink\injector\Container;
-use blink\injector\exceptions\Exception;
-use blink\injector\exceptions\NotFoundException;
-use blink\injector\object\ObjectCreator;
-use blink\injector\object\ObjectDefinition;
+use blink\di\config\ConfigContainer;
+use blink\di\Container;
+use blink\di\exceptions\Exception;
+use blink\di\exceptions\NotFoundException;
+use blink\di\object\ObjectDefinition;
 use blink\tests\TestCase;
 
 /**

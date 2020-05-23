@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace blink\injector\exceptions;
+namespace blink\di\exceptions;
 
 use Psr\Container\ContainerExceptionInterface;
 

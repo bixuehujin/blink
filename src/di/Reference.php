@@ -1,11 +1,11 @@
 <?php
 
-namespace blink\injector;
+namespace blink\di;
 
 /**
  * Reference represents a reference in property or argument.
  *
- * @package blink\injector
+ * @package blink\di
  */
 class Reference
 {

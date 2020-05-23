@@ -1,15 +1,15 @@
 <?php
 
-namespace blink\injector\config;
+namespace blink\di\config;
 
-use blink\injector\exceptions\NotFoundException;
-use blink\injector\exceptions\Exception;
+use blink\di\exceptions\NotFoundException;
+use blink\di\exceptions\Exception;
 use Psr\Container\ContainerInterface;
 
 /**
- * Class ConfigStore
+ * Class ConfigContainer
  *
- * @package blink\injector\config
+ * @package blink\di\config
  */
 class ConfigContainer implements ContainerInterface
 {

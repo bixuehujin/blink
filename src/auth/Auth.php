@@ -5,8 +5,8 @@ namespace blink\auth;
 use blink\auth\middleware\CookieAuthenticator;
 use blink\core\BaseObject;
 use blink\auth\Contract as AuthContract;
-use blink\injector\ContainerAware;
-use blink\injector\ContainerAwareTrait;
+use blink\di\ContainerAware;
+use blink\di\ContainerAwareTrait;
 use blink\session\Session;
 
 /**

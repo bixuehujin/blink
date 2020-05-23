@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace blink\routing;
 
 use blink\eventbus\EventBus;
-use blink\injector\Container;
+use blink\di\Container;
 use blink\routing\events\RouteMounting;
-use blink\injector\ServiceProvider;
+use blink\di\ServiceProvider;
 
 /**
  * Class RouteServiceProvider

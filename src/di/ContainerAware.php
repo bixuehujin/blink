@@ -1,11 +1,11 @@
 <?php
 
-namespace blink\injector;
+namespace blink\di;
 
 /**
  * Interface ContainerAware
  *
- * @package blink\injector
+ * @package blink\di
  */
 interface ContainerAware
 {

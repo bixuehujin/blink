@@ -1,13 +1,13 @@
 <?php
 
-namespace blink\injector\object;
+namespace blink\di\object;
 
-use blink\injector\Reference;
+use blink\di\Reference;
 
 /**
  * ObjectDefinition represents the definition to create objects.
  *
- * @package blink\injector\object
+ * @package blink\di\object
  */
 class ObjectDefinition
 {

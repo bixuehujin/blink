@@ -4,8 +4,8 @@ namespace blink\console;
 
 use blink\console\Command;
 use blink\core\InvalidValueException;
-use blink\injector\ContainerAware;
-use blink\injector\ContainerAwareTrait;
+use blink\di\ContainerAware;
+use blink\di\ContainerAwareTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 

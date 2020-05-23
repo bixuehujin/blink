@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace blink\routing;
 
 use blink\eventbus\EventBus;
-use blink\injector\ContainerAware;
-use blink\injector\ContainerAwareTrait;
-use blink\injector\Invoker;
+use blink\di\ContainerAware;
+use blink\di\ContainerAwareTrait;
+use blink\di\Invoker;
 use blink\routing\events\RouteMounting;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;

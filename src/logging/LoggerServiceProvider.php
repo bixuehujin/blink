@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace blink\logging;
 
-use blink\injector\config\ConfigContainer;
-use blink\injector\Container;
-use blink\injector\object\ObjectDefinition;
-use blink\injector\ServiceProvider;
+use blink\di\config\ConfigContainer;
+use blink\di\Container;
+use blink\di\object\ObjectDefinition;
+use blink\di\ServiceProvider;
 use Psr\Log\LogLevel;
 
 /**

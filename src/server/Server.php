@@ -2,8 +2,8 @@
 
 namespace blink\server;
 
-use blink\injector\ContainerAware;
-use blink\injector\ContainerAwareTrait;
+use blink\di\ContainerAware;
+use blink\di\ContainerAwareTrait;
 use blink\routing\Router;
 
 /**

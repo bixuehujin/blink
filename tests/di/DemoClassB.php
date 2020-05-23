@@ -1,7 +1,7 @@
 <?php
 
 
-namespace blink\tests\injector;
+namespace blink\tests\di;
 
 
 class DemoClassB

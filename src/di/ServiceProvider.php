@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace blink\injector;
+namespace blink\di;
 
 /**
  * Class ServiceProvider

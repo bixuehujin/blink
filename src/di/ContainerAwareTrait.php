@@ -1,6 +1,6 @@
 <?php
 
-namespace blink\injector;
+namespace blink\di;
 
 
 trait ContainerAwareTrait

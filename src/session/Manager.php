@@ -7,8 +7,8 @@ namespace blink\session;
 
 use blink\core\InvalidConfigException;
 use blink\core\BaseObject;
-use blink\injector\ContainerAware;
-use blink\injector\ContainerAwareTrait;
+use blink\di\ContainerAware;
+use blink\di\ContainerAwareTrait;
 use blink\session\Contract as SessionContract;
 
 /**

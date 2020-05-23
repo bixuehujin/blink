@@ -1,8 +1,8 @@
 <?php
 
-namespace blink\injector\object;
+namespace blink\di\object;
 
-use blink\injector\Reference;
+use blink\di\Reference;
 
 
 class Method

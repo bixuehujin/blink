@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace blink\injector\exceptions;
+namespace blink\di\exceptions;
 
 
 use Psr\Container\NotFoundExceptionInterface;
@@ -10,7 +10,7 @@ use Psr\Container\NotFoundExceptionInterface;
 /**
  * Class NotFoundException
  *
- * @package blink\injector
+ * @package blink\di
  */
 class NotFoundException extends Exception implements NotFoundExceptionInterface
 {

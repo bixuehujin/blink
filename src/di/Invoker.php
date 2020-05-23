@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace blink\injector;
+namespace blink\di;
 
 use Psr\Container\ContainerInterface;
 use blink\core\InvalidParamException;
@@ -10,7 +10,7 @@ use blink\core\InvalidParamException;
 /**
  * Class Invoker
  *
- * @package blink\injector
+ * @package blink\di
  */
 class Invoker
 {

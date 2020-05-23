@@ -1,11 +1,11 @@
 <?php
 
-namespace blink\injector\config;
+namespace blink\di\config;
 
 /**
  * Class ConfigDefinition
  *
- * @package blink\injector\config
+ * @package blink\di\config
  */
 class ConfigDefinition
 {

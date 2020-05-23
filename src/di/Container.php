@@ -1,14 +1,14 @@
 <?php
 
-namespace blink\injector;
+namespace blink\di;
 
 use blink\core\Configurable;
-use blink\injector\config\ConfigContainer;
+use blink\di\config\ConfigContainer;
 use ReflectionClass;
-use blink\injector\object\ObjectDefinition;
+use blink\di\object\ObjectDefinition;
 use Psr\Container\ContainerInterface;
-use blink\injector\exceptions\Exception;
-use blink\injector\exceptions\NotFoundException;
+use blink\di\exceptions\Exception;
+use blink\di\exceptions\NotFoundException;
 use ReflectionException;
 use blink\core\InvalidConfigException;
 
