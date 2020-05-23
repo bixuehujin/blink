@@ -3,6 +3,7 @@
 namespace blink\injector;
 
 use blink\core\Configurable;
+use blink\injector\config\ConfigContainer;
 use ReflectionClass;
 use blink\injector\object\ObjectDefinition;
 use Psr\Container\ContainerInterface;
@@ -31,6 +32,9 @@ class Container implements ContainerInterface
 
     public function __construct(array $delegates = [])
     {
+        $configStore = $this->get(ConfigContainer::class);
+        $delegates[] = $configStore;
+
         $this->delegates = $delegates;
     }
 
@@ -279,5 +283,39 @@ class Container implements ContainerInterface
         }
 
         throw new NotFoundException("No entry was found for identifier: $id");
+    }
+
+    /**
+     * Add a new service provider to the container.
+     *
+     * @param ServiceProvider $provider
+     */
+    public function add(ServiceProvider $provider)
+    {
+        $provider->register($this);
+    }
+
+    public function bind(string $name, $definitions)
+    {
+        if (is_callable($definitions)) {
+            $this->withDefinition($name)->haveFactory($definitions);
+        } else if (is_object($definitions)) {
+            $this->withDefinition($name)->haveFactory(function () use ($definitions) {
+                return $definitions;
+            });
+        } else {
+            $className = $definitions['class'] ?? $name;
+            unset($definitions['class']);
+
+            $def = $this->extend($className);
+
+            foreach ($definitions as $key => $value) {
+                $def->haveProperty($key)->withValue($value);
+            }
+
+            if ($className !== $name) {
+                $this->alias($className, $name);
+            }
+        }
     }
 }

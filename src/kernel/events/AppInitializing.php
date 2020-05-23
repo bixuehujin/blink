@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace blink\kernel\events;
 
-use blink\kernel\Kernel;
+use blink\injector\Container;
 
 /**
  * Class AppInitializing
@@ -13,10 +13,10 @@ use blink\kernel\Kernel;
  */
 class AppInitializing
 {
-    public Kernel $kernel;
+    public Container $container;
 
-    public function __construct(Kernel $kernel)
+    public function __construct(Container $container)
     {
-        $this->kernel = $kernel;
+        $this->container = $container;
     }
 }

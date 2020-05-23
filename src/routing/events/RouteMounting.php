@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace blink\kernel\events;
+namespace blink\routing\events;
 
 use blink\routing\Router;
 
 /**
  * Class RouteMounting
  *
- * @package blink\kernel\events
+ * @package blink\routing\events
  */
 class RouteMounting
 {

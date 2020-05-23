@@ -7,11 +7,12 @@ namespace blink\routing;
 use blink\eventbus\EventBus;
 use blink\injector\ContainerAware;
 use blink\injector\ContainerAwareTrait;
-use blink\kernel\events\RouteMounting;
-use blink\kernel\Invoker;
+use blink\injector\Invoker;
+use blink\routing\events\RouteMounting;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;
 use blink\routing\middleware\CallbackHandler;
+use blink\routing\middleware\MiddlewareStack;
 use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteCollector;
@@ -20,7 +21,6 @@ use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use blink\routing\middleware\MiddlewareStack;
 
 /**
  * Class Router

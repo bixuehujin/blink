@@ -61,8 +61,8 @@ class EventBus implements EventDispatcherInterface, ListenerProviderInterface
     public function getListenersForEvent(object $event): iterable
     {
         yield from $this->listenersFor(get_class($event));
-        yield from $this->listenersFor(...class_implements($event));
         yield from $this->listenersFor(...class_parents($event));
+        yield from $this->listenersFor(...class_implements($event));
     }
 
     protected function listenersFor(string ...$classNames): iterable

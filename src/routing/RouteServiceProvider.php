@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace blink\routing;
 
 use blink\eventbus\EventBus;
-use blink\kernel\events\RouteMounting;
-use blink\kernel\Kernel;
-use blink\kernel\ServiceProvider;
+use blink\injector\Container;
+use blink\routing\events\RouteMounting;
+use blink\injector\ServiceProvider;
 
 /**
  * Class RouteServiceProvider
@@ -18,15 +18,11 @@ abstract class RouteServiceProvider extends ServiceProvider
 {
     abstract public function mount(Router $router): void;
 
-    /**
-     * @param Kernel $kernel
-     * @return void
-     */
-    public function register($kernel): void
+    public function register(Container $container): void
     {
-        $bus = $kernel->getContainer()->get(EventBus::class);
-        $bus->attach(RouteMounting::class, function () use ($kernel) {
-            $router = $kernel->get(Router::class);
+        $bus = $container->get(EventBus::class);
+        $bus->attach(RouteMounting::class, function () use ($container) {
+            $router = $container->get(Router::class);
             $this->mount($router);
         });
     }

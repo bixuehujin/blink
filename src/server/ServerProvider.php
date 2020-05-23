@@ -6,9 +6,10 @@ namespace blink\server;
 
 use blink\console\ShellCommand;
 use blink\eventbus\EventBus;
+use blink\injector\config\ConfigContainer;
+use blink\injector\Container;
 use blink\kernel\events\AppInitializing;
-use blink\kernel\Kernel;
-use blink\kernel\ServiceProvider;
+use blink\injector\ServiceProvider;
 use blink\console\Application;
 use blink\console\ServerReloadCommand;
 use blink\console\ServerRestartCommand;
@@ -25,8 +26,8 @@ class ServerProvider extends ServiceProvider
 {
     public function registerCommands(AppInitializing $event)
     {
-        $container = $event->kernel->getContainer();
-        $app = $container->get(Application::class);
+        $container = $event->container;
+        $app       = $container->get(Application::class);
 
         $app->registerCommand(ServerStartCommand::class);
         $app->registerCommand(ServerServeCommand::class);
@@ -36,16 +37,18 @@ class ServerProvider extends ServiceProvider
         $app->registerCommand(ShellCommand::class);
     }
 
-    /**
-     * @param Kernel $kernel
-     * @return void
-     */
-    public function register($kernel): void
+    public function register(Container $container): void
     {
-        $kernel->define('server.config_file')->required();
-        $kernel->define('server.host')->default('0.0.0.0');
-        $kernel->define('server.port')->default(7788);
+        $store = $container->get(ConfigContainer::class);
+        $store->define('server.config_file')->required();
+        $store->define('server.host')->default('0.0.0.0');
+        $store->define('server.port')->default(7788);
 
-        $kernel->getContainer()->get(EventBus::class)->attach(AppInitializing::class, [$this, 'registerCommands']);
+        $container
+            ->get(EventBus::class)
+            ->attach(
+                AppInitializing::class,
+                [$this, 'registerCommands']
+            );
     }
 }
