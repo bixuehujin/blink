@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace blink\tests\routing;
 
+use blink\eventbus\EventBus;
 use blink\http\Request;
 use blink\http\Response;
 use blink\di\Container;
@@ -23,7 +24,7 @@ class RouterTest extends TestCase
 {
     protected function createRouter(): Router
     {
-        $router = new Router();
+        $router = new Router(new EventBus());
 
         $router->get('/foo', 'foo_handler');
         $router->get('/foo/{arg}', 'foo_handler_with_arg');
@@ -97,7 +98,7 @@ class RouterTest extends TestCase
 
     public function testHandleRequest()
     {
-        $router = new Router();
+        $router = new Router(new EventBus());
         $router->setContainer(new Container());
 
         $router->get('/foo/{name}', function (string $name) {
@@ -117,7 +118,7 @@ class RouterTest extends TestCase
 
     public function testHandleRequestWithGlobalMiddleware()
     {
-        $router = new Router();
+        $router = new Router(new EventBus());
         $router->setContainer(new Container());
         $router->use(new ErrorCatcher());
 
@@ -132,7 +133,7 @@ class RouterTest extends TestCase
 
     public function testHandleRequestWithGroupMiddleware()
     {
-        $router = new Router();
+        $router = new Router(new EventBus());
         $router->setContainer(new Container());
         $router->group('/rethink', function (Group $router) {
             $router->use(new ErrorCatcher());
@@ -152,7 +153,7 @@ class RouterTest extends TestCase
 
     public function testHandleRequestWithRouteMiddleware()
     {
-        $router = new Router();
+        $router = new Router(new EventBus());
         $router->setContainer(new Container());
         $router->group('/rethink', function (Group $router) {
             $router

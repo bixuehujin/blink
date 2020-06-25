@@ -32,7 +32,7 @@ class Invoker
     {
         $caller = $this->getCallerReflector($callback);
 
-        if (!$caller->isStatic() && is_array($callback) && count($callback) === 2) {
+        if (is_array($callback) && count($callback) === 2 && $caller instanceof \ReflectionMethod && !$caller->isStatic()) {
             $callback[0] = $this->container->get($callback[0]);
         }
 
