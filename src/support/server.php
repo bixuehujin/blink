@@ -10,8 +10,9 @@ if ($uri !== '/' && file_exists(__DIR__ . '/web' . $uri)) {
 
 require getcwd() . '/vendor/autoload.php';
 
-$server = new blink\server\CgiServer([
-    'bootstrap' => getcwd() . '/src/bootstrap.php'
-]);
+$container = new \blink\di\Container();
 
+require getcwd() . '/src/bootstrap.php';
+
+$server = $container->get(\blink\server\CgiServer::class);
 $server->run();

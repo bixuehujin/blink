@@ -153,6 +153,7 @@ class CgiServer extends Server
     public function run()
     {
         $router = $this->getRouter();
+        $router->mountRoutes();
 
         $response = $router->handle($this->extractRequest());
 
