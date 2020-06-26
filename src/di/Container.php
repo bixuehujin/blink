@@ -145,9 +145,12 @@ class Container implements ContainerInterface
             $constructor = $definition->haveConstructor();
             foreach ($method->getParameters() as $parameter) {
                 $reference = $constructor->haveArgument($parameter->getName());
-                if ($refClass = $parameter->getClass()) {
-                    $reference->referenceTo($refClass->getName());
-                } else if ($parameter->isDefaultValueAvailable()) {
+                $type = $parameter->getType();
+                if ($type instanceof \ReflectionNamedType) {
+                    $reference->referenceTo($type->getName());
+                } elseif ($type instanceof \ReflectionUnionType) {
+                    throw new \RuntimeException("Unable to parse definition, union type is not yet supported for parameter: '{$parameter->getName()}' ");
+                } elseif ($parameter->isDefaultValueAvailable()) {
                     $reference->withValue($parameter->getDefaultValue());
                 } else {
                     throw new \RuntimeException("Unable to parse definition, missing default value for parameter: '{$parameter->getName()}' ");
