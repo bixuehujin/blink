@@ -10,6 +10,7 @@ use blink\core\BaseObject;
 use blink\di\ContainerAware;
 use blink\di\ContainerAwareTrait;
 use blink\session\Contract as SessionContract;
+use blink\di\attributes\Inject;
 
 /**
  * The Session Manager
@@ -20,12 +21,8 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
 {
     use ContainerAwareTrait;
 
-    /**
-     * The backend session storage.
-     *
-     * @var array|StorageContract
-     */
-    public $storage;
+    <<Inject>>
+    public StorageContract $storage;
     /**
      * How long the session should expires, defaults to 15 days.
      *
@@ -43,23 +40,13 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
         }
     }
 
-    protected function getStorage(): StorageContract
-    {
-        if (!$this->storage instanceof StorageContract) {
-            $this->storage = $this->getContainer()->make2($this->storage);
-            $this->storage->timeout($this->expires);
-        }
-
-        return $this->storage;
-    }
-
     /**
      * @inheritDoc
      */
     public function put($attributes = []): Session
     {
         if ($attributes instanceof Session) {
-            $id = $attributes->id;
+            $id         = $attributes->id;
             $attributes = $attributes->all();
         }
 
@@ -67,7 +54,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
             $id = md5(microtime(true) . uniqid('', true) . uniqid('', true));
         }
 
-        $this->getStorage()->write($id, $attributes);
+        $this->storage->write($id, $attributes);
 
         $class = $this->sessionClass;
         return new $class($attributes, ['id' => $id]);
@@ -79,7 +66,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
     public function get(string $id): ?Session
     {
         if ($id) {
-            $data = $this->getStorage()->read($id);
+            $data = $this->storage->read($id);
             if ($data !== null) {
                 $class = $this->sessionClass;
                 return new $class($data, ['id' => $id]);
@@ -97,7 +84,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
             $attributes = $attributes->all();
         }
 
-        return $this->getStorage()->write($id, $attributes);
+        return $this->storage->write($id, $attributes);
     }
 
     /**
@@ -105,6 +92,6 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
      */
     public function destroy(string $id): bool
     {
-        return $this->getStorage()->destroy($id);
+        return $this->storage->destroy($id);
     }
 }

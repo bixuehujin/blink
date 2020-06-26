@@ -7,6 +7,8 @@ namespace blink\session;
 use blink\core\InvalidConfigException;
 use blink\core\BaseObject;
 use blink\session\Contract as SessionContract;
+use blink\di\attributes\Inject;
+use DirectoryIterator;
 
 /**
  * Class FileStorage
@@ -15,28 +17,23 @@ use blink\session\Contract as SessionContract;
  */
 class FileStorage extends BaseObject implements StorageContract
 {
-    public ?string $path    = null;
-    public int     $divisor = 1000;
+    <<Inject('session.path', 'setPath')>>
+    protected string  $path;
+    public int        $divisor = 10000;
 
     protected int $timeout;
 
-    public function init()
+    public function setPath(string $path)
     {
-        if (!$this->path) {
-            throw new InvalidConfigException("The parameter 'blink\\session\\FileStorage::path' must be configured");
+        if (!file_exists($path)) {
+            @mkdir($path, 0777, true);
         }
 
-        if (!file_exists($this->path)) {
-            @mkdir($this->path, 0777, true);
-        }
-
-        if (!file_exists($this->path) || !is_writable($this->path)) {
+        if (!file_exists($path) || !is_writable($path)) {
             throw new InvalidConfigException("The parameter 'blink\\session\\FileStorage::path': '{$this->path}' is invalid or not writable");
         }
 
-        if (rand(0, $this->divisor) <= 0) {
-            $this->gc();
-        }
+        $this->path = $path;
     }
 
     /**
@@ -44,6 +41,8 @@ class FileStorage extends BaseObject implements StorageContract
      */
     public function read(string $id): ?array
     {
+        $this->gc();;
+
         if (file_exists($this->path . '/' . $id)) {
             $content = file_get_contents($this->path . '/' . $id);
             if ($content === false) {
@@ -82,10 +81,13 @@ class FileStorage extends BaseObject implements StorageContract
         $this->timeout = $timeout;
     }
 
-    protected function gc()
+    protected function gc(): void
     {
-        assert($this->path !== null);
-        $iterator = new \DirectoryIterator($this->path);
+        if (rand(0, $this->divisor) > 0) {
+            return;
+        }
+
+        $iterator = new DirectoryIterator($this->path);
         $now      = time();
 
         foreach ($iterator as $file) {

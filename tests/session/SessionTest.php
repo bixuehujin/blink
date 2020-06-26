@@ -2,14 +2,19 @@
 
 namespace blink\tests\session;
 
+use blink\di\config\ConfigContainer;
+use blink\di\Container;
 use blink\session\Manager;
 use blink\session\FileStorage;
 use blink\session\Session;
+use blink\session\SessionServiceProvider;
+use blink\session\StorageContract;
 use blink\tests\TestCase;
+use Hyperf\Config\Config;
 
 class SessionTest extends TestCase
 {
-    private $sessionPath;
+    private string $sessionPath;
 
     public function setUp(): void
     {
@@ -34,13 +39,14 @@ class SessionTest extends TestCase
 
     protected function createSession()
     {
-        return $this->createApplication()->getContainer()->make2([
-            'class' => Manager::class,
-            'storage' => [
-                'class' => FileStorage::class,
-                'path' => $this->sessionPath,
-            ]
-        ]);
+        $container = new Container();
+
+        $container->add(new SessionServiceProvider());
+        $container->get(ConfigContainer::class)->set('session.path', $this->sessionPath);
+
+        $container->alias(FileStorage::class, StorageContract::class);
+
+        return $container->get(Manager::class);
     }
 
     public function testSimple()
