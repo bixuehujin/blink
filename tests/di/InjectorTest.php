@@ -9,7 +9,9 @@ use blink\di\Container;
 use blink\di\exceptions\Exception;
 use blink\di\exceptions\NotFoundException;
 use blink\di\object\ObjectDefinition;
+use blink\di\Reference;
 use blink\tests\TestCase;
+use blink\di\attributes\Inject;
 
 /**
  * Class InjectorTest
@@ -113,6 +115,52 @@ class InjectorTest extends TestCase
         $result = $injector->make($id);
         if ($expectResult) {
             $this->assertInstanceOf($expectResult, $result);
+        }
+    }
+
+    public function testLoadDefinition()
+    {
+        $obj = new class()
+        {
+            <<Inject('store.attr1')>>
+            public string    $attr1;
+
+            <<Inject('store.attr2')>>
+            protected string $attr2;
+
+            <<Inject('store.attr3')>>
+            private string   $attr3 = 'default';
+
+            <<Inject>>
+            private DemoClassB $attr4;
+        };
+
+        $container  = new Container();
+        $definition = $container->loadDefinition(get_class($obj));
+
+        $properties = $definition->getProperties();
+        $this->assertCount(4, $properties);
+
+        $this->assertReference($properties[0], 'attr1', 'store.attr1', false, true, null);
+        $this->assertReference($properties[1], 'attr2', 'store.attr2', true, true, null);
+        $this->assertReference($properties[2], 'attr3', 'store.attr3', true, false, 'default');
+        $this->assertReference($properties[3], 'attr4', DemoClassB::class, true, true, null);
+    }
+
+    protected function assertReference(
+        Reference $reference,
+        string $name,
+        string $referentName,
+        bool $isGuarded,
+        bool $isRequired,
+        mixed $defaultValue)
+    {
+        $this->assertEquals($name, $reference->getName());
+        $this->assertEquals($referentName, $reference->getReferentName());
+        $this->assertEquals($isGuarded, $reference->isGuarded());
+        $this->assertEquals($isRequired, $reference->isRequired());
+        if (! $isRequired) {
+            $this->assertEquals($defaultValue, $reference->getDefault());
         }
     }
 }

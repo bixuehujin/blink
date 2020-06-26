@@ -26,7 +26,7 @@ class ConfigDefinition
      *
      * @var mixed
      */
-    protected        $default;
+    protected mixed  $default;
 
     /**
      * ConfigDefinition constructor.
@@ -34,7 +34,7 @@ class ConfigDefinition
      * @param string $name
      * @param mixed $default
      */
-    public function __construct(string $name, $default = null)
+    public function __construct(string $name, mixed $default = null)
     {
         $this->name    = $name;
         $this->default = $default;
@@ -45,7 +45,7 @@ class ConfigDefinition
         return $this->name;
     }
 
-    public function default($value)
+    public function default(mixed $value)
     {
         $this->default = $value;
         return $this;

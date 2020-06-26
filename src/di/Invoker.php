@@ -24,7 +24,7 @@ class Invoker
     /**
      * Call the given callback or class method with dependency injection.
      *
-     * @param $callback
+     * @param callable $callback
      * @param array $arguments
      * @return mixed
      */

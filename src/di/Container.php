@@ -3,6 +3,7 @@
 namespace blink\di;
 
 use blink\core\Configurable;
+use blink\di\attributes\Inject;
 use blink\di\config\ConfigContainer;
 use ReflectionClass;
 use blink\di\object\ObjectDefinition;
@@ -11,6 +12,9 @@ use blink\di\exceptions\Exception;
 use blink\di\exceptions\NotFoundException;
 use ReflectionException;
 use blink\core\InvalidConfigException;
+use ReflectionNamedType;
+use ReflectionProperty;
+use ReflectionUnionType;
 
 /**
  * Class Container
@@ -140,25 +144,69 @@ class Container implements ContainerInterface
     protected function parseDefinition(string $name, \ReflectionClass $reflector)
     {
         $definition = new ObjectDefinition($name);
-        $method     = $reflector->getConstructor();
-        if ($method) {
-            $constructor = $definition->haveConstructor();
-            foreach ($method->getParameters() as $parameter) {
-                $reference = $constructor->haveArgument($parameter->getName());
-                $type = $parameter->getType();
-                if ($type instanceof \ReflectionNamedType) {
-                    $reference->referenceTo($type->getName());
-                } elseif ($type instanceof \ReflectionUnionType) {
-                    throw new \RuntimeException("Unable to parse definition, union type is not yet supported for parameter: '{$parameter->getName()}' ");
-                } elseif ($parameter->isDefaultValueAvailable()) {
-                    $reference->withValue($parameter->getDefaultValue());
-                } else {
-                    throw new \RuntimeException("Unable to parse definition, missing default value for parameter: '{$parameter->getName()}' ");
-                }
-            }
+        $constructor     = $reflector->getConstructor();
+        if ($constructor) {
+            $this->parseConstructor($definition, $constructor);
+        }
+
+        $filter = ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED;
+        foreach ($reflector->getProperties($filter) as $property) {
+            $this->parseProperty($definition, $property, $reflector->getDefaultProperties());
         }
 
         return $definition;
+    }
+
+
+    protected function parseConstructor(ObjectDefinition $definition, \ReflectionMethod $method): void
+    {
+        $constructor = $definition->haveConstructor();
+        foreach ($method->getParameters() as $parameter) {
+            $reference = $constructor->haveArgument($parameter->getName());
+            $type = $parameter->getType();
+            if ($type instanceof ReflectionNamedType) {
+                $reference->referenceTo($type->getName());
+            } elseif ($type instanceof ReflectionUnionType) {
+                throw new \RuntimeException("Unable to parse definition, union type is not yet supported for parameter: '{$parameter->getName()}' ");
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $reference->withDefault($parameter->getDefaultValue());
+            } else {
+                throw new \RuntimeException("Unable to parse definition, missing default value for parameter: '{$parameter->getName()}' ");
+            }
+        }
+    }
+
+    protected function parseProperty(ObjectDefinition $definition, ReflectionProperty $property, array $defaultProperties): void
+    {
+        $attributes = $property->getAttributes();
+        if (empty($attributes)) {
+            return;
+        }
+
+        foreach ($attributes as $attribute) {
+            if ($attribute->getName() === Inject::class) {
+                $reference = $definition->haveProperty($property->getName());
+                $reference->guarded(! $property->isPublic());
+                $referentName = $attribute->newInstance()->getReference();
+                if ($referentName === null) {
+                    $type = $property->getType();
+                    if ($type === null) {
+                        throw new \RuntimeException("Unable to parse definition, unable to detect reference to inject for property: '{$property->getName()}' ");
+                    }
+                    if ($type instanceof ReflectionNamedType) {
+                        $referentName = $type->getName();
+                    } else {
+                        throw new \RuntimeException("Unable to parse definition, union type is not yet supported for property: '{$property->getName()}' ");
+                    }
+                }
+
+                $reference->referenceTo($referentName);
+
+                if (array_key_exists($property->getName(), $defaultProperties)) {
+                    $reference->withDefault($defaultProperties[$property->getName()]);
+                }
+            }
+        }
     }
 
     protected function createObject(ObjectDefinition $definition, array $parameters, array $config = [])
@@ -178,7 +226,7 @@ class Container implements ContainerInterface
                 if ($className = $reference->getReferentName()) {
                     $arguments[] = $this->get($className);
                 } else {
-                    $arguments[] = $reference->getValue();
+                    $arguments[] = $reference->getDefault();
                 }
             }
 
@@ -212,11 +260,11 @@ class Container implements ContainerInterface
             if ($referentName = $property->getReferentName()) {
                 $value = $this->get($referentName);
             } else {
-                $value = $property->getValue();
+                $value = $property->getDefault();
             }
 
             if ($property->isGuarded()) {
-                $reflector = new \ReflectionProperty($object, $name);
+                $reflector = new ReflectionProperty($object, $name);
                 $reflector->setAccessible(true);
                 $reflector->setValue($object, $value);
             } else {
@@ -317,7 +365,7 @@ class Container implements ContainerInterface
             $def = $this->extend($className);
 
             foreach ($definitions as $key => $value) {
-                $def->haveProperty($key)->withValue($value);
+                $def->haveProperty($key)->withDefault($value);
             }
 
             if ($className !== $name) {

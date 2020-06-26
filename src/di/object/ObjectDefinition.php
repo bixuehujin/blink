@@ -2,6 +2,7 @@
 
 namespace blink\di\object;
 
+use Closure;
 use blink\di\Reference;
 
 /**
@@ -12,10 +13,7 @@ use blink\di\Reference;
 class ObjectDefinition
 {
     protected string    $className;
-    /**
-     * @var callable|null
-     */
-    protected           $factory     = null;
+    protected ?Closure  $factory     = null;
     protected ?Method   $constructor = null;
     /**
      * @var Reference[]

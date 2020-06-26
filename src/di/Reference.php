@@ -21,12 +21,11 @@ class Reference
 
     protected bool $guarded = false;
 
+    protected bool $required = true;
     /**
      * The default value if referentName is not available.
-     *
-     * @var mixed
      */
-    protected $default;
+    protected mixed $default;
 
     public function __construct(string $name)
     {
@@ -54,9 +53,10 @@ class Reference
         return $this->referentName;
     }
 
-    public function withValue($value)
+    public function withDefault(mixed $default)
     {
-        $this->default = $value;
+        $this->required = false;
+        $this->default = $default;
     }
 
     public function getName(): string
@@ -64,7 +64,12 @@ class Reference
         return $this->name;
     }
 
-    public function getValue()
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    public function getDefault()
     {
         return $this->default;
     }
