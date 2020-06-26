@@ -20,8 +20,7 @@ class FileTest extends TestCase
 {
     protected function fakeFile()
     {
-        return make([
-            'class' => File::class,
+        return new File([
             'name' => 'test.jpg',
             'tmpName' => '/tmp/tmp.' . uniqid(),
             'size' => 1024,
