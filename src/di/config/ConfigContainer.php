@@ -24,9 +24,14 @@ class ConfigContainer implements ContainerInterface
         return $this->definitions[$name] = $definition = new ConfigDefinition($name);
     }
 
-    public function apply(array $configMap)
+    public function apply(array $configMap): void
     {
         $this->configMap = array_merge($this->configMap, $configMap);
+    }
+
+    public function set(string $name, mixed $value): void
+    {
+        $this->configMap[$name] = $value;
     }
 
     /**

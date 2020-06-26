@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Monolog\Logger as MonoLogger;
 use Psr\Log\LogLevel;
+use blink\di\attributes\Inject;
 
 /**
  * Class Logger
@@ -20,13 +21,13 @@ class Logger implements LoggerInterface
 {
     use LoggerTrait;
 
-    //<<Inject('logger.name')>>
+    <<Inject('logger.name')>>
     public string $name;
 
-    //<<Inject('logger.log_file')>>
+    <<Inject('logger.log_file')>>
     public string $logFile;
 
-    //<<Inject('logger.log_level')>>
+    <<Inject('logger.log_level')>>
     public string $logLevel = LogLevel::INFO;
 
     protected ?MonoLogger $monoLogger = null;

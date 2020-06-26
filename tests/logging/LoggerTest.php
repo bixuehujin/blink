@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace blink\tests\logging;
 
 use blink\core\Exception;
-use blink\kernel\Kernel;
+use blink\di\config\ConfigContainer;
+use blink\di\Container;
 use blink\logging\Logger;
 use blink\logging\LoggerServiceProvider;
 use blink\tests\TestCase;
@@ -38,13 +39,15 @@ class LoggerTest extends TestCase
 
     protected function createLogger(string $name, string $logFile, string $level): Logger
     {
-        $kernel = new Kernel();
-        $kernel->add(new LoggerServiceProvider());
-        $kernel->set('logger.name', $name);
-        $kernel->set('logger.log_file', $logFile);
-        $kernel->set('logger.log_level', $level);
+        $container = new Container();
+        $container->add(new LoggerServiceProvider());
 
-        return $kernel->get(Logger::class);
+        $config = $container->get(ConfigContainer::class);
+        $config->set('logger.name', $name);
+        $config->set('logger.log_file', $logFile);
+        $config->set('logger.log_level', $level);
+
+        return $container->get(Logger::class);
     }
 
     public function testLogMessage()
