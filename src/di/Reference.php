@@ -19,6 +19,8 @@ class Reference
      */
     protected ?string $referentName = null;
 
+    protected ?string $setter = null;
+
     protected bool $guarded = false;
 
     protected bool $required = true;
@@ -57,6 +59,16 @@ class Reference
     {
         $this->required = false;
         $this->default = $default;
+    }
+
+    public function withSetter(string $setter)
+    {
+        $this->setter = $setter;
+    }
+
+    public function getSetter(): ?string
+    {
+        return $this->setter;
     }
 
     public function getName(): string

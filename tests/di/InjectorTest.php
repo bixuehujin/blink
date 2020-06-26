@@ -118,7 +118,7 @@ class InjectorTest extends TestCase
         }
     }
 
-    public function testLoadDefinition()
+    public function testLoadDefinitionViaAttributes()
     {
         $obj = new class()
         {
@@ -133,18 +133,22 @@ class InjectorTest extends TestCase
 
             <<Inject>>
             private DemoClassB $attr4;
+
+            <<Inject('store.attr5', 'setAttr5')>>
+            private string   $attr5;
         };
 
         $container  = new Container();
         $definition = $container->loadDefinition(get_class($obj));
 
         $properties = $definition->getProperties();
-        $this->assertCount(4, $properties);
+        $this->assertCount(5, $properties);
 
-        $this->assertReference($properties[0], 'attr1', 'store.attr1', false, true, null);
-        $this->assertReference($properties[1], 'attr2', 'store.attr2', true, true, null);
-        $this->assertReference($properties[2], 'attr3', 'store.attr3', true, false, 'default');
-        $this->assertReference($properties[3], 'attr4', DemoClassB::class, true, true, null);
+        $this->assertReference($properties[0], 'attr1', 'store.attr1', false, true, null, null);
+        $this->assertReference($properties[1], 'attr2', 'store.attr2', true, true, null, null);
+        $this->assertReference($properties[2], 'attr3', 'store.attr3', true, false, 'default', null);
+        $this->assertReference($properties[3], 'attr4', DemoClassB::class, true, true, null, null);
+        $this->assertReference($properties[4], 'attr5', 'store.attr5', true, true, null, 'setAttr5');
     }
 
     protected function assertReference(
@@ -153,7 +157,8 @@ class InjectorTest extends TestCase
         string $referentName,
         bool $isGuarded,
         bool $isRequired,
-        mixed $defaultValue)
+        mixed $defaultValue,
+        ?string $setter)
     {
         $this->assertEquals($name, $reference->getName());
         $this->assertEquals($referentName, $reference->getReferentName());
@@ -162,5 +167,6 @@ class InjectorTest extends TestCase
         if (! $isRequired) {
             $this->assertEquals($defaultValue, $reference->getDefault());
         }
+        $this->assertEquals($setter, $reference->getSetter());
     }
 }

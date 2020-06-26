@@ -190,7 +190,9 @@ class Container implements ContainerInterface
             if ($attribute->getName() === Inject::class) {
                 $reference = $definition->haveProperty($property->getName());
                 $reference->guarded(! $property->isPublic());
-                $referentName = $attribute->newInstance()->getReference();
+                /** @var Inject $injectInfo */
+                $injectInfo = $attribute->newInstance();
+                $referentName = $injectInfo->getReference();
                 if ($referentName === null) {
                     $referentName = $this->getInjectableType($property->getType());
                     if (! $referentName) {
@@ -199,6 +201,10 @@ class Container implements ContainerInterface
                 }
 
                 $reference->referenceTo($referentName);
+
+                if ($setter = $injectInfo->getSetter()) {
+                    $reference->withSetter($setter);
+                }
 
                 if (array_key_exists($property->getName(), $defaultProperties)) {
                     $reference->withDefault($defaultProperties[$property->getName()]);
@@ -261,7 +267,9 @@ class Container implements ContainerInterface
                 $value = $property->getDefault();
             }
 
-            if ($property->isGuarded()) {
+            if ($setter = $property->getSetter()) {
+                $object->$setter($value);
+            } elseif ($property->isGuarded()) {
                 $reflector = new ReflectionProperty($object, $name);
                 $reflector->setAccessible(true);
                 $reflector->setValue($object, $value);
