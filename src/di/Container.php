@@ -3,6 +3,7 @@
 namespace blink\di;
 
 use blink\core\Configurable;
+use blink\core\InvalidParamException;
 use blink\di\attributes\Inject;
 use blink\di\config\ConfigContainer;
 use ReflectionClass;
@@ -12,8 +13,12 @@ use blink\di\exceptions\Exception;
 use blink\di\exceptions\NotFoundException;
 use ReflectionException;
 use blink\core\InvalidConfigException;
+use ReflectionFunction;
+use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionParameter;
 use ReflectionProperty;
+use ReflectionType;
 use ReflectionUnionType;
 
 /**
@@ -158,16 +163,14 @@ class Container implements ContainerInterface
     }
 
 
-    protected function parseConstructor(ObjectDefinition $definition, \ReflectionMethod $method): void
+    protected function parseConstructor(ObjectDefinition $definition, ReflectionMethod $method): void
     {
         $constructor = $definition->haveConstructor();
         foreach ($method->getParameters() as $parameter) {
             $reference = $constructor->haveArgument($parameter->getName());
             $type = $parameter->getType();
-            if ($type instanceof ReflectionNamedType) {
-                $reference->referenceTo($type->getName());
-            } elseif ($type instanceof ReflectionUnionType) {
-                throw new \RuntimeException("Unable to parse definition, union type is not yet supported for parameter: '{$parameter->getName()}' ");
+            if ($referentName = $this->getInjectableType($type)) {
+                $reference->referenceTo($referentName);
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $reference->withDefault($parameter->getDefaultValue());
             } else {
@@ -189,14 +192,9 @@ class Container implements ContainerInterface
                 $reference->guarded(! $property->isPublic());
                 $referentName = $attribute->newInstance()->getReference();
                 if ($referentName === null) {
-                    $type = $property->getType();
-                    if ($type === null) {
+                    $referentName = $this->getInjectableType($property->getType());
+                    if (! $referentName) {
                         throw new \RuntimeException("Unable to parse definition, unable to detect reference to inject for property: '{$property->getName()}' ");
-                    }
-                    if ($type instanceof ReflectionNamedType) {
-                        $referentName = $type->getName();
-                    } else {
-                        throw new \RuntimeException("Unable to parse definition, union type is not yet supported for property: '{$property->getName()}' ");
                     }
                 }
 
@@ -371,6 +369,78 @@ class Container implements ContainerInterface
             if ($className !== $name) {
                 $this->alias($className, $name);
             }
+        }
+    }
+
+    /**
+     * Call the given callback or class method with dependency injection.
+     *
+     * @param callable $callback
+     * @param array $arguments
+     * @return mixed
+     */
+    public function call($callback, $arguments = [])
+    {
+        $caller = $this->getCallerReflector($callback);
+
+        if (is_array($callback) && count($callback) === 2 && $caller instanceof ReflectionMethod && !$caller->isStatic()) {
+            $callback[0] = $this->get($callback[0]);
+        }
+
+        $parameters   = $caller->getParameters();
+        $dependencies = $this->getMethodDependencies($parameters, $arguments);
+
+        return call_user_func_array($callback, $dependencies);
+    }
+
+    /**
+     * @param ReflectionParameter[] $parameters
+     * @param array $arguments
+     * @return array
+     */
+    protected function getMethodDependencies(array $parameters, array $arguments = []): array
+    {
+        $dependencies = [];
+
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+            if (array_key_exists($name, $arguments)) {
+                $dependencies[] = $arguments[$name];
+            } elseif ($typeName = $this->getInjectableType($parameter->getType())) {
+                $dependencies[] = $this->get($typeName);
+            } elseif ($parameter->isDefaultValueAvailable()) {
+                $dependencies[] = $parameter->getDefaultValue();
+            } else {
+                throw new InvalidParamException('Missing required argument: ' . $parameter->getName());
+            }
+        }
+
+        return $dependencies;
+    }
+
+    protected function getCallerReflector($callback)
+    {
+        if (is_string($callback) && strpos($callback, '::') !== false) {
+            $callback = explode('::', $callback);
+        }
+
+        if (is_array($callback)) {
+            return new ReflectionMethod($callback[0], $callback[1]);
+        }
+
+        return new ReflectionFunction($callback);
+    }
+
+    protected function getInjectableType(?ReflectionType $type): ?string
+    {
+        if ($type === null || $type->isBuiltin()) {
+            return null;
+        }
+
+        if ($type instanceof ReflectionNamedType) {
+            return $type->getName();
+        } else {
+            return null;
         }
     }
 }
