@@ -21,7 +21,7 @@ class Manager extends BaseObject implements SessionContract, ContainerAware
 {
     use ContainerAwareTrait;
 
-    <<Inject>>
+    #[Inject]
     public StorageContract $storage;
     /**
      * How long the session should expires, defaults to 15 days.

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace blink\di\attributes;
 
-use PhpAttribute;
+use Attribute;
 
-<<PhpAttribute>>
+#[Attribute]
 class Inject
 {
     public function __construct(

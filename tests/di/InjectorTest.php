@@ -122,19 +122,19 @@ class InjectorTest extends TestCase
     {
         $obj = new class()
         {
-            <<Inject('store.attr1')>>
+            #[Inject('store.attr1')]
             public string    $attr1;
 
-            <<Inject('store.attr2')>>
+            #[Inject('store.attr2')]
             protected string $attr2;
 
-            <<Inject('store.attr3')>>
+            #[Inject('store.attr3')]
             private string   $attr3 = 'default';
 
-            <<Inject>>
+            #[Inject]
             private DemoClassB $attr4;
 
-            <<Inject('store.attr5', 'setAttr5')>>
+            #[Inject('store.attr5', 'setAttr5')]
             private string   $attr5;
         };
 

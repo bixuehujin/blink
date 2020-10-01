@@ -17,7 +17,7 @@ use DirectoryIterator;
  */
 class FileStorage extends BaseObject implements StorageContract
 {
-    <<Inject('session.path', 'setPath')>>
+    #[Inject('session.path', 'setPath')]
     protected string  $path;
     public int        $divisor = 10000;
 
