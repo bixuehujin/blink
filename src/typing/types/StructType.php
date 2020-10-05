@@ -14,6 +14,13 @@ use blink\typing\Type;
 class StructType extends Type
 {
     protected string $name;
+    protected array $fields;
+
+    public function __construct(string $name, array $fields)
+    {
+        $this->name   = $name;
+        $this->fields = $fields;
+    }
 
     public function getName(): string
     {
@@ -26,10 +33,10 @@ class StructType extends Type
     }
 
     /**
-     * @return Type[]
+     * @return StructField[]
      */
-    public function columns(): array
+    public function fields(): array
     {
-        return [];
+        return $this->fields;
     }
 }
