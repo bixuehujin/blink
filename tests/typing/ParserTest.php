@@ -6,15 +6,11 @@ namespace blink\tests\typing;
 
 use blink\tests\TestCase;
 use blink\typing\Manager;
-use blink\typing\Parser;
 use blink\typing\SyntaxException;
 use blink\typing\Token;
 use blink\typing\Tokenizer;
-use blink\typing\Type;
 use blink\typing\types\FloatType;
-use blink\typing\types\GenericType;
 use blink\typing\types\IntegerType;
-use blink\typing\types\ListType;
 use blink\typing\types\NullType;
 use blink\typing\types\StringType;
 use blink\typing\types\UnionType;

@@ -26,9 +26,13 @@ class Manager
     /**
      * @var Type[]
      */
-    protected array $types = [];
-    protected array $genericTypes = [];
+    protected array  $types        = [];
+    protected array  $genericTypes = [];
     protected Parser $parser;
+    /**
+     * @var TypeLoader[]
+     */
+    protected array $loaders = [];
 
     public function builtinTypes()
     {
@@ -45,9 +49,10 @@ class Manager
         ];
     }
 
-    public function __construct(array $types = [])
+    public function __construct(array $types = [], array $loaders = [])
     {
-        $this->parser = new Parser($this);
+        $this->parser  = new Parser($this);
+        $this->loaders = $loaders;
 
         $this->initTypes($types);
     }
@@ -84,11 +89,20 @@ class Manager
     {
         $name = $type->getName();
 
-        if ( isset($this->types[$name])) {
+        if (isset($this->types[$name])) {
             throw new InvalidParamException('Duplicated type name: ' . $name);
         }
 
         $this->types[$name] = $type;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasType(string $name): bool
+    {
+        return isset($this->types[$name]);
     }
 
     /**
@@ -101,11 +115,27 @@ class Manager
     {
         $type = $this->types[$name] ?? null;
 
-        if (!$type) {
-            throw new InvalidParamException("Unknown type: " . $name);
+        if ($type) {
+            return $type;
         }
 
-        return $type;
+        if ($type = $this->loadType($name)) {
+            $this->types[$name] = $type;
+            return $type;
+        }
+
+        throw new InvalidParamException("Unknown type: " . $name);
+    }
+
+    protected function loadType(string $type): ?Type
+    {
+        foreach ($this->loaders as $loader) {
+            if ($type = $loader->loadType($this, $type)) {
+                return $type;
+            }
+        }
+
+        return null;
     }
 
     public function parse(string $decl): Type
