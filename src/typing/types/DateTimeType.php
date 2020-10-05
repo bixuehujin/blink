@@ -15,7 +15,7 @@ class DateTimeType extends Type
 {
     public function getName(): string
     {
-        return 'datetime';
+        return 'DateTime';
     }
 
     public function getMetadata(): array

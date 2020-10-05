@@ -23,6 +23,11 @@ class UnionType extends Type
 
     public function getName(): string
     {
+        return 'union';
+    }
+
+    public function getDeclaration(): string
+    {
         $names = array_map(fn(Type $type) => $type->getName(), $this->innerTypes);
 
         return implode('|', $names);
