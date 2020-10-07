@@ -29,9 +29,11 @@ class ClassTypeLoader implements TypeLoader
         $fields = [];
         $class = new \ReflectionClass($name);
         foreach ($class->getProperties() as $property) {
+            $propertyName = $property->getName();
             $type = $property->getType();
             $fieldType = $this->convertReflectionType($manager, $type);
             $metadata = [];
+            $defaultProperties = $class->getDefaultProperties();
 
             if (! $property->isPublic()) {
                 foreach ($property->getAttributes() as $attribute) {
@@ -40,6 +42,16 @@ class ClassTypeLoader implements TypeLoader
                         break;
                     }
                 }
+            }
+            if (! isset($metadata['property']))  {
+                $metadata['property'] = new Property();
+            }
+
+            if (array_key_exists($propertyName, $defaultProperties)) {
+                $metadata['property']->hasDefault = true;
+                $metadata['property']->defaultValue = $defaultProperties[$propertyName];
+            } else {
+                $metadata['property']->hasDefault = false;
             }
 
             $field = new StructField($property->getName(), $fieldType, $metadata);

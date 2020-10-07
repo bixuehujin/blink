@@ -30,9 +30,15 @@ class ClassLoaderTest extends TestCase
                 $typing->structOf(
                     StubClass1::class,
                     [
-                        new StructField('a', $typing->parse('integer')),
-                        new StructField('b', $typing->parse('string|integer')),
-                        new StructField('c', $typing->parse('string|null')),
+                        new StructField('a', $typing->parse('integer'), [
+                            'property' => new Property( ),
+                        ]),
+                        new StructField('b', $typing->parse('string|integer'), [
+                            'property' => new Property( ),
+                        ]),
+                        new StructField('c', $typing->parse('string|null'), [
+                            'property' => new Property( ),
+                        ]),
                     ],
                 ),
             ],
@@ -51,6 +57,9 @@ class ClassLoaderTest extends TestCase
                         ]),
                         new StructField('c', $typing->parse('integer'), [
                             'property' => new Property(true, 'getC', ''),
+                        ]),
+                        new StructField('d', $typing->parse('integer'), [
+                            'property' => (new Property())->withDefaultValue(1),
                         ]),
                     ],
                 ),

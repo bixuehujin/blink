@@ -21,4 +21,6 @@ class StubClass2
 
     #[Property(getter: 'getC')]
     protected int $c;
+
+    protected int $d = 1;
 }
