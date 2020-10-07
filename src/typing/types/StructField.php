@@ -23,4 +23,13 @@ class StructField
         $this->type = $type;
         $this->metadata = $metadata;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'type' => $this->type,
+            'metadata' => $this->metadata,
+        ];
+    }
 }

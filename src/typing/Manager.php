@@ -14,6 +14,8 @@ use blink\typing\types\ListType;
 use blink\typing\types\MapType;
 use blink\typing\types\NullType;
 use blink\typing\types\StringType;
+use blink\typing\types\StructField;
+use blink\typing\types\StructType;
 use blink\typing\types\UnionType;
 
 /**
@@ -80,6 +82,16 @@ class Manager
     public function unionOf(...$types): Type
     {
         return new UnionType(...$types);
+    }
+
+    /**
+     * @param string $name
+     * @param StructField[] $fields
+     * @return Type
+     */
+    public function structOf(string $name, array $fields): Type
+    {
+        return new StructType($name, $fields);
     }
 
     /**

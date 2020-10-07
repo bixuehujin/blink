@@ -39,4 +39,11 @@ class StructType extends Type
     {
         return $this->fields;
     }
+
+    public function toArray(): array
+    {
+        $fields = array_map(fn(StructField $field) => $field->toArray(), $this->fields());
+
+        return parent::toArray() + ['fields' => $fields];
+    }
 }
