@@ -71,13 +71,15 @@ class ServiceLocator extends BaseObject
     protected function getMethodDependencies($callback, array $arguments = [])
     {
         $dependencies = $arguments;
-        $parameters = array_slice($this->getCallerReflector($callback)->getParameters(), count($arguments));
+        $parameters = array_filter($this->getCallerReflector($callback)->getParameters(), function (\ReflectionParameter $parameter) use($dependencies) {
+            return !array_key_exists($parameter->name, $dependencies);
+        });
 
         foreach ($parameters as $key => $parameter) {
             if ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
             } elseif ($class = $parameter->getClass()) {
-                $dependencies[] = $this->get($class->getName());
+                $dependencies[$parameter->name] = $this->get($class->getName());
             } else {
                 throw new InvalidParamException('Missing required argument: ' . $parameter->getName());
             }
