@@ -18,12 +18,15 @@ class StreamTarget extends Target
      */
     public $stream;
 
+    public $allowLineBreaks = false;
+
     protected $handler;
 
     public function getUnderlyingHandler()
     {
         if (!$this->handler) {
             $this->handler = new StreamHandler($this->stream, $this->level, true, null, true);
+            $this->handler->getFormatter()->allowInlineLineBreaks($this->allowLineBreaks);
         }
         return $this->handler;
     }
