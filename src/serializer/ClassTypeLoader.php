@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace blink\serializer;
 
+use blink\serializer\attributes\ComputedProperty;
 use blink\serializer\attributes\Property;
+use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionNamedType;
+use ReflectionType;
 use ReflectionUnionType;
-use blink\typing\Manager;
+use blink\typing\Registry;
 use blink\typing\Type;
 use blink\typing\TypeLoader;
 use blink\typing\types\StructField;
@@ -20,32 +24,41 @@ use blink\typing\types\StructType;
  */
 class ClassTypeLoader implements TypeLoader
 {
-    public function loadType(Manager $manager, string $name): ?Type
+    public function loadType(Registry $registry, string $name): ?Type
     {
         if (! class_exists($name)) {
             return null;
         }
 
+        $class = new ReflectionClass($name);
+
+        return new StructType($name, array_merge(
+            $this->loadFromProperties($registry, $class),
+            $this->loadFromMethods($registry, $class),
+        ));
+    }
+
+    /**
+     * @param Registry $registry
+     * @param ReflectionClass $class
+     * @return StructField[]
+     */
+    protected function loadFromProperties(Registry $registry, ReflectionClass $class): array
+    {
         $fields = [];
-        $class = new \ReflectionClass($name);
+
         foreach ($class->getProperties() as $property) {
             $propertyName = $property->getName();
             $type = $property->getType();
-            $fieldType = $this->convertReflectionType($manager, $type);
+            $fieldType = $this->convertReflectionType($registry, $type);
             $metadata = [];
             $defaultProperties = $class->getDefaultProperties();
 
-            if (! $property->isPublic()) {
-                foreach ($property->getAttributes() as $attribute) {
-                    if ($attribute->getName() === Property::class) {
-                        $metadata['property'] = $attribute->newInstance();
-                        break;
-                    }
-                }
-            }
-            if (! isset($metadata['property']))  {
-                $metadata['property'] = new Property();
-            }
+            $metadata['property'] = ($property->getAttributes(Property::class)[0] ?? null)
+                    ?->newInstance() ?? new Property();
+
+            $metadata['property']->name = $propertyName;
+            $metadata['property']->guarded = ! $property->isPublic();
 
             if (array_key_exists($propertyName, $defaultProperties)) {
                 $metadata['property']->hasDefault = true;
@@ -58,10 +71,38 @@ class ClassTypeLoader implements TypeLoader
             $fields[] = $field;
         }
 
-        return new StructType($name, $fields);
+        return $fields;
     }
 
-    protected function convertReflectionType(Manager $manager, \ReflectionType $type): Type
+    /**
+     * @param Registry $registry
+     * @param ReflectionClass $class
+     * @return StructField[]
+     */
+    protected function loadFromMethods(Registry $registry, ReflectionClass $class): array
+    {
+        $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
+        $fields = [];
+        foreach ($methods as $method) {
+            /** @var ReflectionAttribute|null $attribute */
+            $attribute = $method->getAttributes(ComputedProperty::class)[0] ?? null;
+            if ($attribute) {
+                /** @var ComputedProperty $property */
+                $property = $attribute->newInstance();
+                $property->getter = $method->getName();
+                $type = $method->getReturnType();
+                $fieldType = $this->convertReflectionType($registry, $type);
+                $field = new StructField($property->name, $fieldType, [
+                    'property' => $property,
+                ]);
+                $fields[] = $field;
+            }
+        }
+
+        return $fields;
+    }
+
+    protected function convertReflectionType(Registry $registry, ReflectionType $type): Type
     {
         if ($type instanceof ReflectionNamedType) {
             $name = $type->getName();
@@ -72,7 +113,7 @@ class ClassTypeLoader implements TypeLoader
                 $name .= '|null';
             }
 
-            return $manager->parse($name);
+            return $registry->parse($name);
         } elseif ($type instanceof ReflectionUnionType) {
             $types = array_map(function (ReflectionNamedType $type) {
                 $name = $type->getName();
@@ -82,7 +123,7 @@ class ClassTypeLoader implements TypeLoader
                 return $name;
             }, $type->getTypes());
 
-            return $manager->parse(implode('|', $types));
+            return $registry->parse(implode('|', $types));
         } else {
             throw new \InvalidArgumentException('Invalid argument of type: ' . get_class($type));
         }

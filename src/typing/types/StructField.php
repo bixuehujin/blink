@@ -24,6 +24,11 @@ class StructField
         $this->metadata = $metadata;
     }
 
+    public function getMetadata(string $name): mixed
+    {
+        return $this->metadata[$name] ?? null;
+    }
+
     public function toArray(): array
     {
         return [

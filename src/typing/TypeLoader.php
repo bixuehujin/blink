@@ -11,5 +11,5 @@ namespace blink\typing;
  */
 interface TypeLoader
 {
-    public function loadType(Registry $manager, string $type): ?Type;
+    public function loadType(Registry $registry, string $type): ?Type;
 }

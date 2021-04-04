@@ -13,7 +13,7 @@ use blink\serializer\attributes\Property;
  */
 class StubClass2
 {
-    #[Property(guarded: true)]
+    #[Property()]
     protected int $a;
 
     #[Property(setter: 'setB')]
