@@ -16,7 +16,7 @@ class Route
 {
     public array  $verbs;
     public string $path;
-    public        $handler;
+    public $handler;
     public string $name;
     public array  $arguments = [];
 

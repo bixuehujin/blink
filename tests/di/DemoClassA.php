@@ -3,7 +3,6 @@
 
 namespace blink\tests\di;
 
-
 class DemoClassA
 {
     /**

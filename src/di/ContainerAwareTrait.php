@@ -2,7 +2,6 @@
 
 namespace blink\di;
 
-
 trait ContainerAwareTrait
 {
     private Container $container;

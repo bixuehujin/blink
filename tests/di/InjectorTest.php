@@ -120,8 +120,7 @@ class InjectorTest extends TestCase
 
     public function testLoadDefinitionViaAttributes()
     {
-        $obj = new class()
-        {
+        $obj = new class() {
             #[Inject('store.attr1')]
             public string    $attr1;
 
@@ -158,7 +157,8 @@ class InjectorTest extends TestCase
         bool $isGuarded,
         bool $isRequired,
         mixed $defaultValue,
-        ?string $setter)
+        ?string $setter
+    )
     {
         $this->assertEquals($name, $reference->getName());
         $this->assertEquals($referentName, $reference->getReferentName());

@@ -97,7 +97,7 @@ class ParserTest extends TestCase
     {
         $tokenizer = new Tokenizer();
         $tokens = $tokenizer->tokenize($definition);
-        $tokens = array_map(fn(Token $token) => $token->toArray(), $tokens);
+        $tokens = array_map(fn (Token $token) => $token->toArray(), $tokens);
         $this->assertEquals($expected, $tokens);
     }
     

@@ -37,7 +37,7 @@ class Parser
         return $this->manager->getType($token->getValue());
     }
 
-    public function parse( string $definition): Type
+    public function parse(string $definition): Type
     {
         $tokens = $this->tokenizer->tokenize($definition);
 

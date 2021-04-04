@@ -41,7 +41,7 @@ class FileStorage extends BaseObject implements StorageContract
      */
     public function read(string $id): ?array
     {
-        $this->gc();;
+        $this->gc();
 
         if (file_exists($this->path . '/' . $id)) {
             $content = file_get_contents($this->path . '/' . $id);

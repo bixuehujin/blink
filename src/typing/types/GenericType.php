@@ -18,7 +18,7 @@ abstract class GenericType extends Type
 
     public function getDeclaration(): string
     {
-        $innerNames = array_map(fn(Type $type) => $type->getName(), $this->parameterTypes);
+        $innerNames = array_map(fn (Type $type) => $type->getName(), $this->parameterTypes);
 
         return $this->getName(). '<' . implode(', ', $innerNames) . '>';
     }

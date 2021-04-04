@@ -28,7 +28,7 @@ class UnionType extends Type
 
     public function getDeclaration(): string
     {
-        $names = array_map(fn(Type $type) => $type->getName(), $this->innerTypes);
+        $names = array_map(fn (Type $type) => $type->getName(), $this->innerTypes);
 
         return implode('|', $names);
     }

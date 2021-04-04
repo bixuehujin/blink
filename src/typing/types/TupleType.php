@@ -22,7 +22,7 @@ class TupleType extends Type
 
     public function getName(): string
     {
-        $names = array_map(fn(Type $type) => $type->getName(), $this->innerTypes);
+        $names = array_map(fn (Type $type) => $type->getName(), $this->innerTypes);
 
         return '(' . implode(', ', $names) . ')';
     }

@@ -31,13 +31,13 @@ class ClassLoaderTest extends TestCase
                     StubClass1::class,
                     [
                         new StructField('a', $typing->parse('integer'), [
-                            'property' => new Property( ),
+                            'property' => new Property(),
                         ]),
                         new StructField('b', $typing->parse('string|integer'), [
-                            'property' => new Property( ),
+                            'property' => new Property(),
                         ]),
                         new StructField('c', $typing->parse('string|null'), [
-                            'property' => new Property( ),
+                            'property' => new Property(),
                         ]),
                     ],
                 ),
@@ -50,7 +50,7 @@ class ClassLoaderTest extends TestCase
                     StubClass2::class,
                     [
                         new StructField('a', $typing->parse('integer'), [
-                            'property' => new Property( true),
+                            'property' => new Property(true),
                         ]),
                         new StructField('b', $typing->parse('integer'), [
                             'property' => new Property(true, '', 'setB'),

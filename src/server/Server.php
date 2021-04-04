@@ -26,5 +26,5 @@ abstract class Server implements ContainerAware
         return $this->getContainer()->get(Router::class);
     }
 
-    public abstract function run();
+    abstract public function run();
 }

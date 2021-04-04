@@ -406,8 +406,10 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
     public function getSession()
     {
         if ($this->_session === false) {
-            $sessionId = is_callable($this->sessionKey) ? call_user_func($this->sessionKey,
-                $this) : $this->headers->first($this->sessionKey);
+            $sessionId = is_callable($this->sessionKey) ? call_user_func(
+                $this->sessionKey,
+                $this
+            ) : $this->headers->first($this->sessionKey);
             if ($session = session()->get($sessionId)) {
                 $this->_session = $session;
             } else {

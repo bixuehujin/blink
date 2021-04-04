@@ -83,11 +83,11 @@ class Container implements ContainerInterface
     {
         if (is_string($type)) {
             return $this->make($type, $arguments);
-        } else if (is_callable($type)) {
+        } elseif (is_callable($type)) {
             return $type();
-        } else if (is_object($type)) {
+        } elseif (is_object($type)) {
             return $type;
-        } else if (is_array($type) && isset($type['class'])) {
+        } elseif (is_array($type) && isset($type['class'])) {
             $className = $type['class'];
             unset($type['class']);
 
@@ -121,7 +121,6 @@ class Container implements ContainerInterface
         $definition = $this->loadDefinition($name);
 
         if ($callback && $definition) {
-
             $callback($definition);
         }
 
@@ -360,7 +359,7 @@ class Container implements ContainerInterface
     {
         if (is_callable($definitions)) {
             $this->withDefinition($name)->haveFactory($definitions);
-        } else if (is_object($definitions)) {
+        } elseif (is_object($definitions)) {
             $this->withDefinition($name)->haveFactory(function () use ($definitions) {
                 return $definitions;
             });

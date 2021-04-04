@@ -4,7 +4,6 @@ namespace blink\di\object;
 
 use blink\di\Reference;
 
-
 class Method
 {
     protected string $methodName;

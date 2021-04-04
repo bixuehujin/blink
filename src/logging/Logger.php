@@ -66,4 +66,3 @@ class Logger implements LoggerInterface
         return $this->monoLogger;
     }
 }
-

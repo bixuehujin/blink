@@ -133,7 +133,7 @@ class Router implements ContainerAware
 
         if ($info[0] === Dispatcher::NOT_FOUND) {
             throw new RouteNotFoundException($path);
-        } else if ($info[0] === Dispatcher::METHOD_NOT_ALLOWED) {
+        } elseif ($info[0] === Dispatcher::METHOD_NOT_ALLOWED) {
             throw new MethodNotAllowedException("$verb method is not allowed for $path", $info[1]);
         }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace blink\di\exceptions;
 
-
 use Psr\Container\NotFoundExceptionInterface;
 
 /**
@@ -14,5 +13,4 @@ use Psr\Container\NotFoundExceptionInterface;
  */
 class NotFoundException extends Exception implements NotFoundExceptionInterface
 {
-
 }

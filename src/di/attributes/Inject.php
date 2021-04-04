@@ -11,7 +11,8 @@ class Inject
 {
     public function __construct(
         protected ?string $reference = null,
-        protected ?string $setter = null)
+        protected ?string $setter = null
+    )
     {
     }
 

@@ -225,7 +225,8 @@ class RequestActor
     {
         if (is_null($data)) {
             $this->phpunit->assertJson(
-                (string)$this->response->getBody(), "Failed asserting that JSON returned [{$this->request->uri->path}]."
+                (string)$this->response->getBody(),
+                "Failed asserting that JSON returned [{$this->request->uri->path}]."
             );
 
             return $this;
@@ -250,8 +251,10 @@ class RequestActor
         foreach ($this->sortRecursive($data) as $key => $value) {
             $expected = $this->formatToExpectedJson($key, $value);
 
-            $this->phpunit->{$method}(strpos($actual, $expected) !== false,
-                ($negate ? 'Found unexpected' : 'Unable to find') . " JSON fragment [{$expected}] within [{$actual}].");
+            $this->phpunit->{$method}(
+                strpos($actual, $expected) !== false,
+                ($negate ? 'Found unexpected' : 'Unable to find') . " JSON fragment [{$expected}] within [{$actual}]."
+            );
         }
 
         return $this;
@@ -377,8 +380,10 @@ class RequestActor
             $values = $headers->get($name);
             $strValues = implode(', ', $values);
 
-            $this->phpunit->assertTrue(in_array($value, $values, true),
-                "Header [{$name}] was found, but value [{$strValues}] does not match [{$value}].");
+            $this->phpunit->assertTrue(
+                in_array($value, $values, true),
+                "Header [{$name}] was found, but value [{$strValues}] does not match [{$value}]."
+            );
         }
 
         return $this;
@@ -398,8 +403,11 @@ class RequestActor
         $this->phpunit->assertTrue((boolean)$cookie, "Cookie [{$cookie}] not present on response.");
 
         if ($cookie && !is_null($value)) {
-            $this->phpunit->assertEquals($cookie->value, $value,
-                "Cookie [{$name}] was found, but value [{$cookie->value}] does not match [{$value}].");
+            $this->phpunit->assertEquals(
+                $cookie->value,
+                $value,
+                "Cookie [{$name}] was found, but value [{$cookie->value}] does not match [{$value}]."
+            );
         }
 
         return $this;

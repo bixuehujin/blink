@@ -2,7 +2,6 @@
 
 namespace blink\tests;
 
-
 use blink\core\Application;
 
 class TestCase extends \blink\testing\TestCase
