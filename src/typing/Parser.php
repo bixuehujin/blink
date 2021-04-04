@@ -14,12 +14,12 @@ use blink\typing\types\UnionType;
  */
 class Parser
 {
-    protected Manager $manager;
+    protected Registry  $registry;
     protected Tokenizer $tokenizer;
 
-    public function __construct(Manager $manager)
+    public function __construct(Registry $registry)
     {
-        $this->manager = $manager;
+        $this->registry  = $registry;
         $this->tokenizer = new Tokenizer();
     }
 
@@ -34,7 +34,7 @@ class Parser
 
         $token->expect(Token::TEXT);
 
-        return $this->manager->getType($token->getValue());
+        return $this->registry->getType($token->getValue());
     }
 
     public function parse(string $definition): Type
@@ -129,7 +129,7 @@ class Parser
                 $token->expect(Token::TEXT);
                 $subTokens = $this->findSubTokens($tokens, [Token::CLOSE_ANGLE], $pos + 1);
                 $parameterTypes = $this->parseGenericParameterTypes(array_slice($subTokens, 1));
-                $subType        = $this->manager->genericOf($token->getValue(), $parameterTypes);
+                $subType        = $this->registry->genericOf($token->getValue(), $parameterTypes);
                 if (!isset($type)) {
                     $type = $subType;
                 } elseif ($type instanceof UnionType) {
@@ -146,14 +146,14 @@ class Parser
                 $subType   = $this->parseInternal($subTokens);
 
                 if (!isset($type)) {
-                    $type = $this->manager->unionOf(
+                    $type = $this->registry->unionOf(
                         $this->parseScalarType($tokens, $pos),
                         $subType,
                     );
                 } elseif ($type instanceof UnionType) {
                     $type->appendType($subType);
                 } else {
-                    $type = $this->manager->unionOf(
+                    $type = $this->registry->unionOf(
                         $type,
                         $subType,
                     );

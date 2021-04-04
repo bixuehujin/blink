@@ -19,11 +19,11 @@ use blink\typing\types\StructType;
 use blink\typing\types\UnionType;
 
 /**
- * Class Manager
+ * Class Registry
  *
  * @package blink\typing
  */
-class Manager
+class Registry
 {
     /**
      * @var Type[]

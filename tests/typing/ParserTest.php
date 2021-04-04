@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace blink\tests\typing;
 
 use blink\tests\TestCase;
-use blink\typing\Manager;
+use blink\typing\Registry;
 use blink\typing\SyntaxException;
 use blink\typing\Token;
 use blink\typing\Tokenizer;
@@ -104,7 +104,7 @@ class ParserTest extends TestCase
 
     public function parseCases(): array
     {
-        $manager = new Manager();
+        $manager = new Registry();
         
         return [
             [
@@ -206,7 +206,7 @@ class ParserTest extends TestCase
      */
     public function testParse(string $definition, mixed $expected): void
     {
-        $manager = new Manager();
+        $manager = new Registry();
 
         try {
             $type = $manager->parse($definition);
