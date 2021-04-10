@@ -6,7 +6,7 @@ namespace blink\serializer\attributes;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY)]
 class Property
 {
     public string $name;

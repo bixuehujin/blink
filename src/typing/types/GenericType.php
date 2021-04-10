@@ -27,7 +27,7 @@ abstract class GenericType extends Type
 
     /**
      * @param Type[] $parameters
-     * @return Type
+     * @return GenericType
      * @throws SyntaxException
      */
     public function newInstance(array $parameters): GenericType

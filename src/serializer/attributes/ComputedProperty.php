@@ -5,7 +5,7 @@ namespace blink\serializer\attributes;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_METHOD)]
 class ComputedProperty
 {
     public function __construct(
