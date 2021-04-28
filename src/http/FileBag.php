@@ -14,7 +14,7 @@ use IteratorAggregate;
  */
 class FileBag extends BaseObject implements IteratorAggregate, Countable
 {
-    private $files;
+    private $files = [];
 
     public function __construct(array $files = [], $config = [])
     {
