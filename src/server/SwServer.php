@@ -2,6 +2,7 @@
 
 namespace blink\server;
 
+use blink\core\InvalidConfigException;
 use blink\http\Cookie;
 use blink\http\HeaderBag;
 use blink\http\Response;
@@ -32,11 +33,18 @@ class SwServer extends Server
     public $maxPackageLength;
 
     /**
-     * The output buffer size, see http://wiki.swoole.com/wiki/page/440.html
+     * The output buffer size, defaults to 2M, see http://wiki.swoole.com/wiki/page/440.html
      *
      * @var int
      */
-    public $outputBufferSize;
+    public $outputBufferSize = 2097152;
+
+    /**
+     * The max header size should be reseved for sending headers, used together with Chunked Encoding.
+     *
+     * @var int
+     */
+    public $maxHeaderSize = 4096;
 
     /**
      * The number of workers should be started to serve requests.
@@ -73,6 +81,10 @@ class SwServer extends Server
         if (!extension_loaded('swoole')) {
             throw new \RuntimeException('The Swoole extension is required to run blink in SwServer.');
         }
+        
+        if ($this->maxHeaderSize >= $this->outputBufferSize) {
+            throw new InvalidConfigException('The outputBufferSize config should be larger than maxHeaderSize.');
+        }
     }
 
     protected function normalizedConfig()
@@ -95,9 +107,7 @@ class SwServer extends Server
             $config['package_max_length'] = $this->maxPackageLength;
         }
 
-        if ($this->outputBufferSize) {
-            $config['buffer_output_size'] = $this->outputBufferSize;
-        }
+        $config['buffer_output_size'] = $this->outputBufferSize;
 
         return $config;
     }
@@ -276,8 +286,30 @@ class SwServer extends Server
             $response->cookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
 
-        $response->status($res->getStatusCode());
-        $response->end($content);
+        $this->respond($response, $res->getStatusCode(), $content);
+    }
+
+    protected function  respond($response, $status, $content)
+    {
+        $response->status($status);
+        
+        $maxWriteSize = $this->outputBufferSize  - $this->maxHeaderSize;
+
+        if (strlen($content) <= $maxWriteSize) {
+            $response->end($content);
+        } else {
+            $response->header('Transfer-Encoding', 'chunked');
+
+            $segments = ceil(strlen($content) / $maxWriteSize);
+            
+            for ($i = 0; $i < $segments; $i ++) {
+                $start = $i * $maxWriteSize;    
+                $buffer = substr($content, $start, $maxWriteSize);
+                $n = $response->write($buffer);
+            }
+
+            $response->end();
+        }
     }
 
     public function run()
