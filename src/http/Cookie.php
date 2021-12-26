@@ -19,54 +19,40 @@ class Cookie extends BaseObject
 {
     /**
      * The name of the cookie.
-     *
-     * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * The value of the cookie.
-     *
-     * @var string
      */
-    public $value = '';
+    public string $value = '';
 
     /**
      * The domain of the cookie.
-     *
-     * @var string
      */
-    public $domain = '';
+    public string $domain = '';
 
     /**
      * The timestamp at which the cookie expires, default to 0, meaning "until the browser is closed"
-     *
-     * @var int
      */
-    public $expire = 0;
+    public int $expire = 0;
 
     /**
      * The path of the cookie.
-     *
-     * @var string
      */
-    public $path = '/';
+    public string $path = '/';
 
     /**
      * Whether cookie should be sent via secure connection
-     *
-     * @var bool
      */
-    public $secure = false;
+    public bool $secure = false;
 
     /**
      * Whether the cookie should be accessible only through the HTTP protocol.
-     *
-     * @var bool
      */
-    public $httpOnly = false;
+    public bool $httpOnly = false;
 
-    public function toString()
+    public function toString(): string
     {
         $line = "{$this->name}={$this->value}";
 

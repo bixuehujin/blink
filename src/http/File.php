@@ -23,34 +23,32 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class File extends BaseObject implements UploadedFileInterface
 {
-    public $name;
-    public $tmpName;
-    public $type;
-    public $size;
-    public $error;
+    public string $name;
+    public string $tmpName;
+    public string $type;
+    public int $size;
+    public int $error;
 
-    private $_saved = false;
-    private $_stream;
+    private bool $_saved = false;
+    private Stream $_stream;
 
-    public function getExtension()
+    public function getExtension(): string
     {
         return strtolower(pathinfo($this->name, PATHINFO_EXTENSION));
     }
 
-    public function getBaseName()
+    public function getBaseName(): string
     {
         return pathinfo($this->name, PATHINFO_BASENAME);
     }
 
-    public function hasError()
+    public function hasError(): bool
     {
         return $this->error !== UPLOAD_ERR_OK;
     }
 
-    public function saveAs($path)
+    public function saveAs(string $path): bool
     {
-        if ($this->_saved) {
-        }
         return copy($this->tmpName, $path);
     }
 

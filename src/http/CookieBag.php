@@ -8,6 +8,7 @@
 namespace blink\http;
 
 use ArrayIterator;
+use Iterator;
 use IteratorAggregate;
 use blink\core\BaseObject;
 
@@ -19,9 +20,9 @@ use blink\core\BaseObject;
  */
 class CookieBag extends BaseObject implements IteratorAggregate
 {
-    private $cookies;
+    private array $cookies;
 
-    public function __construct(array $cookies = [], $config = [])
+    public function __construct(array $cookies = [], array $config = [])
     {
         $this->cookies = static::normalize($cookies);
 
@@ -50,7 +51,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
      * @return Cookie[]
      * @since 0.3.0
      */
-    public function all()
+    public function all(): array
     {
         return $this->cookies;
     }
@@ -61,7 +62,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
      * @param $name
      * @return Cookie|null
      */
-    public function get($name)
+    public function get($name): ?Cookie
     {
         return isset($this->cookies[$name]) ? $this->cookies[$name] : null;
     }
@@ -71,7 +72,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
      *
      * @param Cookie $cookie
      */
-    public function add(Cookie $cookie)
+    public function add(Cookie $cookie): void
     {
         $this->cookies[$cookie->name] = $cookie;
     }
@@ -79,10 +80,10 @@ class CookieBag extends BaseObject implements IteratorAggregate
     /**
      * Returns whether a cookie is exists.
      *
-     * @param $name
+     * @param string $name
      * @return bool
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->cookies[$name]);
     }
@@ -90,19 +91,19 @@ class CookieBag extends BaseObject implements IteratorAggregate
     /**
      * Remove a cookie by name.
      *
-     * @param $name
+     * @param string $name
      */
-    public function remove($name)
+    public function remove($name): void
     {
         unset($this->cookies[$name]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->cookies);
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->cookies);
     }
