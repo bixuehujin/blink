@@ -25,6 +25,13 @@ class SwServer extends Server
     public $maxRequests = 10000;
 
     /**
+     * The rate to trigger zend memory manager's gc procedure, useful to release memory to system. Valid values are 0-1.
+     *
+     * @var float
+     */
+    public $memoryGcRate = 0;
+
+    /**
      * The max package length in bytes for swoole, which is default to 2M (1024 * 1024 * 2). Please refer
      * http://wiki.swoole.com/wiki/page/301.html for more detailed information.
      *
@@ -287,6 +294,8 @@ class SwServer extends Server
         }
 
         $this->respond($response, $res->getStatusCode(), $content);
+
+        $this->gc();
     }
 
     protected function  respond($response, $status, $content)
@@ -309,6 +318,16 @@ class SwServer extends Server
             }
 
             $response->end();
+        }
+    }
+
+    protected function gc()
+    {
+        if ($this->memoryGcRate > 0 && $this->maxRequests > 1) {
+            $shouldGc = (mt_rand(0, $this->maxRequests) / $this->maxRequests) < $this->memoryGcRate;
+            if ($shouldGc && function_exists('gc_mem_caches')) {
+                gc_mem_caches();
+            }
         }
     }
 
