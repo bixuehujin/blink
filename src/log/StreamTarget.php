@@ -2,6 +2,7 @@
 
 namespace blink\log;
 
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 
 /**
@@ -18,6 +19,8 @@ class StreamTarget extends Target
      */
     public $stream;
 
+    public $dateFormat = 'Y-m-d H:i:s.u';
+
     public $allowLineBreaks = false;
 
     protected $handler;
@@ -26,7 +29,8 @@ class StreamTarget extends Target
     {
         if (!$this->handler) {
             $this->handler = new StreamHandler($this->stream, $this->level, true, null, true);
-            $this->handler->getFormatter()->allowInlineLineBreaks($this->allowLineBreaks);
+            $formatter = new LineFormatter(null, $this->dateFormat, $this->allowLineBreaks);
+            $this->handler->setFormatter($formatter);
         }
         return $this->handler;
     }
