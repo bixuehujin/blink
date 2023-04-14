@@ -15,7 +15,7 @@ abstract class TestCase extends BaseTestCase
 
     abstract public function createApplication();
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!$this->app) {
             $this->app = $this->createApplication()->bootstrapIfNeeded();
@@ -33,7 +33,7 @@ abstract class TestCase extends BaseTestCase
         return new RequestActor($this, $this->createApplication()->bootstrapIfNeeded());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->app) {
             $this->app->shutdown();

@@ -6,6 +6,7 @@ use Countable;
 use ArrayIterator;
 use blink\core\BaseObject;
 use IteratorAggregate;
+use Traversable;
 
 /**
  * FileBag represents a set of uploaded files.
@@ -90,12 +91,12 @@ class FileBag extends BaseObject implements IteratorAggregate, Countable
         }
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->files);
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->files);
     }

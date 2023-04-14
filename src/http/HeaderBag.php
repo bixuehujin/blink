@@ -44,6 +44,7 @@ class HeaderBag extends BaseObject implements IteratorAggregate, Countable, Arra
         return !empty($values) ? array_shift($values) : $default;
     }
 
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->all();

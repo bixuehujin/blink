@@ -12,6 +12,7 @@ namespace blink\di;
 use ReflectionClass;
 use blink\core\BaseObject;
 use blink\core\InvalidConfigException;
+use ReflectionNamedType;
 
 /**
  * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
@@ -482,8 +483,8 @@ class Container extends BaseObject
                 if ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
                 } else {
-                    $c = $param->getClass();
-                    $dependencies[] = Instance::of($c === null ? null : $c->getName());
+                    $c = $param->getType();
+                    $dependencies[] = Instance::of($c instanceof ReflectionNamedType ? $c->getName() : null);
                 }
             }
         }

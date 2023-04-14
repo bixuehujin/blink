@@ -3,6 +3,9 @@
 namespace blink\core;
 
 use blink\di\Container;
+use ReflectionClass;
+use ReflectionNamedType;
+use ReflectionParameter;
 
 /**
  * Class ServiceLocator
@@ -57,15 +60,26 @@ class ServiceLocator extends BaseObject
     /**
      * Call the given callback or class method with dependency injection.
      *
-     * @param $callback
+     * @param callable $callback
      * @param array $arguments
      * @return mixed
      */
-    public function call($callback, $arguments = [])
+    public function call(callable $callback, array $arguments = [])
     {
-        $dependencies = $this->getMethodDependencies($callback, $arguments);
+        $dependencies = $this->getMethodDependencies($callback, array_values($arguments));
 
         return call_user_func_array($callback, $dependencies);
+    }
+
+    protected function getParameterClass(ReflectionParameter $parameter): ?ReflectionClass
+    {
+        $type = $parameter->getType();
+
+        if ($type instanceof ReflectionNamedType) {
+            return new ReflectionClass($type->getName());
+        } else {
+            return null;
+        }
     }
 
     protected function getMethodDependencies($callback, array $arguments = [])
@@ -76,7 +90,7 @@ class ServiceLocator extends BaseObject
         foreach ($parameters as $key => $parameter) {
             if ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
-            } elseif ($class = $parameter->getClass()) {
+            } elseif ($class = $this->getParameterClass($parameter)) {
                 $dependencies[] = $this->get($class->getName());
             } else {
                 throw new InvalidParamException('Missing required argument: ' . $parameter->getName());
