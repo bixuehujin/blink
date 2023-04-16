@@ -30,6 +30,7 @@
   },
   "autoload": {
     "files": [
+      "src/expression/expr/helpers.php",
       "src/support/helpers.php"
     ],
     "psr-4": {
