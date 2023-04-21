@@ -43,9 +43,9 @@ class BinaryExpr extends Expr
         self::OP_XOR,
     ];
 
-    public mixed $left;
+    public Expr $left;
     public string $op;
-    public mixed $right;
+    public Expr $right;
 
     public function __construct(mixed $left, string $op, mixed $right)
     {
@@ -66,9 +66,9 @@ class BinaryExpr extends Expr
     public function toArray(): array
     {
         return parent::toArray() + [
-            'left' => $this->left,
+            'left' => $this->left->toArray(),
             'op' => $this->op,
-            'right' => $this->right,
+            'right' => $this->right->toArray(),
         ];
     }
 }

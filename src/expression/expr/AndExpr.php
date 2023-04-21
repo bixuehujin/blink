@@ -28,7 +28,7 @@ class AndExpr extends Expr
     public function toArray(): array
     {
         return parent::toArray() + [
-            'exprs' => $this->exprs,
+            'exprs' => array_map(fn (Expr $expr) => $expr->toArray(), $this->exprs),
         ];
     }
 }

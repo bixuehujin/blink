@@ -5,6 +5,9 @@ namespace blink\expression\expr;
 class FuncExpr extends Expr
 {
     public string $name;
+    /**
+     * @var Expr[]
+     */
     public array $args;
 
     public function __construct(string $name, array $args)
@@ -22,7 +25,7 @@ class FuncExpr extends Expr
     {
         return parent::toArray() + [
             'name' => $this->name,
-            'args' => $this->args,
+            'args' => array_map(fn (Expr $arg) => $arg->toArray(), $this->args),
         ];
     }
 }

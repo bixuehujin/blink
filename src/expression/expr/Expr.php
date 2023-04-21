@@ -4,7 +4,7 @@ namespace blink\expression\expr;
 
 abstract class Expr
 {
-    public ?string $alias;
+    public ?string $alias = null;
     public bool $disabled = false;
 
     abstract public static function type(): string;

@@ -24,7 +24,7 @@ class AggExpr extends Expr
     {
         return parent::toArray() + [
             'name' => $this->name,
-            'expr' => $this->expr,
+            'expr' => $this->expr->toArray(),
         ];
     }
 }
