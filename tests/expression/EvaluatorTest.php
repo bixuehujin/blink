@@ -26,7 +26,67 @@ class EvaluatorTest extends TestCase
             [
                 var_('a')->plus(var_('b')),
                 3,
-            ]
+            ],
+            [
+                var_('a')->mod(var_('b')),
+                1,
+            ],
+            [
+                var_('a')->eq(var_('b')),
+                false,
+            ],
+            [
+                var_('a')->neq(var_('b')),
+                true,
+            ],
+            [
+                var_('a')->gt(var_('b')),
+                false,
+            ],
+            [
+                var_('a')->gte(var_('b')),
+                false,
+            ],
+            [
+                var_('a')->lt(var_('b')),
+                true,
+            ],
+            [
+                var_('a')->lte(var_('b')),
+                true,
+            ],
+            [
+                lit('foo')->in(lit(['foo'])),
+                true,
+            ],
+            [
+                lit('foo')->notIn(lit(['foo'])),
+                false,
+            ],
+            [
+                lit('ifoobar')->contains(lit('foo')),
+                true,
+            ],
+            [
+                lit('ifoobar')->notContains(lit('foo')),
+                false,
+            ],
+            [
+                lit('ifoobar')->startsWith(lit('foo')),
+                false,
+            ],
+            [
+                lit('ifoobar')->endsWith(lit('bar')),
+                true,
+            ],
+            [
+                lit([1, 2])->overlaps(lit([2, 3])),
+                true,
+            ],
+            [
+                lit([1, 2])->notOverlaps(lit([2, 3])),
+                false,
+            ],
         ];
     }
 

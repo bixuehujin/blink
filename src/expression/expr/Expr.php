@@ -33,7 +33,7 @@ abstract class Expr
         return new BinaryExpr($this, '>', $value);
     }
 
-    public function egt(mixed $value): self
+    public function gte(mixed $value): self
     {
         return new BinaryExpr($this, '>=', $value);
     }
@@ -43,7 +43,7 @@ abstract class Expr
         return new BinaryExpr($this, '<', $value);
     }
 
-    public function elt(mixed $value): self
+    public function lte(mixed $value): self
     {
         return new BinaryExpr($this, '<=', $value);
     }
@@ -76,6 +76,46 @@ abstract class Expr
     public function mod(mixed $value): self
     {
         return new BinaryExpr($this, '%', $value);
+    }
+
+    public function in(mixed $value): self
+    {
+        return new BinaryExpr($this, 'in', $value);
+    }
+
+    public function notIn(mixed $value): self
+    {
+        return new BinaryExpr($this, 'not in', $value);
+    }
+
+    public function contains(mixed $value): self
+    {
+        return new BinaryExpr($this, 'contains', $value);
+    }
+
+    public function notContains(mixed $value): self
+    {
+        return new BinaryExpr($this, 'not contains', $value);
+    }
+
+    public function startsWith(mixed $value): self
+    {
+        return new BinaryExpr($this, 'starts with', $value);
+    }
+
+    public function endsWith(mixed $value): self
+    {
+        return new BinaryExpr($this, 'ends with', $value);
+    }
+
+    public function overlaps(mixed $value): self
+    {
+        return new BinaryExpr($this, 'overlaps', $value);
+    }
+
+    public function notOverlaps(mixed $value): self
+    {
+        return new BinaryExpr($this, 'not overlaps', $value);
     }
 
     public function as(string $alias): self

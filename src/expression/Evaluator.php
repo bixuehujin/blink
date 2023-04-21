@@ -65,7 +65,7 @@ class Evaluator
                 return $left / $right;
             case '%':
                 return $left % $right;
-            case '==':
+            case '=':
                 return $left === $right;
             case '!=':
                 return $left != $right;
@@ -77,10 +77,8 @@ class Evaluator
                 return $left < $right;
             case '<=':
                 return $left <= $right;
-            case 'like':
-                return str_contains($left, $right);
-            case 'not like':
-                return ! str_contains($left, $right);
+            case 'xor':
+                return $left xor $right;
             case 'in':
                 return in_array($left, $right);
             case 'not in':
@@ -89,8 +87,18 @@ class Evaluator
                 return $left >= $right[0] && $left <= $right[1];
             case 'not between':
                 return $left < $right[0] || $left > $right[1];
-            case 'xor':
-                return $left xor $right;
+            case 'contains':
+                return str_contains($left, $right);
+            case 'not contains':
+                return ! str_contains($left, $right);
+            case 'overlaps':
+                return (bool) array_intersect($left, $right);
+            case 'not overlaps':
+                return ! array_intersect($left, $right);
+            case 'starts with':
+                return str_starts_with($left, $right);
+            case 'ends with':
+                return str_ends_with($left, $right);
             default:
                 throw new \Exception('Unsupported operator: ' . $expr->op);
         }
