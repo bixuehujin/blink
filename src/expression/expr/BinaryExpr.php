@@ -5,7 +5,7 @@ namespace blink\expression\expr;
 
 class BinaryExpr extends Expr
 {
-    const OP_EQ = '=';
+    const OP_EQ = '==';
     const OP_NEQ = '!=';
     const OP_GT = '>';
     const OP_GTE = '>=';

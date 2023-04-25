@@ -1,10 +1,27 @@
 <?php
 
-namespace blink\expression\expr;
+namespace blink\expression;
+
+use blink\expression\expr\Column;
+use blink\expression\expr\Relation;
+use blink\expression\expr\Literal;
+use blink\expression\expr\Variable;
+use blink\expression\expr\Expr;
+use blink\expression\expr\OrExpr;
+use blink\expression\expr\AndExpr;
+use blink\expression\expr\BinaryExpr;
+use blink\expression\expr\FuncExpr;
+use blink\expression\expr\AggExpr;
+
 
 function col(string $column): Column
 {
     return new Column($column);
+}
+
+function rel(string $column): Relation
+{
+    return new Relation($column);
 }
 
 function lit(mixed $value): Literal

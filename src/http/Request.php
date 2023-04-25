@@ -167,7 +167,12 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         return $this->_payload = new ParamBag($payload);
     }
 
-    public function setPayload($body = [])
+    /**
+     * Sets the request body.
+     *
+     * @param mixed $body
+     */
+    public function setPayload($body = []): void
     {
         if (!$body instanceof ParamBag) {
             $body = new ParamBag($body);
