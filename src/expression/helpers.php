@@ -34,12 +34,12 @@ function var_(string $name): Variable
     return new Variable($name);
 }
 
-function and_(Expr ...$exprs): Expr
+function and_(Expr ...$exprs): AndExpr
 {
     return new AndExpr(...$exprs);
 }
 
-function or_(Expr ...$exprs): Expr
+function or_(Expr ...$exprs): OrExpr
 {
     return new OrExpr(...$exprs);
 }

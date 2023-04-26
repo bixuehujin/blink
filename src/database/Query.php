@@ -6,6 +6,7 @@ use blink\expression\expr\Expr;
 use blink\expression\expr\Relation;
 use function blink\expression\and_;
 use function blink\expression\binary;
+use function blink\expression\lit;
 use function blink\expression\or_;
 use function blink\expression\rel;
 
@@ -108,6 +109,7 @@ class Query
     protected function whereInternal(string|Expr $column, string $operator, mixed $value, bool $usingOr = false): self
     {
         $column = Expr::normalize($column);
+        $value = $value instanceof Expr ? $value : lit($value);
 
         if (is_null($this->where)) {
             $this->where = binary($column, $operator, $value);
@@ -129,9 +131,9 @@ class Query
     public function whereIn(string|Expr $column, array $values, bool $isAnd = true): self
     {
         if ($isAnd) {
-            $this->where($column, 'IN', $values);
+            $this->where($column, 'in', $values);
         } else {
-            $this->orWhere($column, 'IN', $values);
+            $this->orWhere($column, 'in', $values);
         }
 
         return $this;
@@ -146,9 +148,9 @@ class Query
     public function whereNotIn(string|Expr $column, array $values, bool $isAnd = true): self
     {
         if ($isAnd) {
-            $this->where($column, 'NOT IN', $values);
+            $this->where($column, 'not in', $values);
         } else {
-            $this->orWhere($column, 'NOT IN', $values);
+            $this->orWhere($column, 'not in', $values);
         }
         return $this;
     }

@@ -25,7 +25,7 @@ abstract class Expr
 
     public function eq(mixed $value): self
     {
-        return new BinaryExpr($this, '=', $value);
+        return new BinaryExpr($this, '==', $value);
     }
 
     public function neq(mixed $value): self
