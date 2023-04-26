@@ -3,6 +3,7 @@
 namespace blink\database;
 
 use blink\expression\expr\Expr;
+use blink\expression\expr\Relation;
 use function blink\expression\and_;
 use function blink\expression\binary;
 use function blink\expression\or_;
@@ -22,10 +23,11 @@ class Query
      */
     protected array $groups = [];
     /**
-     * @var Expr[]
+     * @var Relation[]
      */
     protected array $relations = [];
     protected ?Expr $where  = null;
+    protected ?string $intoClass = null;
 
     public function __construct(Context $context)
     {
@@ -55,11 +57,11 @@ class Query
         return $this;
     }
 
-    public function with(string ...$relations): self
+    public function with(Relation|string ...$relations): self
     {
         $this->relations = [
             ...$this->relations,
-            ...array_map(fn ($relation) => rel($relation), $relations)
+            ...array_map(fn ($relation) => is_string($relation) ? rel($relation) : $relation, $relations)
         ];
 
         return $this;
@@ -180,7 +182,14 @@ class Query
 
     public function into(string $entityClass): self
     {
+        $this->intoClass = $entityClass;
+
         return $this;
+    }
+
+    public function first(): array|object|null
+    {
+        return $this->context->queryOne($this);
     }
 
     public function all(): Collection
@@ -188,8 +197,9 @@ class Query
         return $this->context->queryAll($this);
     }
 
-    public function paginate()
+    public function paginate(int $page = 1, int $perPage = 20): Collection
     {
+        return $this->context->paginate($this, $page, $perPage);
     }
 
     public function getWhere(): ?Expr
@@ -219,10 +229,15 @@ class Query
     }
 
     /**
-     * @return Expr[]
+     * @return Relation[]
      */
     public function getRelations(): array
     {
         return $this->relations;
+    }
+
+    public function getEntityClass(): ?string
+    {
+        return $this->intoClass;
     }
 }

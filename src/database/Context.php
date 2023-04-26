@@ -44,6 +44,15 @@ class Context
         return $this->compilers[$driver];
     }
 
+    public function queryOne(Query $query): array|object|null
+    {
+        $table = $this->catalog->find($query->getFrom());
+
+        $compiler = $this->getCompiler($table->getDriver());
+
+        return $compiler->renderOne($query);
+    }
+
     public function queryAll(Query $query): Collection
     {
         $table = $this->catalog->find($query->getFrom());
