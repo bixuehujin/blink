@@ -2,10 +2,15 @@
 
 namespace blink\database;
 
+use blink\database\expr\HasExpr;
+use blink\expression\expr\AndExpr;
 use blink\expression\expr\Expr;
+use blink\expression\expr\OrExpr;
 use blink\expression\expr\Relation;
 use function blink\expression\and_;
 use function blink\expression\binary;
+use function blink\expression\col;
+use function blink\expression\has;
 use function blink\expression\lit;
 use function blink\expression\or_;
 use function blink\expression\rel;
@@ -64,6 +69,13 @@ class Query
             ...$this->relations,
             ...array_map(fn ($relation) => is_string($relation) ? rel($relation) : $relation, $relations)
         ];
+
+        return $this;
+    }
+
+    public function has(string $relation,  Expr $filter): self
+    {
+        $this->filter(has($relation, $filter));
 
         return $this;
     }
@@ -164,6 +176,8 @@ class Query
     {
         if (is_null($this->where)) {
             $this->where = $expr;
+        } else if ($this->where instanceof AndExpr) {
+            $this->where->add($expr);
         } else {
             $this->where = and_($this->where, $expr);
         }
@@ -175,6 +189,8 @@ class Query
     {
         if (is_null($this->where)) {
             $this->where = $expr;
+        } else if ($this->where instanceof OrExpr) {
+            $this->where->add($expr);
         } else {
             $this->where = or_($this->where, $expr);
         }

@@ -2,6 +2,7 @@
 
 namespace blink\expression;
 
+use blink\database\expr\HasExpr;
 use blink\expression\expr\Column;
 use blink\expression\expr\Relation;
 use blink\expression\expr\Literal;
@@ -19,9 +20,14 @@ function col(string $column): Column
     return new Column($column);
 }
 
-function rel(string $column): Relation
+function rel(string $name): Relation
 {
-    return new Relation($column);
+    return new Relation($name);
+}
+
+function has(string $relation, Expr $filter): HasExpr
+{
+    return new HasExpr($relation, $filter);
 }
 
 function lit(mixed $value): Literal

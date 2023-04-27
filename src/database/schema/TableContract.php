@@ -8,6 +8,11 @@ interface TableContract
 {
     public function getDriver(): string;
 
+    /**
+     * Returns fullname of the table.
+     *
+     * @return string
+     */
     public function getName(): string;
 
     public function hasColumn(string $name): bool;

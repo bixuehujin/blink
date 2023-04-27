@@ -19,10 +19,18 @@ class Relation extends Expr
      */
     public array $columns = [];
 
-    public function __construct(string $name, array $columns = [])
+    /**
+     * The filter to be applied to the relation.
+     *
+     * @var Expr|null
+     */
+    public ?Expr $filter = null;
+
+    public function __construct(string $name, array $columns = [], ?Expr $filter = null)
     {
         $this->name = $name;
         $this->columns = $columns;
+        $this->filter = $filter;
     }
 
     public static function type(): string
@@ -35,6 +43,7 @@ class Relation extends Expr
         return parent::toArray() + [
             'name' => $this->name,
             'columns' => array_map(fn (Expr $column) => $column->toArray(), $this->columns),
+            'filter' => $this->filter ? $this->filter->toArray() : null,
         ];
     }
 }
