@@ -2,19 +2,19 @@
 
 namespace blink\database;
 
-use blink\database\expr\HasExpr;
 use blink\expression\expr\AndExpr;
 use blink\expression\expr\Expr;
 use blink\expression\expr\OrExpr;
 use blink\expression\expr\Relation;
 use function blink\expression\and_;
 use function blink\expression\binary;
-use function blink\expression\col;
-use function blink\expression\has;
 use function blink\expression\lit;
 use function blink\expression\or_;
 use function blink\expression\rel;
 
+/**
+ * @template T
+ */
 class Query
 {
     protected Context $context;
@@ -75,7 +75,7 @@ class Query
 
     public function has(string $relation,  Expr $filter): self
     {
-        $this->filter(has($relation, $filter));
+        $this->filter(rel($relation)->has($filter));
 
         return $this;
     }
@@ -205,16 +205,25 @@ class Query
         return $this;
     }
 
-    public function first(): array|object|null
+    /**
+     * @return T|null
+     */
+    public function first(): mixed
     {
         return $this->context->queryOne($this);
     }
 
+    /**
+     * @return Collection<T>
+     */
     public function all(): Collection
     {
         return $this->context->queryAll($this);
     }
 
+    /**
+     * @return Collection<T>
+     */
     public function paginate(int $page = 1, int $perPage = 20): Collection
     {
         return $this->context->paginate($this, $page, $perPage);

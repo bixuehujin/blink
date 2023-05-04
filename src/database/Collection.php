@@ -10,12 +10,16 @@ use JsonSerializable;
 use Countable;
 use ArrayIterator;
 
-
+/**
+ * @template T
+ */
 class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable, Countable
 {
+    /**
+     * @var array<int, T>
+     */
     protected array $items;
     protected ?Paginator $paginator;
-
 
     public function __construct(array $items, ?Paginator $paginator = null)
     {

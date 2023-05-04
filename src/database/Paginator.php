@@ -12,7 +12,7 @@ class Paginator
     protected int $totalPages;
     protected int $perPage;
 
-    public function __construct(int $total, int $currentPage, int $totalPages, int $perPage = 20)
+    public function __construct(int $total, int $currentPage, int $totalPages, int $perPage)
     {
         $this->total = $total;
         $this->currentPage = $currentPage;

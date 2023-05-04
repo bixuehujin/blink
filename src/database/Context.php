@@ -30,7 +30,7 @@ class Context
             throw new \RuntimeException("The driver's compiler is already registered.");
         }
 
-        $compiler->setContent($this);
+        $compiler->setContext($this);
 
         $this->compilers[$driver] = $compiler;
     }
