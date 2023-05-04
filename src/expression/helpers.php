@@ -2,17 +2,16 @@
 
 namespace blink\expression;
 
-use blink\database\expr\HasExpr;
-use blink\expression\expr\Column;
-use blink\expression\expr\Relation;
-use blink\expression\expr\Literal;
-use blink\expression\expr\Variable;
-use blink\expression\expr\Expr;
-use blink\expression\expr\OrExpr;
+use blink\expression\expr\AggExpr;
 use blink\expression\expr\AndExpr;
 use blink\expression\expr\BinaryExpr;
+use blink\expression\expr\Column;
+use blink\expression\expr\Expr;
 use blink\expression\expr\FuncExpr;
-use blink\expression\expr\AggExpr;
+use blink\expression\expr\Literal;
+use blink\expression\expr\OrExpr;
+use blink\expression\expr\Relation;
+use blink\expression\expr\Variable;
 
 
 function col(string $column): Column
@@ -23,11 +22,6 @@ function col(string $column): Column
 function rel(string $name): Relation
 {
     return new Relation($name);
-}
-
-function has(string $relation, Expr $filter): HasExpr
-{
-    return new HasExpr($relation, $filter);
 }
 
 function lit(mixed $value): Literal

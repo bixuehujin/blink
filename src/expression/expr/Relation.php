@@ -38,6 +38,11 @@ class Relation extends Expr
         return 'relation';
     }
 
+    public function has(Expr $expr): HasExpr
+    {
+        return new HasExpr($this->name, $expr);
+    }
+
     public function toArray(): array
     {
         return parent::toArray() + [

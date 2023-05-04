@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace blink\database\expr;
-
-use blink\expression\expr\Expr;
-use function blink\expression\has;
+namespace blink\expression\expr;
 
 
 class HasExpr extends Expr
