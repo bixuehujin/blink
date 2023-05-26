@@ -14,8 +14,11 @@ class Context
      */
     protected array $compilers = [];
 
-    public function __construct()
+    protected array $params = [];
+
+    public function __construct(array $params = [])
     {
+        $this->params = $params;
         $this->catalog = new Catalog();
     }
 
@@ -42,6 +45,11 @@ class Context
         }
 
         return $this->compilers[$driver];
+    }
+
+    public function getParam(string $key): mixed
+    {
+        return $this->params[$key] ?? null;
     }
 
     public function queryOne(Query $query): array|object|null
