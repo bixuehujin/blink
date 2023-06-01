@@ -2,7 +2,9 @@
 
 namespace blink\expression\expr;
 
-abstract class Expr
+use JsonSerializable;
+
+abstract class Expr implements JsonSerializable
 {
     public ?string $alias = null;
     public bool $disabled = false;
@@ -133,6 +135,11 @@ abstract class Expr
     {
         $this->disabled = $disabled;
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     public function toArray(): array
