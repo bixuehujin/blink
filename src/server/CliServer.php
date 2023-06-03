@@ -20,7 +20,7 @@ class CliServer extends Server
     public function init()
     {
         if ($file = getenv('ENV_FILE')) {
-            (new Dotenv())->load($file);
+            (new Dotenv())->usePutenv()->load($file);
         }
     }
 
