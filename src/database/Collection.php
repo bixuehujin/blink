@@ -37,7 +37,7 @@ class Collection implements ArrayAccess, IteratorAggregate, JsonSerializable, Co
         return $this->paginator !== null;
     }
 
-    public function getPaginator(): Paginator
+    public function getPaginator(): ?Paginator
     {
         return $this->paginator;
     }
