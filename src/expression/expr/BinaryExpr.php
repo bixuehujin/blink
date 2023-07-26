@@ -57,10 +57,6 @@ class BinaryExpr extends Expr
 
     public function __construct(mixed $left, string $op, mixed $right)
     {
-        if (! in_array($op, self::OPS, true)) {
-            throw new \InvalidArgumentException("Invalid operator: $op");
-        }
-
         $this->left = static::normalize($left);
         $this->op = $op;
         $this->right = static::normalize($right);
