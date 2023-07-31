@@ -2,10 +2,12 @@
 
 namespace blink\expression;
 
+use blink\expression\expr\AndExpr;
 use blink\expression\expr\BinaryExpr;
 use blink\expression\expr\Expr;
 use blink\expression\expr\FuncExpr;
 use blink\expression\expr\Literal;
+use blink\expression\expr\OrExpr;
 use blink\expression\expr\Variable;
 
 class Evaluator
@@ -39,6 +41,20 @@ class Evaluator
             return $expr->value;
         } elseif ($expr instanceof Variable) {
             return $variables[$expr->name];
+        } elseif ($expr instanceof AndExpr) {
+            foreach ($expr->exprs as $innerExpr) {
+                if (! $this->evaluate($innerExpr, $variables))  {
+                    return false;
+                }
+            }
+            return true;
+        } elseif ($expr instanceof OrExpr) {
+            foreach ($expr->exprs as $innerExpr) {
+                if ($this->evaluate($innerExpr, $variables))  {
+                    return true;
+                }
+            }
+            return false;
         } elseif ($expr instanceof FuncExpr) {
             $args = array_map(fn($arg) => $this->evaluate($arg, $variables), $expr->args);
             return ($this->functions[$expr->name])(...$args);
