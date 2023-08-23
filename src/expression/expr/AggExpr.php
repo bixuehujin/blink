@@ -4,13 +4,13 @@ namespace blink\expression\expr;
 
 class AggExpr extends Expr
 {
-    public string $name;
+    public string $method;
     public Expr   $expr;
     public array  $options;
 
-    public function __construct(string $name, string|Expr $expr, array $options = [])
+    public function __construct(string $method, Expr $expr, array $options = [])
     {
-        $this->name = $name;
+        $this->method = $method;
         $this->expr = self::normalize($expr);
         $this->options = $options;
     }
@@ -23,8 +23,9 @@ class AggExpr extends Expr
     public function toArray(): array
     {
         return parent::toArray() + [
-            'name' => $this->name,
+            'method' => $this->method,
             'expr' => $this->expr->toArray(),
+            'options' => $this->options,
         ];
     }
 }
