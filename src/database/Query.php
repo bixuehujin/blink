@@ -32,6 +32,10 @@ class Query
      * @var Relation[]
      */
     protected array $relations = [];
+    /**
+     * @var array{string, 'desc' | 'asc'}
+     */
+    protected array $orders = [];
     protected ?Expr $where  = null;
     protected ?string $intoClass = null;
 
@@ -164,6 +168,14 @@ class Query
         } else {
             $this->orWhere($column, 'not in', $values);
         }
+
+        return $this;
+    }
+
+    public function orderBy(string $column, string $direction = 'asc'): self
+    {
+        $this->orders[] = [$column, $direction];
+
         return $this;
     }
 
@@ -253,6 +265,14 @@ class Query
     public function getGroups(): array
     {
         return $this->groups;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrders(): array
+    {
+        return $this->orders;
     }
 
     /**
