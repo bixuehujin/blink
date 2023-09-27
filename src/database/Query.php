@@ -241,6 +241,42 @@ class Query
         return $this->context->paginate($this, $page, $perPage);
     }
 
+    /**
+     * @param array $attributes
+     * @return T
+     */
+    public function insert(array $attributes): mixed
+    {
+        return $this->context->insertAll($this, [$attributes])[0];
+    }
+
+    /**
+     * @param array $records
+     * @return array<T>
+     */
+    public function insertAll(array $records): array
+    {
+        return $this->context->insertAll($this, $records);
+    }
+
+    /**
+     * @param array $attributes
+     * @return T
+     */
+    public function update(array $attributes): mixed
+    {
+        return $this->updateAll([$attributes])[0];
+    }
+
+    /**
+     * @param array $records
+     * @return array<T>
+     */
+    public function updateAll(array $records): array
+    {
+        return $this->context->updateAll($this, $records);
+    }
+
     public function getWhere(): ?Expr
     {
         return $this->where;

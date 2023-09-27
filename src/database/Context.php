@@ -79,6 +79,24 @@ class Context
         return $compiler->renderPaginate($query, $page, $perPage);
     }
 
+    public function insertAll(Query $query, array $records): array
+    {
+        $table = $this->catalog->find($query->getFrom());
+
+        $compiler = $this->getCompiler($table->getDriver());
+
+        return $compiler->insertAll($query, $records);
+    }
+
+    public function updateAll(Query $query, array $records): array
+    {
+        $table = $this->catalog->find($query->getFrom());
+
+        $compiler = $this->getCompiler($table->getDriver());
+
+        return $compiler->updateAll($query, $records);
+    }
+
     public function newQuery(): Query
     {
         return new Query($this);
