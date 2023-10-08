@@ -22,7 +22,7 @@ class Evaluator
     public function register(string $function, callable $handler): void
     {
         if (isset($this->functions[$function])) {
-            throw new \Exception('Function already registered: ' . $function);
+            throw new Exception('Function already registered: ' . $function);
         }
 
         $this->functions[$function] = $handler;
@@ -61,7 +61,7 @@ class Evaluator
         } elseif ($expr instanceof BinaryExpr) {
             return $this->evaluateBinaryExpr($expr, $variables);
         } else {
-            throw new \Exception('Unsupported expression type: ' . get_class($expr));
+            throw new Exception('Unsupported expression type: ' . get_class($expr));
         }
     }
 
@@ -116,7 +116,7 @@ class Evaluator
             case 'ends with':
                 return str_ends_with($left, $right);
             default:
-                throw new \Exception('Unsupported operator: ' . $expr->op);
+                throw new Exception('Unsupported operator: ' . $expr->op);
         }
     }
 }
