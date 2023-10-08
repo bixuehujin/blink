@@ -43,14 +43,14 @@ class Evaluator
             return $variables[$expr->name];
         } elseif ($expr instanceof AndExpr) {
             foreach ($expr->exprs as $innerExpr) {
-                if (! $this->evaluate($innerExpr, $variables))  {
+                if (!$this->evaluate($innerExpr, $variables)) {
                     return false;
                 }
             }
             return true;
         } elseif ($expr instanceof OrExpr) {
             foreach ($expr->exprs as $innerExpr) {
-                if ($this->evaluate($innerExpr, $variables))  {
+                if ($this->evaluate($innerExpr, $variables)) {
                     return true;
                 }
             }
@@ -67,56 +67,60 @@ class Evaluator
 
     protected function evaluateBinaryExpr(BinaryExpr $expr, array $variables): mixed
     {
-        $left = $this->evaluate($expr->left, $variables);
+        $left  = $this->evaluate($expr->left, $variables);
         $right = $this->evaluate($expr->right, $variables);
 
-        switch ($expr->op) {
-            case '+':
-                return $left + $right;
-            case '-':
-                return $left - $right;
-            case '*':
-                return $left * $right;
-            case '/':
-                return $left / $right;
-            case '%':
-                return $left % $right;
-            case '==':
-                return $left === $right;
-            case '!=':
-                return $left != $right;
-            case '>':
-                return $left > $right;
-            case '>=':
-                return $left >= $right;
-            case '<':
-                return $left < $right;
-            case '<=':
-                return $left <= $right;
-            case 'xor':
-                return $left xor $right;
-            case 'in':
-                return in_array($left, $right);
-            case 'not in':
-                return ! in_array($left, $right);
-            case 'between':
-                return $left >= $right[0] && $left <= $right[1];
-            case 'not between':
-                return $left < $right[0] || $left > $right[1];
-            case 'contains':
-                return str_contains($left, $right);
-            case 'not contains':
-                return ! str_contains($left, $right);
-            case 'overlaps':
-                return (bool) array_intersect($left, $right);
-            case 'not overlaps':
-                return ! array_intersect($left, $right);
-            case 'starts with':
-                return str_starts_with($left, $right);
-            case 'ends with':
-                return str_ends_with($left, $right);
-            default:
-                throw new Exception('Unsupported operator: ' . $expr->op);
+        try {
+            switch ($expr->op) {
+                case '+':
+                    return $left + $right;
+                case '-':
+                    return $left - $right;
+                case '*':
+                    return $left * $right;
+                case '/':
+                    return $left / $right;
+                case '%':
+                    return $left % $right;
+                case '==':
+                    return $left === $right;
+                case '!=':
+                    return $left != $right;
+                case '>':
+                    return $left > $right;
+                case '>=':
+                    return $left >= $right;
+                case '<':
+                    return $left < $right;
+                case '<=':
+                    return $left <= $right;
+                case 'xor':
+                    return $left xor $right;
+                case 'in':
+                    return in_array($left, $right);
+                case 'not in':
+                    return !in_array($left, $right);
+                case 'between':
+                    return $left >= $right[0] && $left <= $right[1];
+                case 'not between':
+                    return $left < $right[0] || $left > $right[1];
+                case 'contains':
+                    return str_contains($left, $right);
+                case 'not contains':
+                    return !str_contains($left, $right);
+                case 'overlaps':
+                    return (bool)array_intersect($left, $right);
+                case 'not overlaps':
+                    return !array_intersect($left, $right);
+                case 'starts with':
+                    return str_starts_with($left, $right);
+                case 'ends with':
+                    return str_ends_with($left, $right);
+                default:
+                    throw new Exception('Unsupported operator: ' . $expr->op);
+            }
+        } catch (\TypeError $error) {
+            throw new Exception($error->getMessage(), $error->getCode(), $error);
         }
     }
 }
