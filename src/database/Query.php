@@ -277,6 +277,15 @@ class Query
         return $this->context->updateAll($this, $records);
     }
 
+    /**
+     * @param array $options
+     * @return int
+     */
+    public function delete(array $options = []): int
+    {
+        return $this->context->delete($this, $options);
+    }
+
     public function getWhere(): ?Expr
     {
         return $this->where;

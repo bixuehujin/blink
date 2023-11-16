@@ -97,6 +97,15 @@ class Context
         return $compiler->updateAll($query, $records);
     }
 
+    public function delete(Query $query, array $options): int
+    {
+        $table = $this->catalog->find($query->getFrom());
+
+        $compiler = $this->getCompiler($table->getDriver());
+
+        return $compiler->delete($query, $options);
+    }
+
     public function newQuery(): Query
     {
         return new Query($this);

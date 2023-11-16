@@ -10,4 +10,5 @@ interface CompilerContract
     public function renderPaginate(Query $query, int $page = 1, int $perPage = 20): Collection;
     public function insertAll(Query $query, array $records): array;
     public function updateAll(Query $query, array $records): array;
+    public function delete(Query $query, array $options): int;
 }
