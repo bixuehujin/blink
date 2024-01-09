@@ -11,6 +11,7 @@ use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
 use blink\core\BaseObject;
+use Traversable;
 
 /**
  * Class CookieBag
@@ -29,12 +30,12 @@ class CookieBag extends BaseObject implements IteratorAggregate
         parent::__construct($config);
     }
 
-    public function replace(array $cookies)
+    public function replace(array $cookies): void
     {
         $this->cookies = self::normalize($cookies);
     }
 
-    public static function normalize(array $cookies)
+    public static function normalize(array $cookies): array
     {
         foreach ($cookies as $name => $value) {
             if (!$value instanceof Cookie) {
@@ -59,7 +60,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
     /**
      * Returns a cookie by name.
      *
-     * @param $name
+     * @param string $name
      * @return Cookie|null
      */
     public function get($name): ?Cookie
@@ -93,7 +94,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
      *
      * @param string $name
      */
-    public function remove($name): void
+    public function remove(string $name): void
     {
         unset($this->cookies[$name]);
     }
@@ -103,7 +104,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
         return count($this->cookies);
     }
 
-    public function getIterator(): ArrayIterator
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->cookies);
     }

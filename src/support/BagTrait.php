@@ -3,6 +3,7 @@
 namespace blink\support;
 
 use ArrayIterator;
+use Traversable;
 
 trait BagTrait
 {
@@ -88,12 +89,12 @@ trait BagTrait
         unset($this->data[$this->transformKey($key)]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->data);
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->data);
     }
@@ -101,7 +102,8 @@ trait BagTrait
     /**
      * @inheritDoc
      */
-    public function offsetExists($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset): bool
     {
         return $this->has($offset);
     }
@@ -109,6 +111,7 @@ trait BagTrait
     /**
      * @inheritDoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
@@ -117,16 +120,17 @@ trait BagTrait
     /**
      * @inheritDoc
      */
-    public function offsetSet($offset, $value)
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value): void
     {
-        return $this->set($offset, $value);
+        $this->set($offset, $value);
     }
 
     /**
      * @inheritDoc
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
-        return $this->remove($offset);
+        $this->remove($offset);
     }
 }

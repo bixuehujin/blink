@@ -2,5 +2,6 @@
 !.gitignore
 !.styleci.yml
 vendor
+explore
 composer.lock
 docs/_book/

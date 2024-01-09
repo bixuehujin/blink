@@ -17,7 +17,7 @@ class Json
     public static function encode($value, $options = null)
     {
         if ($options === null) {
-            $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
+            $options = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
         }
 
         $json = json_encode($value, $options);

@@ -30,7 +30,7 @@ class Command extends SymfonyCommand implements Configurable
      *
      * @var string
      */
-    public $description;
+    public $description = '';
 
     /**
      * Whether or not bootstrap the application automatically, defaults to true.

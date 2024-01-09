@@ -1,8 +1,10 @@
 language: php
 php:
-  - 7.4
+  - 8.0
+  - 8.1
+  - 8.2
 install:
-  - pecl install swoole-1.10.3
+  - pecl install swoole-4.8.13
   - composer update
 script:
   - vendor/bin/phpunit

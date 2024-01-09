@@ -4,11 +4,12 @@ namespace blink\http;
 
 use Countable;
 use ArrayAccess;
+use JsonSerializable;
 use IteratorAggregate;
 use blink\core\BaseObject;
 use blink\support\BagTrait;
 
-class HeaderBag extends BaseObject implements IteratorAggregate, Countable, ArrayAccess
+class HeaderBag extends BaseObject implements IteratorAggregate, Countable, ArrayAccess, JsonSerializable
 {
     use BagTrait;
 
@@ -41,5 +42,11 @@ class HeaderBag extends BaseObject implements IteratorAggregate, Countable, Arra
         $values = $this->get($key);
 
         return !empty($values) ? array_shift($values) : $default;
+    }
+
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return $this->all();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace blink\server;
 
+use blink\core\InvalidConfigException;
 use blink\http\Cookie;
 use blink\http\HeaderBag;
 use blink\http\Request;
@@ -26,6 +27,13 @@ class SwServer extends Server
     public int $maxRequests = 10000;
 
     /**
+     * The rate to trigger zend memory manager's gc procedure, useful to release memory to system. Valid values are 0-1.
+     *
+     * @var float
+     */
+    public float $memoryGcRate = 0;
+
+    /**
      * The max package length in bytes for swoole, which is default to 2M (1024 * 1024 * 2). Please refer
      * http://wiki.swoole.com/wiki/page/301.html for more detailed information.
      *
@@ -34,11 +42,18 @@ class SwServer extends Server
     public ?int $maxPackageLength = null;
 
     /**
-     * The output buffer size, see http://wiki.swoole.com/wiki/page/440.html
+     * The output buffer size, defaults to 2M, see http://wiki.swoole.com/wiki/page/440.html
      *
-     * @var int|null
+     * @var int
      */
-    public ?int $outputBufferSize = null;
+    public int $outputBufferSize = 2097152;
+
+    /**
+     * The max header size should be reseved for sending headers, used together with Chunked Encoding.
+     *
+     * @var int
+     */
+    public int $maxHeaderSize = 4096;
 
     /**
      * The number of workers should be started to serve requests.
@@ -74,6 +89,10 @@ class SwServer extends Server
         if (!extension_loaded('swoole')) {
             throw new \RuntimeException('The Swoole extension is required to run blink in SwServer.');
         }
+        
+        if ($this->maxHeaderSize >= $this->outputBufferSize) {
+            throw new InvalidConfigException('The outputBufferSize config should be larger than maxHeaderSize.');
+        }
     }
 
     protected function normalizedConfig()
@@ -96,9 +115,7 @@ class SwServer extends Server
             $config['package_max_length'] = $this->maxPackageLength;
         }
 
-        if ($this->outputBufferSize) {
-            $config['buffer_output_size'] = $this->outputBufferSize;
-        }
+        $config['buffer_output_size'] = $this->outputBufferSize;
 
         return $config;
     }
@@ -273,8 +290,47 @@ class SwServer extends Server
             }
         }
 
-        $response->status($res->getStatusCode());
-        $response->end($content);
+        /** @var Cookie $cookie */
+        foreach ($res->getCookies() as $cookie) {
+            $response->cookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+        }
+
+        $this->respond($response, $res->getStatusCode(), $content);
+
+        $this->gc();
+    }
+
+    protected function  respond($response, $status, $content)
+    {
+        $response->status($status);
+        
+        $maxWriteSize = $this->outputBufferSize  - $this->maxHeaderSize;
+
+        if (strlen($content) <= $maxWriteSize) {
+            $response->end($content);
+        } else {
+            $response->header('Transfer-Encoding', 'chunked');
+
+            $segments = ceil(strlen($content) / $maxWriteSize);
+            
+            for ($i = 0; $i < $segments; $i ++) {
+                $start = $i * $maxWriteSize;    
+                $buffer = substr($content, $start, $maxWriteSize);
+                $n = $response->write($buffer);
+            }
+
+            $response->end();
+        }
+    }
+
+    protected function gc()
+    {
+        if ($this->memoryGcRate > 0 && $this->maxRequests > 1) {
+            $shouldGc = (mt_rand(0, $this->maxRequests) / $this->maxRequests) < $this->memoryGcRate;
+            if ($shouldGc && function_exists('gc_mem_caches')) {
+                gc_mem_caches();
+            }
+        }
     }
 
     public function run()

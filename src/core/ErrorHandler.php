@@ -130,11 +130,6 @@ class ErrorHandler extends BaseObject
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
-            //$this->renderException($exception);
-
-            // need to explicitly flush logs because exit() next will terminate the app immediately
-
-            exit(1);
         }
     }
 
