@@ -28,13 +28,12 @@ abstract class TestCase extends BaseTestCase
      */
     public function actor()
     {
-        return new RequestActor($this, $this->createApplication()->bootstrapIfNeeded());
+        return new RequestActor($this, $this->createApplication());
     }
 
     public function tearDown(): void
     {
         if ($this->app) {
-            $this->app->shutdown();
             $this->app = null;
         }
     }

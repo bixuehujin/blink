@@ -300,7 +300,7 @@ class SwServer extends Server
         $this->gc();
     }
 
-    protected function  respond($response, $status, $content)
+    protected function respond($response, $status, $content)
     {
         $response->status($status);
         
@@ -314,7 +314,7 @@ class SwServer extends Server
             $segments = ceil(strlen($content) / $maxWriteSize);
             
             for ($i = 0; $i < $segments; $i ++) {
-                $start = $i * $maxWriteSize;    
+                $start = $i * $maxWriteSize;
                 $buffer = substr($content, $start, $maxWriteSize);
                 $n = $response->write($buffer);
             }

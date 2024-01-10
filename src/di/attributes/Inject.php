@@ -12,8 +12,7 @@ class Inject
     public function __construct(
         protected ?string $reference = null,
         protected ?string $setter = null
-    )
-    {
+    ) {
     }
 
     public function getReference(): ?string

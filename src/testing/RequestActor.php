@@ -6,9 +6,13 @@ use blink\core\Application;
 use blink\core\InvalidParamException;
 use blink\http\File;
 use blink\http\HeaderBag;
+use blink\http\Request;
+use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
+use blink\routing\Router;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class RequestActor
@@ -24,24 +28,20 @@ class RequestActor
 
     protected $app;
 
-    /**
-     * @var \blink\http\Request
-     */
-    protected $request;
+    protected Request $request;
 
-    /**
-     * @var \blink\http\Response
-     */
-    protected $response;
+    protected ResponseInterface $response;
 
-    public function __construct(TestCase $phpunit, Application $app)
+    public function __construct(TestCase $phpunit, Router $app)
     {
         $this->phpunit = $phpunit;
         $this->app = $app;
 
-        $this->request = $app->makeRequest();
-    }
+        $this->request = new Request();
 
+        // TODO setting alias some where ?
+        $this->app->getContainer()->bind(Request::class, $this->request);
+    }
 
     protected function doRequest($method, $uri, $query = '', $cookies = [], $files = [], $headers = [], $content = '')
     {
@@ -69,6 +69,10 @@ class RequestActor
         }
 
         $this->response = $this->app->handle($this->request);
+
+        if ($this->response instanceof Response) {
+            $this->response->prepare();
+        }
 
         return $this;
     }

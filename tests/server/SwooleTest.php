@@ -2,6 +2,7 @@
 
 namespace blink\tests\server;
 
+use blink\core\BaseObject;
 use blink\http\Request;
 use blink\server\SwServer;
 use blink\tests\TestCase;
@@ -96,7 +97,7 @@ class SwooleTest extends TestCase
         $server = new SwServer();
 
         /** @var Request $request */
-        $request = $server->createRequest(new MockedSwServer($request));
+        $request = $server->createRequest(new MockedSwRequest($request));
         $this->assertEquals($expects['url'], (string)$request->uri);
         $this->assertEquals($expects['url'], (string)$request->url());
         $this->assertEquals($expects['root'], (string)$request->root());
@@ -106,7 +107,7 @@ class SwooleTest extends TestCase
     }
 }
 
-class MockedSwServer extends SwServer
+class MockedSwRequest extends BaseObject
 {
     public $header;
     public $server;

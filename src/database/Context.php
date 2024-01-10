@@ -27,7 +27,7 @@ class Context
         $this->catalog->registerResolver($resolver);
     }
 
-    public function registerCompiler(string $driver,  CompilerContract $compiler): void
+    public function registerCompiler(string $driver, CompilerContract $compiler): void
     {
         if (isset($this->compilers[$driver])) {
             throw new \RuntimeException("The driver's compiler is already registered.");

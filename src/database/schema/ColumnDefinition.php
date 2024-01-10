@@ -161,6 +161,4 @@ class ColumnDefinition implements ColumnContract
     {
         return $this->comment;
     }
-
-
 }

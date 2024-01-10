@@ -30,9 +30,9 @@ class Evaluator
 
     public function registerBuiltinFunctions(): void
     {
-        $this->register('if', fn($condition, $then, $else) => $condition ? $then : $else);
-        $this->register('if_null', fn($condition, $else) => $condition ?? $else);
-        $this->register('concat', fn(...$args) => implode('', $args));
+        $this->register('if', fn ($condition, $then, $else) => $condition ? $then : $else);
+        $this->register('if_null', fn ($condition, $else) => $condition ?? $else);
+        $this->register('concat', fn (...$args) => implode('', $args));
     }
 
     public function evaluate(Expr $expr, array $variables = []): mixed
@@ -56,7 +56,7 @@ class Evaluator
             }
             return false;
         } elseif ($expr instanceof FuncExpr) {
-            $args = array_map(fn($arg) => $this->evaluate($arg, $variables), $expr->args);
+            $args = array_map(fn ($arg) => $this->evaluate($arg, $variables), $expr->args);
             return ($this->functions[$expr->name])(...$args);
         } elseif ($expr instanceof BinaryExpr) {
             return $this->evaluateBinaryExpr($expr, $variables);

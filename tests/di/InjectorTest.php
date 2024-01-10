@@ -158,8 +158,7 @@ class InjectorTest extends TestCase
         bool $isRequired,
         mixed $defaultValue,
         ?string $setter
-    )
-    {
+    ) {
         $this->assertEquals($name, $reference->getName());
         $this->assertEquals($referentName, $reference->getReferentName());
         $this->assertEquals($isGuarded, $reference->isGuarded());

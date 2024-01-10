@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace blink\database;
 
-
 class Paginator
 {
     protected int $total;

@@ -2,7 +2,6 @@
 
 namespace blink\expression\expr;
 
-
 class BinaryExpr extends Expr
 {
     const OP_EQ = '==';

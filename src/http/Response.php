@@ -5,6 +5,7 @@ namespace blink\http;
 use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
 use blink\core\InvalidParamException;
+use blink\support\Json;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -159,7 +160,7 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
         return $this->_cookies;
     }
 
-    public function with($data)
+    public function with(mixed $data)
     {
         $this->data = $data;
 
@@ -207,5 +208,17 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
     public function getReasonPhrase()
     {
         return $this->statusText;
+    }
+
+    public function prepare(): void
+    {
+        if ($this->data !== null) {
+            $content = is_string($this->data) ? $this->data : Json::encode($this->data);
+            if (!is_string($this->data) && !$this->headers->has('Content-Type')) {
+                $this->headers->set('Content-Type', 'application/json');
+            }
+            $this->getBody()->rewind();
+            $this->getBody()->write($content);
+        }
     }
 }

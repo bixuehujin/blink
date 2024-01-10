@@ -13,7 +13,6 @@ use blink\expression\expr\OrExpr;
 use blink\expression\expr\Relation;
 use blink\expression\expr\Variable;
 
-
 function col(string $column): Column
 {
     return new Column($column);

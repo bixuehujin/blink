@@ -77,7 +77,7 @@ class Query
         return $this;
     }
 
-    public function has(string $relation,  Expr $filter): self
+    public function has(string $relation, Expr $filter): self
     {
         $this->filter(rel($relation)->has($filter));
 
@@ -129,7 +129,7 @@ class Query
 
         if (is_null($this->where)) {
             $this->where = binary($column, $operator, $value);
-        } else if ($usingOr) {
+        } elseif ($usingOr) {
             $this->where = or_(
                 $this->where,
                 binary($column, $operator, $value)
@@ -188,7 +188,7 @@ class Query
     {
         if (is_null($this->where)) {
             $this->where = $expr;
-        } else if ($this->where instanceof AndExpr) {
+        } elseif ($this->where instanceof AndExpr) {
             $this->where->add($expr);
         } else {
             $this->where = and_($this->where, $expr);
@@ -201,7 +201,7 @@ class Query
     {
         if (is_null($this->where)) {
             $this->where = $expr;
-        } else if ($this->where instanceof OrExpr) {
+        } elseif ($this->where instanceof OrExpr) {
             $this->where->add($expr);
         } else {
             $this->where = or_($this->where, $expr);

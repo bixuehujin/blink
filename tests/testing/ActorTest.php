@@ -2,10 +2,12 @@
 
 namespace blink\tests\testing;
 
+use blink\di\Container;
+use blink\eventbus\EventBus;
 use blink\http\Request;
 use blink\http\Response;
+use blink\routing\Router;
 use blink\testing\TestCase;
-use blink\core\Application;
 
 /**
  * Class ActorTest
@@ -14,72 +16,76 @@ use blink\core\Application;
  */
 class ActorTest extends TestCase
 {
-    public function createApplication()
+    public function createApplication(): Router
     {
-        $application = new Application(['root' => '.']);
-        $application->route('POST', '/files', function (Request $request, Response $response) {
+        $bus = new EventBus();
+        $app = new Router($bus);
+        $app->setContainer(new Container());
+        $app->post('/files', function (Request $request, Response $response) {
             $response->headers->with('Content-Type', 'application/json');
             $file = $request->files->first('foo');
 
-            return [
+            return $response->with([
                 'name' => $file->name,
                 'size' => $file->size
-            ];
-        })
-                    ->route('GET', '/', function (Request $request, Response $response) {
-                        return 'Hello, Blink!';
-                    })
-                    ->route('GET', '/json', function (Request $request, Response $response) {
-                        return [
-                            'name' => 'Blink',
-                            'ext' => 'swoole',
-                            'dev' => 'test'
-                        ];
-                    })
-                    ->route('GET', '/json_contains', function (Request $request, Response $response) {
-                        return [
-                            'status' => 'ok',
-                            'data' => [
-                                "name" => 'blink',
-                                "ext" => 'swoole'
-                            ]
-                        ];
-                    })
-                    ->bootstrapIfNeeded();
+            ]);
+        });
 
-        return $this->app = $application;
+        $app->get('/', function (Request $request, Response $response) {
+            return $response->with('Hello, Blink!');
+        });
+
+        $app->get('/json', function (Request $request, Response $response) {
+            return $response->with([
+                'name' => 'Blink',
+                'ext'  => 'swoole',
+                'dev'  => 'test'
+            ]);
+        });
+
+        $app->get('/json_contains', function (Request $request, Response $response) {
+            return $response->with([
+                'status' => 'ok',
+                'data'   => [
+                    "name" => 'blink',
+                    "ext"  => 'swoole'
+                ]
+            ]);
+        });
+
+        return $this->app = $app;
     }
 
     public function testJson()
     {
         $this->actor()
-             ->get('/json')
-             ->seeJsonEquals([
-                 'ext' => 'swoole',
-                 'dev' => 'test',
-                 'name' => 'Blink',
-             ]);
+            ->get('/json')
+            ->seeJsonEquals([
+                'ext'  => 'swoole',
+                'dev'  => 'test',
+                'name' => 'Blink',
+            ]);
     }
 
     public function testJsonContains()
     {
         $this->actor()
-             ->get('/json_contains')
-             ->seeJson(['ext' => 'swoole']);
+            ->get('/json_contains')
+            ->seeJson(['ext' => 'swoole']);
     }
 
     public function testContent()
     {
         $this->actor()
-             ->get('/')
-             ->seeContent('Hello, Blink!');
+            ->get('/')
+            ->seeContent('Hello, Blink!');
     }
 
     public function testUploadFile()
     {
         $this->actor()
-             ->withFiles(['foo' => __FILE__])
-             ->post('/files')
-             ->seeJsonStructure(['name', 'size']);
+            ->withFiles(['foo' => __FILE__])
+            ->post('/files')
+            ->seeJsonStructure(['name', 'size']);
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace blink\expression\expr;
 
-
 class HasExpr extends Expr
 {
     public string $relation;

@@ -5,10 +5,10 @@ namespace blink\tests\expression;
 use blink\expression\Evaluator;
 use blink\expression\expr\Expr;
 use blink\tests\TestCase;
-use function blink\expression\expr\concat;
-use function blink\expression\expr\if_;
-use function blink\expression\expr\lit;
-use function blink\expression\expr\var_;
+use function blink\expression\concat;
+use function blink\expression\if_;
+use function blink\expression\lit;
+use function blink\expression\var_;
 
 class EvaluatorTest extends TestCase
 {

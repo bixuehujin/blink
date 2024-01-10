@@ -71,6 +71,4 @@ class RelationDefinition implements RelationContract
     {
         return $this->target;
     }
-
-
 }
