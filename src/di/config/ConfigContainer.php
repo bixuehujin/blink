@@ -57,7 +57,8 @@ class ConfigContainer implements ContainerInterface
         $definition = $this->loadDefinition($id);
 
         if (! $definition) {
-            throw new NotFoundException("No entry was found for identifier: $id");
+            // If the config is not defined, we will return the config value directly.
+            return $this->configMap[$id] ?? null;
         }
 
         assert($definition instanceof ConfigDefinition);
@@ -84,6 +85,6 @@ class ConfigContainer implements ContainerInterface
      */
     public function has($id)
     {
-        return isset($this->definitions[$id]);
+        return isset($this->definitions[$id]) || isset($this->configMap[$id]);
     }
 }

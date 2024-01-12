@@ -48,7 +48,11 @@ class ObjectDefinition
 
     public function haveProperty(string $name): Reference
     {
-        return $this->properties[] = new Reference($name);
+        if (isset($this->properties[$name])) {
+            return $this->properties[$name];
+        }
+
+        return $this->properties[$name] = new Reference($name);
     }
 
     public function getFactory(): ?callable

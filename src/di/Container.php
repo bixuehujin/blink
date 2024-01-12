@@ -6,6 +6,7 @@ use blink\core\Configurable;
 use blink\core\InvalidParamException;
 use blink\di\attributes\Inject;
 use blink\di\config\ConfigContainer;
+use chalk\components\client\Platform;
 use ReflectionClass;
 use blink\di\object\ObjectDefinition;
 use Psr\Container\ContainerInterface;
@@ -39,6 +40,8 @@ class Container implements ContainerInterface
      */
     protected array $definitions = [];
 
+    public static Container $global;
+
     public function __construct(array $delegates = [])
     {
         $configStore = $this->get(ConfigContainer::class);
@@ -64,6 +67,11 @@ class Container implements ContainerInterface
 
         if (isset($this->loadingItems[$name])) {
 //            throw new Exception('circular reference');
+        }
+
+        $configKey = $name . '.params';
+        if ($this->has($configKey)) {
+            $config = array_merge($this->get($configKey), $config);
         }
 
         $this->loadingItems[$name] = true;
@@ -398,6 +406,11 @@ class Container implements ContainerInterface
         $dependencies = $this->getMethodDependencies($parameters, $arguments);
 
         return call_user_func_array($callback, $dependencies);
+    }
+
+    public function setAsGlobal(): void
+    {
+        self::$global = $this;
     }
 
     /**

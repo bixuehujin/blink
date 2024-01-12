@@ -1,30 +1,31 @@
 <?php
 
 use blink\di\Container;
+use blink\core\HttpException;
 
 /**
  * Helper function to get application instance or registered application services.
  *
  * @param null $service
- * @return \blink\core\Application
+ * @return \blink\di\Container
  */
 function app($service = null)
 {
     if ($service === null) {
-        return Container::$app;
+        return Container::$global;
     } else {
-        return Container::$app->get($service);
+        return Container::$global->get($service);
     }
 }
 
 /**
  * Helper function to get log service.
  *
- * @return \blink\log\Logger
+ * @return \blink\logging\Logger
  */
 function logger()
 {
-    return Container::$app->get('log');
+    return Container::$global->get('log');
 }
 
 /**
@@ -34,7 +35,7 @@ function logger()
  */
 function session()
 {
-    return Container::$app->get('session');
+    return Container::$global->get('session');
 }
 
 /**
@@ -44,7 +45,7 @@ function session()
  */
 function auth()
 {
-    return Container::$app->get('auth');
+    return Container::$global->get('auth');
 }
 
 /**
@@ -54,7 +55,7 @@ function auth()
  */
 function request()
 {
-    return Container::$app->get('request');
+    return Container::$global->get('request');
 }
 
 /**
@@ -64,7 +65,7 @@ function request()
  */
 function response()
 {
-    return Container::$app->get('response');
+    return Container::$global->get('response');
 }
 
 

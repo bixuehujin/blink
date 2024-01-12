@@ -2,8 +2,9 @@
 
 namespace blink\testing;
 
-use blink\core\Application;
 use blink\core\InvalidParamException;
+use blink\auth\Authenticatable;
+use blink\core\InvalidValueException;
 use blink\http\File;
 use blink\http\HeaderBag;
 use blink\http\Request;
@@ -22,11 +23,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class RequestActor
 {
-    use AuthTrait;
-
     protected $phpunit;
 
-    protected $app;
+    protected Router $app;
 
     protected Request $request;
 
@@ -42,6 +41,32 @@ class RequestActor
         // TODO setting alias some where ?
         $this->app->getContainer()->bind(Request::class, $this->request);
     }
+
+    /**
+     * Set the currently logged in user to identifier.
+     *
+     * @param Authenticatable $actor
+     * @return static
+     * @throws InvalidParamException
+     * @throws InvalidValueException
+     */
+    public function actingAs(Authenticatable $actor): static
+    {
+        $this->request->user($actor);
+
+        return $this;
+    }
+
+    /**
+     * Returns the currently logged in user.
+     *
+     * @return Authenticatable|null
+     */
+    public function actor(): ?Authenticatable
+    {
+        return $this->request->user();
+    }
+
 
     protected function doRequest($method, $uri, $query = '', $cookies = [], $files = [], $headers = [], $content = '')
     {

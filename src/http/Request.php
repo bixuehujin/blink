@@ -3,12 +3,12 @@
 namespace blink\http;
 
 use blink\auth\Authenticatable;
+use blink\core\BaseObject;
 use blink\core\InvalidParamException;
 use blink\core\NotSupportedException;
-use blink\core\BaseObject;
 use blink\core\ShouldBeRefreshed;
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class Request
@@ -439,14 +439,6 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
             $this->_user = $user;
 
             return;
-        }
-
-        if ($this->_user === false) {
-            if (($session = $this->getSession()) && $session->id) {
-                $this->_user = auth()->who($session);
-            } else {
-                $this->_user = null;
-            }
         }
 
         return $this->_user;
