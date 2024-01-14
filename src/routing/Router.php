@@ -20,6 +20,7 @@ use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Router
@@ -147,7 +148,7 @@ class Router implements ContainerAware
             $route   = $this->dispatch($request->getMethod(), $request->getUri()->getPath());
             $stack   = $route->stack;
             $handler = new CallbackHandler(function () use ($route) {
-                return $this->getContainer()->call($route->handler, $route->arguments);
+                return $this->getContainer()->call($route->handler, $route->arguments + [$route::class => $route]);
             });
             $stack->setDefaultHandler($handler);
         } catch (\Throwable $exception) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace blink\routing\middleware;
 
+use blink\di\attributes\Inject;
 use blink\http\Response;
 use Throwable;
 use blink\routing\exceptions\MethodNotAllowedException;
@@ -21,6 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ErrorCatcher implements MiddlewareInterface
 {
+    #[Inject('app.debug')]
     protected bool $debug = false;
 
     public function __construct(bool $debug = false)

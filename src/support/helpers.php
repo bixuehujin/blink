@@ -19,6 +19,17 @@ function app($service = null)
 }
 
 /**
+ * Returns the configuration value by it's name.
+ *
+ * @param string $name
+ * @return mixed
+ */
+function config(string $name): mixed
+{
+    return Container::$global->get($name);
+}
+
+/**
  * Helper function to get log service.
  *
  * @return \blink\logging\Logger

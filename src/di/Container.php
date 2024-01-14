@@ -69,11 +69,6 @@ class Container implements ContainerInterface
 //            throw new Exception('circular reference');
         }
 
-        $configKey = $name . '.params';
-        if ($this->has($configKey)) {
-            $config = array_merge($this->get($configKey), $config);
-        }
-
         $this->loadingItems[$name] = true;
         $value                         = $this->createObject($definition, $parameters, $config);
 
@@ -242,6 +237,10 @@ class Container implements ContainerInterface
             }
 
             if (is_subclass_of($class, Configurable::class)) {
+                $configKey = $class . '.params';
+                if ($this->has($configKey)) {
+                    $config = array_merge($this->get($configKey), $config);
+                }
                 $arguments[count($arguments) - 1] = $config;
             }
 
@@ -427,7 +426,7 @@ class Container implements ContainerInterface
             if (array_key_exists($name, $arguments)) {
                 $dependencies[] = $arguments[$name];
             } elseif ($typeName = $this->getInjectableType($parameter->getType())) {
-                $dependencies[] = $this->get($typeName);
+                $dependencies[] = $arguments[$name] ?? $this->get($typeName);
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
             } else {

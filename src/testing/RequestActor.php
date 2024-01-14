@@ -5,6 +5,7 @@ namespace blink\testing;
 use blink\core\InvalidParamException;
 use blink\auth\Authenticatable;
 use blink\core\InvalidValueException;
+use blink\di\Container;
 use blink\http\File;
 use blink\http\HeaderBag;
 use blink\http\Request;
@@ -36,10 +37,7 @@ class RequestActor
         $this->phpunit = $phpunit;
         $this->app = $app;
 
-        $this->request = new Request();
-
-        // TODO setting alias some where ?
-        $this->app->getContainer()->bind(Request::class, $this->request);
+        $this->request = $app->getContainer()->get(Request::class);
     }
 
     /**
