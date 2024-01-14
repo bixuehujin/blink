@@ -426,7 +426,7 @@ class Container implements ContainerInterface
             if (array_key_exists($name, $arguments)) {
                 $dependencies[] = $arguments[$name];
             } elseif ($typeName = $this->getInjectableType($parameter->getType())) {
-                $dependencies[] = $arguments[$name] ?? $this->get($typeName);
+                $dependencies[] = $arguments[$typeName] ?? $this->get($typeName);
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
             } else {
