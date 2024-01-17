@@ -23,31 +23,31 @@ class Command extends SymfonyCommand implements Configurable
      *
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    public $description = '';
+    public string $description = '';
 
     /**
      * Whether or not bootstrap the application automatically, defaults to true.
      *
      * @var bool
      */
-    public $bootstrap = true;
+    public bool $bootstrap = true;
 
     /**
      * @var InputInterface
      */
-    public $input;
+    public InputInterface $input;
 
     /**
      * @var OutputInterface
      */
-    public $output;
+    public OutputInterface $output;
 
     public function __construct($config = [])
     {
