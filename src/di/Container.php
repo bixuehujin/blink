@@ -398,7 +398,7 @@ class Container implements ContainerInterface
         $caller = $this->getCallerReflector($callback);
 
         if (is_array($callback) && count($callback) === 2 && $caller instanceof ReflectionMethod && !$caller->isStatic()) {
-            $callback[0] = $this->get($callback[0]);
+            $callback[0] = $this->make($callback[0]);
         }
 
         $parameters   = $caller->getParameters();
