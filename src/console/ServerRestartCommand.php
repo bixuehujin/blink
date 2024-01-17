@@ -13,8 +13,8 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class ServerRestartCommand extends BaseServer
 {
-    public $name = 'server:restart';
-    public $description = 'Restart a blink server';
+    public string $name = 'server:restart';
+    public string $description = 'Restart a blink server';
 
     protected function configure()
     {

@@ -13,8 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ServiceInstallCommand extends BaseService
 {
-    public $name = 'service:install';
-    public $description = 'Install {serviceName} as a system service';
+    public string $name = 'service:install';
+    public string $description = 'Install {serviceName} as a system service';
     public $bin = 'blink';
 
     protected function configure()

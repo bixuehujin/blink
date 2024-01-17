@@ -12,8 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ServiceUninstallCommand extends BaseService
 {
-    public $name = 'service:uninstall';
-    public $description = 'Uninstall {serviceName} service from the system';
+    public string $name = 'service:uninstall';
+    public string $description = 'Uninstall {serviceName} service from the system';
 
     public function execute(InputInterface $input, OutputInterface $output)
     {

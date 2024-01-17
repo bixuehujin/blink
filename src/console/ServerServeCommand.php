@@ -13,8 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ServerServeCommand extends BaseServer
 {
-    public $name = 'server:serve';
-    public $description = 'Start a blink server in foreground';
+    public string $name = 'server:serve';
+    public string $description = 'Start a blink server in foreground';
 
     protected function configure()
     {

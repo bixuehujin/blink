@@ -16,9 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ShellCommand extends Command
 {
-    public $name = 'shell';
-    public $description = 'Interact with your application';
-    public $casters = [];
+    public string $name = 'shell';
+    public string $description = 'Interact with your application';
+    public array $casters = [];
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {

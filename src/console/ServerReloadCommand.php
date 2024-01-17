@@ -12,8 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ServerReloadCommand extends BaseServer
 {
-    public $name = 'server:reload';
-    public $description = 'Reload the running server';
+    public string $name = 'server:reload';
+    public string $description = 'Reload the running server';
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {

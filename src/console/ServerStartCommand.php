@@ -13,8 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ServerStartCommand extends BaseServer
 {
-    public $name = 'server:start';
-    public $description = 'Start a blink server as daemon';
+    public string $name = 'server:start';
+    public string $description = 'Start a blink server as daemon';
 
     protected function configure()
     {

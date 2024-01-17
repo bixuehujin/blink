@@ -12,8 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ServerStopCommand extends BaseServer
 {
-    public $name = 'server:stop';
-    public $description = 'Stop the running blink server';
+    public string $name = 'server:stop';
+    public string $description = 'Stop the running blink server';
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
