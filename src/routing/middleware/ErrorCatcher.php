@@ -53,7 +53,7 @@ class ErrorCatcher implements MiddlewareInterface
         return $array;
     }
 
-    protected function formatException($e, Response $response)
+    protected function formatException(Throwable $e, Response $response)
     {
         if ($e instanceof HttpException) {
             $response->status($e->statusCode);
