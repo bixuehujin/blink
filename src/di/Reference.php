@@ -61,6 +61,11 @@ class Reference
         $this->default = $default;
     }
 
+    public function setRequired(bool $required): void
+    {
+        $this->required = $required;
+    }
+
     public function withSetter(string $setter)
     {
         $this->setter = $setter;

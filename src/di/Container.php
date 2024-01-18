@@ -176,7 +176,7 @@ class Container implements ContainerInterface
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $reference->withDefault($parameter->getDefaultValue());
             } else {
-                throw new \RuntimeException("Unable to parse definition, missing default value for parameter: '{$parameter->getName()}' ");
+                $reference->setRequired(true);
             }
         }
     }
@@ -230,9 +230,9 @@ class Container implements ContainerInterface
             $arguments = [];
             foreach ($constructor->getArguments() as $reference) {
                 if ($className = $reference->getReferentName()) {
-                    $arguments[] = $this->get($className);
+                    $arguments[] = $parameters[$className] ?? $this->get($className);
                 } else {
-                    $arguments[] = $reference->getDefault();
+                    $arguments[] = $parameters[$reference->getName()] ?? $reference->getDefault();
                 }
             }
 
