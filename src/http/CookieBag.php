@@ -10,6 +10,7 @@ namespace blink\http;
 use ArrayIterator;
 use IteratorAggregate;
 use blink\core\BaseObject;
+use Traversable;
 
 /**
  * Class CookieBag
@@ -28,12 +29,12 @@ class CookieBag extends BaseObject implements IteratorAggregate
         parent::__construct($config);
     }
 
-    public function replace(array $cookies)
+    public function replace(array $cookies): void
     {
         $this->cookies = self::normalize($cookies);
     }
 
-    public static function normalize(array $cookies)
+    public static function normalize(array $cookies): array
     {
         foreach ($cookies as $name => $value) {
             if (!$value instanceof Cookie) {
@@ -50,7 +51,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
      * @return Cookie[]
      * @since 0.3.0
      */
-    public function all()
+    public function all(): array
     {
         return $this->cookies;
     }
@@ -58,7 +59,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
     /**
      * Returns a cookie by name.
      *
-     * @param $name
+     * @param string $name
      * @return Cookie|null
      */
     public function get($name)
@@ -71,7 +72,7 @@ class CookieBag extends BaseObject implements IteratorAggregate
      *
      * @param Cookie $cookie
      */
-    public function add(Cookie $cookie)
+    public function add(Cookie $cookie): void
     {
         $this->cookies[$cookie->name] = $cookie;
     }
@@ -79,10 +80,10 @@ class CookieBag extends BaseObject implements IteratorAggregate
     /**
      * Returns whether a cookie is exists.
      *
-     * @param $name
+     * @param string $name
      * @return bool
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->cookies[$name]);
     }
@@ -90,19 +91,19 @@ class CookieBag extends BaseObject implements IteratorAggregate
     /**
      * Remove a cookie by name.
      *
-     * @param $name
+     * @param string $name
      */
-    public function remove($name)
+    public function remove(string $name)
     {
         unset($this->cookies[$name]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->cookies);
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->cookies);
     }

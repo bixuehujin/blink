@@ -337,6 +337,8 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
             $parsedBody = $this->parseQueryString($body);
         } elseif ($contentType === 'multipart/form-data') {
             // noop
+        } elseif ($contentType === 'application/xml' || $contentType === 'text/xml') {
+            $parsedBody = (array)simplexml_load_string($body, null, LIBXML_NOCDATA);
         } else {
             throw new NotSupportedException("The content type: '$contentType' does not supported");
         }
