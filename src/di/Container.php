@@ -51,10 +51,10 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $name
+     * @param class-string<T> $name
      * @param array $parameters
      * @param array $config
-     * @return mixed
+     * @return T
      * @throws Exception
      */
     public function make(string $name, array $parameters = [], array $config = [])
@@ -66,11 +66,16 @@ class Container implements ContainerInterface
         }
 
         if (isset($this->loadingItems[$name])) {
-//            throw new Exception('circular reference');
+            throw new Exception('circular reference detected on making ' . $name);
         }
 
         $this->loadingItems[$name] = true;
-        $value                         = $this->createObject($definition, $parameters, $config);
+
+        if ($factory = $definition->getFactory()) {
+            $value = $factory(); 
+        } else {
+            $value = $this->createObject($definition, $parameters, $config);
+        }
 
         unset($this->loadingItems[$name]);
         return $value;
