@@ -10,6 +10,7 @@ abstract class Relationship
         public ?string $foreignKey = null,
         public ?string $localKey = null,
         public ?string $label = null,
+        public ?bool $nullable = null,
     ) {
     }
 }
