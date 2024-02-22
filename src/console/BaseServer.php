@@ -65,7 +65,7 @@ class BaseServer extends Command implements ContainerAware
         $server['asDaemon'] = 1;
         $server['pidFile']  = $pidFile;
 
-        return make($server)->run();
+        return $this->getContainer()->make2($server)->run();
     }
 
     protected function handleRestart()

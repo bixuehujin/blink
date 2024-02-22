@@ -188,6 +188,8 @@ class SwServer extends Server
 
         $router = $this->getRouter();
         $router->mountRoutes();
+
+        $this->initContaier();
     }
     
     protected function setProcessTitle($title)
@@ -274,12 +276,15 @@ class SwServer extends Server
             $config['files'] = $this->normalizeFiles($request->files);
         }
 
-        return new Request($config);
+        return new ($this->getRequestClass())($config);
     }
 
     public function onRequest($request, $response)
     {
-        $res = $this->getRouter()->handle($this->createRequest($request));
+        $container = $this->getContainer();
+        $request = $this->createRequest($request);
+
+        $res = $this->handleRequest($request);
 
         $content = (string)$res->getBody();
 

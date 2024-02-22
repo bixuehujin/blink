@@ -6,6 +6,7 @@ use blink\core\Configurable;
 use blink\core\InvalidParamException;
 use blink\di\attributes\Inject;
 use blink\di\config\ConfigContainer;
+use blink\server\SwServer;
 use chalk\components\client\Platform;
 use ReflectionClass;
 use blink\di\object\ObjectDefinition;
@@ -106,7 +107,6 @@ class Container implements ContainerInterface
             throw new InvalidConfigException("Unsupported configuration type: " . gettype($type));
         }
     }
-
 
     public function alias(string $name, string $alias)
     {

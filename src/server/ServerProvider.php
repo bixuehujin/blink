@@ -46,8 +46,8 @@ class ServerProvider extends ServiceProvider
     {
         $store = $container->get(ConfigContainer::class);
         $store->define('server.config_file')->required();
-        $store->define('server.host')->default('0.0.0.0');
-        $store->define('server.port')->default(7788);
+        $store->define('server.request_class')->required();
+        $store->define('server.request_class')->required();
 
         $this->eventBus->attach(
             CommandRegistering::class,

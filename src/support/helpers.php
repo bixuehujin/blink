@@ -66,7 +66,7 @@ function auth()
  */
 function request()
 {
-    return Container::$global->get('request');
+    return Container::$global->get(\blink\http\Request::class);
 }
 
 /**
@@ -76,7 +76,7 @@ function request()
  */
 function response()
 {
-    return Container::$global->get('response');
+    return Container::$global->get(\blink\http\Response::class);
 }
 
 

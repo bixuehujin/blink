@@ -150,6 +150,7 @@ class Router implements ContainerAware
             $handler = new CallbackHandler(function () use ($route) {
                 return $this->getContainer()->call($route->handler, $route->arguments + [$route::class => $route]);
             });
+            $handler->setContainer($this->getContainer());
             $stack->setDefaultHandler($handler);
         } catch (\Throwable $exception) {
             $stack = $this->stack;

@@ -28,9 +28,6 @@ class CgiServer extends Server
 {
     public function init()
     {
-        if ($file = getenv('ENV_FILE')) {
-            (new Dotenv())->load($file);
-        }
     }
 
     protected function extractHeaders()
@@ -135,7 +132,7 @@ class CgiServer extends Server
             $config['files'] = $this->normalizeFiles($_FILES);
         }
 
-        return new Request($config);
+        return new ($this->getRequestClass())($config);
     }
 
     protected function response(ResponseInterface $response)
@@ -155,7 +152,9 @@ class CgiServer extends Server
         $router = $this->getRouter();
         $router->mountRoutes();
 
-        $response = $router->handle($this->extractRequest());
+        $this->initContaier();
+        
+        $response = $this->handleRequest($this->extractRequest());
 
         $this->response($response);
     }

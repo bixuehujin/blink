@@ -93,9 +93,7 @@ class RequestActor
 
         $this->response = $this->app->handle($this->request);
 
-        if ($this->response instanceof Response) {
-            $this->response->prepare();
-        }
+        $this->app->getContainer()->unset(Response::class);
 
         return $this;
     }
