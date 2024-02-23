@@ -371,7 +371,7 @@ class Container implements ContainerInterface
             unset($definitions['class']);
 
             if (is_subclass_of($className, Configurable::class)) {
-                $def = $this->withDefinition($name, $className);
+                $def = $this->withDefinition($className, $className);
                 $def->haveConstructor()->haveArgument('config')->withDefault($definitions);
             } else {
                 $def = $this->extend($className);
