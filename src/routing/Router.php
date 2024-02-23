@@ -7,6 +7,7 @@ namespace blink\routing;
 use blink\eventbus\EventBus;
 use blink\di\ContainerAware;
 use blink\di\ContainerAwareTrait;
+use blink\routing\events\RequestRouting;
 use blink\routing\events\RouteMounting;
 use blink\routing\exceptions\MethodNotAllowedException;
 use blink\routing\exceptions\RouteNotFoundException;
@@ -145,6 +146,9 @@ class Router implements ContainerAware
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
+            $this->eventBus->dispatch($event = new RequestRouting($request));
+            $request = $event->request;
+
             $route   = $this->dispatch($request->getMethod(), $request->getUri()->getPath());
             $stack   = $route->stack;
             $handler = new CallbackHandler(function () use ($route) {
