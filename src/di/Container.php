@@ -52,6 +52,7 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @template T
      * @param class-string<T> $name
      * @param array $parameters
      * @param array $config

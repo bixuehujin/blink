@@ -7,6 +7,7 @@ namespace blink\routing;
 use blink\eventbus\EventBus;
 use blink\di\ContainerAware;
 use blink\di\ContainerAwareTrait;
+use blink\http\Response;
 use blink\routing\events\RequestRouting;
 use blink\routing\events\RouteMounting;
 use blink\routing\exceptions\MethodNotAllowedException;
@@ -163,6 +164,12 @@ class Router implements ContainerAware
             }));
         }
 
-        return $stack->handle($request);
+        $response = $stack->handle($request);
+        
+        if ($response instanceof Response) {
+            $response->prepare();
+        }
+
+        return $response;
     }
 }

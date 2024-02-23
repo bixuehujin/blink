@@ -10,8 +10,11 @@ namespace blink\http;
 use Psr\Http\Message\StreamInterface;
 
 /**
+ * 
  * Class MessageTrait
- *
+ * 
+ * @property StreamInterface $body
+ * 
  * @package blink\http
  */
 trait MessageTrait
