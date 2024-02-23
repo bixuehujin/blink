@@ -38,7 +38,7 @@ class InjectorTest extends TestCase
         return [
             [
                 'name'            => 'unknown',
-                'expectException' => NotFoundException::class,
+                'expectException' => null,
                 'expectResult'    => null,
             ],
             [
@@ -71,9 +71,7 @@ class InjectorTest extends TestCase
         }
 
         $result = $injector->get($id);
-        if ($expectResult) {
-            $this->assertEquals($expectResult, $result);
-        }
+        $this->assertEquals($expectResult, $result);
     }
 
     protected function createObjectInjector()
@@ -143,11 +141,11 @@ class InjectorTest extends TestCase
         $properties = $definition->getProperties();
         $this->assertCount(5, $properties);
 
-        $this->assertReference($properties[0], 'attr1', 'store.attr1', false, true, null, null);
-        $this->assertReference($properties[1], 'attr2', 'store.attr2', true, true, null, null);
-        $this->assertReference($properties[2], 'attr3', 'store.attr3', true, false, 'default', null);
-        $this->assertReference($properties[3], 'attr4', DemoClassB::class, true, true, null, null);
-        $this->assertReference($properties[4], 'attr5', 'store.attr5', true, true, null, 'setAttr5');
+        $this->assertReference($properties['attr1'], 'attr1', 'store.attr1', false, true, null, null);
+        $this->assertReference($properties['attr2'], 'attr2', 'store.attr2', true, true, null, null);
+        $this->assertReference($properties['attr3'], 'attr3', 'store.attr3', true, false, 'default', null);
+        $this->assertReference($properties['attr4'], 'attr4', DemoClassB::class, true, true, null, null);
+        $this->assertReference($properties['attr5'], 'attr5', 'store.attr5', true, true, null, 'setAttr5');
     }
 
     protected function assertReference(
@@ -167,5 +165,21 @@ class InjectorTest extends TestCase
             $this->assertEquals($defaultValue, $reference->getDefault());
         }
         $this->assertEquals($setter, $reference->getSetter());
+    }
+
+    public function testCreateConfigureObject()
+    {
+        $container  = new Container();
+
+        $props = [
+            'attr1' => 'value1',
+            'attr2' => 'value2',
+        ];
+
+        $container->bind(ConfigureObject::class, $props);
+
+        $object = $container->get(ConfigureObject::class);
+
+        $this->assertEquals($props, $object->result);
     }
 }

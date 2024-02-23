@@ -6,8 +6,6 @@ use blink\core\Configurable;
 use blink\core\InvalidParamException;
 use blink\di\attributes\Inject;
 use blink\di\config\ConfigContainer;
-use blink\server\SwServer;
-use chalk\components\client\Platform;
 use ReflectionClass;
 use blink\di\object\ObjectDefinition;
 use Psr\Container\ContainerInterface;
@@ -135,9 +133,9 @@ class Container implements ContainerInterface
         return $definition;
     }
 
-    public function withDefinition(string $name): ?ObjectDefinition
+    public function withDefinition(string $name, string $className = ''): ?ObjectDefinition
     {
-        return $this->definitions[$name] = new ObjectDefinition('');
+        return $this->definitions[$name] = new ObjectDefinition($className);
     }
 
     public function loadDefinition(string $name): ?ObjectDefinition
@@ -239,14 +237,6 @@ class Container implements ContainerInterface
                 } else {
                     $arguments[] = $parameters[$reference->getName()] ?? $reference->getDefault();
                 }
-            }
-
-            if (is_subclass_of($class, Configurable::class)) {
-                $configKey = $class . '.params';
-                if ($this->has($configKey)) {
-                    $config = array_merge($this->get($configKey), $config);
-                }
-                $arguments[count($arguments) - 1] = $config;
             }
 
             $object = new $class(...$arguments);
@@ -379,10 +369,14 @@ class Container implements ContainerInterface
             $className = $definitions['class'] ?? $name;
             unset($definitions['class']);
 
-            $def = $this->extend($className);
-
-            foreach ($definitions as $key => $value) {
-                $def->haveProperty($key)->withDefault($value);
+            if (is_subclass_of($className, Configurable::class)) {
+                $def = $this->withDefinition($name, $className);
+                $def->haveConstructor()->haveArgument('config')->withDefault($definitions);
+            } else {
+                $def = $this->extend($className);
+                foreach ($definitions as $key => $value) {
+                    $def->haveProperty($key)->withDefault($value);
+                }
             }
 
             if ($className !== $name) {

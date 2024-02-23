@@ -9,7 +9,7 @@ namespace blink\core;
  */
 trait ObjectTrait
 {
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         foreach ($config as $name => $value) {
             $this->$name = $value;
