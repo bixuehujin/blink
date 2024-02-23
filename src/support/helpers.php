@@ -6,7 +6,7 @@ use blink\core\HttpException;
 /**
  * Helper function to get application instance or registered application services.
  *
- * @param null $service
+ * @param string|class-string|null $service
  * @return \blink\di\Container
  */
 function app($service = null)
