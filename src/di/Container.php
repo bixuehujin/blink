@@ -370,11 +370,11 @@ class Container implements ContainerInterface
             $className = $definitions['class'] ?? $name;
             unset($definitions['class']);
 
+            $def = $this->extend($className);
+
             if (is_subclass_of($className, Configurable::class)) {
-                $def = $this->withDefinition($className, $className);
-                $def->haveConstructor()->haveArgument('config')->withDefault($definitions);
+                $def->getConstructor()?->getArgument('config')->withDefault($definitions);
             } else {
-                $def = $this->extend($className);
                 foreach ($definitions as $key => $value) {
                     $def->haveProperty($key)->withDefault($value);
                 }

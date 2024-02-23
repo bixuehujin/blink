@@ -23,6 +23,17 @@ class Method
         return $this->arguments[$name] = new Reference($name);
     }
 
+    public function getArgument(string $name): Reference
+    {
+        $argument = $this->arguments[$name] ?? null;
+
+        if (! $argument) {
+            throw new \InvalidArgumentException("Argument $name not found in method $this->methodName.");
+        }
+
+        return $argument;
+    }
+
     /**
      * @return Reference[]
      */
