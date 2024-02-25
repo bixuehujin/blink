@@ -345,6 +345,20 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Sets an entry of the container by its identifier.
+     * 
+     * @param string $id
+     * @param mixed $value
+     * @return void
+     */
+    public function set(string $id, mixed $value): void
+    {
+        $id = $this->aliases[$id] ?? $id;
+
+        $this->loadedItems[$id] = $value;
+    }
+
+    /**
      * Add a new service provider to the container.
      *
      * @param ServiceProvider|string $provider
