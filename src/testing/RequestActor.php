@@ -93,6 +93,7 @@ class RequestActor
 
         $this->response = $this->app->handle($this->request);
 
+        $this->app->getContainer()->unset(Request::class);
         $this->app->getContainer()->unset(Response::class);
 
         return $this;
@@ -438,26 +439,9 @@ class RequestActor
         return $this;
     }
 
-    private $_verbose;
-
-    protected function isVerbose()
+    protected function isVerbose(): bool
     {
-        if ($this->_verbose !== null) {
-            return $this->_verbose;
-        }
-
-        $verbose = false;
-
-        global $argv;
-
-        foreach ($argv as $arg) {
-            if (preg_match('/^\-{1,2}v(erbose)?$/', $arg)) {
-                $verbose = true;
-                break;
-            }
-        }
-
-        return $this->_verbose = $verbose;
+        return (bool)getenv('VERBOSE');
     }
 
     /**
