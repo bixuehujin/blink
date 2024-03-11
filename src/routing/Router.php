@@ -44,6 +44,8 @@ class Router implements ContainerAware
      * @var Route[]
      */
     protected array $routes = [];
+    
+    protected bool $routeMounted = false;
 
     public function __construct(EventBus $eventBus)
     {
@@ -76,7 +78,13 @@ class Router implements ContainerAware
 
     public function mountRoutes()
     {
+        if ($this->routeMounted) {
+            return;
+        }
+        
         $this->eventBus->dispatch(new RouteMounting($this));
+
+        $this->routeMounted = true;
     }
 
     /**
