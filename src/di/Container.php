@@ -31,9 +31,9 @@ class Container implements ContainerInterface
      */
     protected array $delegates = [];
 
-    protected array $loadedItems  = [];
+    protected array $loadedItems = [];
     protected array $loadingItems = [];
-    protected array $aliases      = [];
+    protected array $aliases = [];
     /**
      * @var array<ObjectDefinition|null>
      */
@@ -61,7 +61,7 @@ class Container implements ContainerInterface
     {
 //        $concrete   = $this->aliases[$name] ?? $name;
         $definition = $this->loadDefinition($name);
-        if (!$definition) {
+        if (! $definition) {
             throw new Exception("Unable to load definition for '$name'");
         }
 
@@ -72,13 +72,26 @@ class Container implements ContainerInterface
         $this->loadingItems[$name] = true;
 
         if ($factory = $definition->getFactory()) {
-            $value = $factory(); 
+            $value = $factory();
         } else {
-            $value = $this->createObject($definition, $parameters, $config);
+            $value = $this->createObjectInternal($definition, $parameters, $config);
         }
 
         unset($this->loadingItems[$name]);
         return $value;
+    }
+
+    public function createObject(string|array $type, array $config = []): object
+    {
+        if (is_string($type)) {
+            $className = $type;
+        } else {
+            $className = $type['class'];
+            unset($type['class']);
+            $config = array_merge($type, $config);
+        }
+
+        return $this->make($className, ['config' => $config]);
     }
 
     /**
@@ -86,6 +99,7 @@ class Container implements ContainerInterface
      * @param array $arguments
      * @return mixed
      * @throws Exception
+     * @deprecated
      */
     public function make2($type, $arguments = [])
     {
@@ -145,7 +159,7 @@ class Container implements ContainerInterface
             return $this->definitions[$name];
         }
 
-        if (!class_exists($name)) {
+        if (! class_exists($name)) {
             return $this->definitions[$name] = null;
         }
 
@@ -155,7 +169,7 @@ class Container implements ContainerInterface
     protected function parseDefinition(string $name, \ReflectionClass $reflector)
     {
         $definition = new ObjectDefinition($name);
-        $constructor     = $reflector->getConstructor();
+        $constructor = $reflector->getConstructor();
         if ($constructor) {
             $this->parseConstructor($definition, $constructor);
         }
@@ -185,8 +199,11 @@ class Container implements ContainerInterface
         }
     }
 
-    protected function parseProperty(ObjectDefinition $definition, ReflectionProperty $property, array $defaultProperties): void
-    {
+    protected function parseProperty(
+        ObjectDefinition $definition,
+        ReflectionProperty $property,
+        array $defaultProperties
+    ): void {
         $attributes = $property->getAttributes();
         if (empty($attributes)) {
             return;
@@ -219,7 +236,7 @@ class Container implements ContainerInterface
         }
     }
 
-    protected function createObject(ObjectDefinition $definition, array $parameters, array $config = [])
+    protected function createObjectInternal(ObjectDefinition $definition, array $parameters, array $config = [])
     {
         if ($factory = $definition->getFactory()) {
             return $factory($this);
@@ -346,7 +363,7 @@ class Container implements ContainerInterface
 
     /**
      * Sets an entry of the container by its identifier.
-     * 
+     *
      * @param string $id
      * @param mixed $value
      * @return void
@@ -411,11 +428,11 @@ class Container implements ContainerInterface
     {
         $caller = $this->getCallerReflector($callback);
 
-        if (is_array($callback) && count($callback) === 2 && $caller instanceof ReflectionMethod && !$caller->isStatic()) {
+        if (is_array($callback) && count($callback) === 2 && $caller instanceof ReflectionMethod && ! $caller->isStatic()) {
             $callback[0] = $this->make($callback[0]);
         }
 
-        $parameters   = $caller->getParameters();
+        $parameters = $caller->getParameters();
         $dependencies = $this->getMethodDependencies($parameters, $arguments);
 
         return call_user_func_array($callback, $dependencies);

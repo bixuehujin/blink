@@ -50,7 +50,7 @@ class BaseServer extends Command implements ContainerAware
             $server['numWorkers']  = 1;
         }
 
-        return $this->getContainer()->make2($server)->run();
+        return $this->getContainer()->createObject($server)->run();
     }
 
     protected function handleStart()
@@ -65,7 +65,7 @@ class BaseServer extends Command implements ContainerAware
         $server['asDaemon'] = 1;
         $server['pidFile']  = $pidFile;
 
-        return $this->getContainer()->make2($server)->run();
+        return $this->getContainer()->createObject($server)->run();
     }
 
     protected function handleRestart()
