@@ -122,7 +122,7 @@ class SwServer extends Server
 
     protected function createServer()
     {
-        $server = new \swoole_http_server($this->host, $this->port);
+        $server = new \Swoole\Http\Server($this->host, $this->port);
 
         $server->on('start', [$this, 'onServerStart']);
         $server->on('shutdown', [$this, 'onServerStop']);
