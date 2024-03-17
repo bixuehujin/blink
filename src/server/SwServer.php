@@ -3,6 +3,7 @@
 namespace blink\server;
 
 use blink\core\InvalidConfigException;
+use blink\eventbus\EventBus;
 use blink\http\Cookie;
 use blink\http\HeaderBag;
 use blink\http\Request;
@@ -10,6 +11,7 @@ use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
 use blink\kernel\Kernel;
+use blink\server\events\WorkerStarted;
 
 /**
  * A Swoole based server implementation.
@@ -186,7 +188,10 @@ class SwServer extends Server
     {
         $this->setProcessTitle($this->name . ': worker');
 
+        $this->getEventBus()->dispatch(new WorkerStarted());
+
         $router = $this->getRouter();
+        
         $router->mountRoutes();
 
         $this->initContaier();

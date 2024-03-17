@@ -5,6 +5,7 @@ namespace blink\server;
 use blink\core\BaseObject;
 use blink\di\ContainerAware;
 use blink\di\ContainerAwareTrait;
+use blink\eventbus\EventBus;
 use blink\http\Request;
 use blink\http\Response;
 use blink\routing\Router;
@@ -27,6 +28,11 @@ abstract class Server extends BaseObject implements ContainerAware
     public function getRouter(): Router
     {
         return $this->getContainer()->get(Router::class);
+    }
+    
+    public function getEventBus(): EventBus
+    {
+        return $this->getContainer()->get(EventBus::class);
     }
 
     public function initContaier(): void

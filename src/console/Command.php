@@ -4,6 +4,10 @@ namespace blink\console;
 
 use blink\core\Configurable;
 use blink\core\ObjectTrait;
+use blink\di\ContainerAware;
+use blink\di\ContainerAwareTrait;
+use blink\eventbus\EventBus;
+use blink\server\events\WorkerStarted;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,9 +18,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package blink\console
  */
-class Command extends SymfonyCommand implements Configurable
+class Command extends SymfonyCommand implements Configurable, ContainerAware
 {
     use ObjectTrait;
+    use ContainerAwareTrait;
 
     /**
      * The name of the command.
@@ -65,7 +70,9 @@ class Command extends SymfonyCommand implements Configurable
     public function run(InputInterface $input, OutputInterface $output)
     {
         if ($this->bootstrap) {
-//            $this->blink->bootstrapIfNeeded();
+            /** @var EventBus $eventBus */
+            $eventBus = $this->getContainer()->get(EventBus::class); 
+            $eventBus->dispatch(new WorkerStarted());
         }
 
         $this->input = $input;

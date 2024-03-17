@@ -16,7 +16,7 @@ use Symfony\Component\Dotenv\Dotenv;
  */
 class BaseServer extends Command implements ContainerAware
 {
-    use ContainerAwareTrait;
+    public bool $bootstrap = false;
 
     protected function loadEnvFile(InputInterface $input)
     {

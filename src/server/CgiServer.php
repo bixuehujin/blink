@@ -14,6 +14,7 @@ use blink\http\Request;
 use blink\http\Response;
 use blink\http\Stream;
 use blink\http\Uri;
+use blink\server\events\WorkerStarted;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -149,6 +150,8 @@ class CgiServer extends Server
 
     public function run()
     {
+        $this->getEventBus()->dispatch(new WorkerStarted());
+
         $router = $this->getRouter();
         $router->mountRoutes();
 
