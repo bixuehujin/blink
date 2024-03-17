@@ -29,10 +29,7 @@ class Cors extends BaseObject implements MiddlewareInterface
         $response = $handler->handle($request);
 
         if ($request->getMethod() === 'OPTIONS') {
-            static $emptyStream;
-            if (is_null($emptyStream)) {
-                $emptyStream = new Stream("php://memory", 'r');
-            }
+            $emptyStream = new Stream("php://memory", 'rw+');
             $response = $response->withBody($emptyStream);
         }
 
