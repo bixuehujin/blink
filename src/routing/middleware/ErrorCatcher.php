@@ -69,7 +69,7 @@ class ErrorCatcher implements MiddlewareInterface
             return $handler->handle($request);
         } catch (Throwable $e) {
             $resp = new Response();
-            self::formatException($e, $resp);
+            static::formatException($e, $resp);
             return $resp;
         }
     }
