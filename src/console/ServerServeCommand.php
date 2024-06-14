@@ -23,7 +23,7 @@ class ServerServeCommand extends BaseServer
         $this->addOption('env-file', null, InputOption::VALUE_REQUIRED, 'The env file');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $cliMode = $input->getOption('cli');
 
@@ -41,7 +41,7 @@ class ServerServeCommand extends BaseServer
         }
     }
 
-    protected function handleCliServe()
+    protected function handleCliServe(): int
     {
         $server = $this->getServerDefinition();
         $port = isset($server['port']) ? $server['port'] : 7788;
@@ -49,6 +49,6 @@ class ServerServeCommand extends BaseServer
 
         $path = shell_exec('which php');
 
-        return pcntl_exec(trim($path), $args);
+        return (int)pcntl_exec(trim($path), $args);
     }
 }

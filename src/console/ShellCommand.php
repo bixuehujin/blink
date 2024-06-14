@@ -20,7 +20,7 @@ class ShellCommand extends Command
     public string $description = 'Interact with your application';
     public array $casters = [];
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $config = new Configuration();
         $config->getPresenter()->addCasters($this->casters);

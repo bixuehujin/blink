@@ -40,7 +40,7 @@ class BaseServer extends Command implements ContainerAware
         return !empty($server['pidFile']) ? $server['pidFile'] : $this->blink->runtime . '/server.pid';
     }
 
-    protected function handleServe($liveReload = false)
+    protected function handleServe($liveReload = false): int
     {
         $server             = $this->getServerDefinition();
         $server['asDaemon'] = 0;
@@ -50,10 +50,12 @@ class BaseServer extends Command implements ContainerAware
             $server['numWorkers']  = 1;
         }
 
-        return $this->getContainer()->createObject($server)->run();
+        $this->getContainer()->createObject($server)->run();
+
+        return 0;
     }
 
-    protected function handleStart()
+    protected function handleStart(): int
     {
         $server = $this->getServerDefinition();
 
@@ -65,10 +67,12 @@ class BaseServer extends Command implements ContainerAware
         $server['asDaemon'] = 1;
         $server['pidFile']  = $pidFile;
 
-        return $this->getContainer()->createObject($server)->run();
+        $this->getContainer()->createObject($server)->run();
+
+        return 0;
     }
 
-    protected function handleRestart()
+    protected function handleRestart(): int
     {
         $this->handleStop();
 

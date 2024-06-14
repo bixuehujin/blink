@@ -22,7 +22,7 @@ class ServiceInstallCommand extends BaseService
         $this->addOption('php', null, InputOption::VALUE_REQUIRED, 'Specify a custom php executable');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->ensureRootPrivilege();
         $this->ensurePkgConfigInstalled();
@@ -39,6 +39,8 @@ class ServiceInstallCommand extends BaseService
         system('systemctl enable ' . $this->serviceName);
 
         $this->info('System service installed successfully.');
+
+        return 0;
     }
 
     protected function getServiceConfig($php)

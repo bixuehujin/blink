@@ -21,7 +21,7 @@ class ServerStartCommand extends BaseServer
         $this->addOption('env-file', null, InputOption::VALUE_REQUIRED, 'The env file');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->loadEnvFile($input);
 

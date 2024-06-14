@@ -15,7 +15,7 @@ class ServiceUninstallCommand extends BaseService
     public string $name = 'service:uninstall';
     public string $description = 'Uninstall {serviceName} service from the system';
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->ensureRootPrivilege();
         $this->ensurePkgConfigInstalled();
@@ -23,7 +23,7 @@ class ServiceUninstallCommand extends BaseService
         $unitFile = $this->getSystemUnitDir() . '/' . $this->serviceName . '.service';
 
         if (!file_exists($unitFile)) {
-            return;
+            return 0;
         }
 
         system('systemctl disable ' . $this->serviceName);
@@ -31,5 +31,7 @@ class ServiceUninstallCommand extends BaseService
         unlink($unitFile);
 
         $this->info('System service uninstalled successfully.');
+
+        return 0;
     }
 }

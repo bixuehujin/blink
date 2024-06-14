@@ -15,7 +15,7 @@ class ServerStopCommand extends BaseServer
     public string $name = 'server:stop';
     public string $description = 'Stop the running blink server';
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         return $this->handleStop();
     }

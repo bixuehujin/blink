@@ -15,7 +15,7 @@ class ServerReloadCommand extends BaseServer
     public string $name = 'server:reload';
     public string $description = 'Reload the running server';
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         return $this->handleReload();
     }
