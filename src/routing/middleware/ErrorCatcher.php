@@ -22,15 +22,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ErrorCatcher implements MiddlewareInterface
 {
-    #[Inject('app.debug')]
-    protected bool $debug = false;
-
-    public function __construct(bool $debug = false)
-    {
-        $this->debug = $debug;
-    }
-
-    protected function exceptionToArray($exception)
+    public static function exceptionToArray($exception)
     {
         $array = [
             'name'    => get_class($exception),
@@ -40,20 +32,23 @@ class ErrorCatcher implements MiddlewareInterface
         if ($exception instanceof HttpException) {
             $array['status'] = $exception->statusCode;
         }
-        if ($this->debug) {
+
+        $debug = config('app.debug');
+
+        if ($debug) {
             $array['file']  = $exception->getFile();
             $array['line']  = $exception->getLine();
             $array['trace'] = explode("\n", $exception->getTraceAsString());
         }
 
         if (($prev = $exception->getPrevious()) !== null) {
-            $array['previous'] = $this->exceptionToArray($prev);
+            $array['previous'] = self::exceptionToArray($prev);
         }
 
         return $array;
     }
 
-    protected function formatException(Throwable $e, Response $response)
+    public static function formatException(Throwable $e, Response $response)
     {
         if ($e instanceof HttpException) {
             $response->status($e->statusCode);
@@ -65,7 +60,7 @@ class ErrorCatcher implements MiddlewareInterface
             $response->status(500);
         }
 
-        $response->data = $this->exceptionToArray($e);
+        $response->data = self::exceptionToArray($e);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -74,7 +69,7 @@ class ErrorCatcher implements MiddlewareInterface
             return $handler->handle($request);
         } catch (Throwable $e) {
             $resp = new Response();
-            $this->formatException($e, $resp);
+            self::formatException($e, $resp);
             return $resp;
         }
     }

@@ -6,6 +6,7 @@ namespace blink\rest\middleware;
 
 use blink\http\Response;
 use blink\support\Json;
+use blink\routing\middleware\ErrorCatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -23,7 +24,13 @@ class ResponseNormalizer implements MiddlewareInterface
         $response = $handler->handle($request);
 
         if ($response instanceof Response) {
-            $content = is_string($response->data) ? $response->data : Json::encode($response->data);
+            try {
+                $content = is_string($response->data) ? $response->data : Json::encode($response->data);
+            } catch (\Throwable $e) {
+                ErrorCatcher::formatException($e, $response);
+                $content = Json::encode($response->data);
+            }
+
             if (!is_string($response->data) && !$response->headers->has('Content-Type')) {
                 $response->headers->set('Content-Type', 'application/json');
             }
