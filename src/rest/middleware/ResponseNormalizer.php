@@ -24,6 +24,10 @@ class ResponseNormalizer implements MiddlewareInterface
         $response = $handler->handle($request);
 
         if ($response instanceof Response) {
+            if ($response->data === null) {
+                return $response;
+            }
+
             try {
                 $content = is_string($response->data) ? $response->data : Json::encode($response->data);
             } catch (\Throwable $e) {
