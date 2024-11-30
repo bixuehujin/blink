@@ -63,6 +63,13 @@ class SwServer extends Server
     public int $maxWaitTime = 3;
 
     /**
+     * See https://wiki.swoole.com/zh-cn/#/server/setting?id=send_timeout
+     *
+     * @var float
+     */
+    public float $sendTimeout = 0.5;
+
+    /**
      * The number of workers should be started to serve requests.
      *
      * @var int|null
@@ -91,12 +98,14 @@ class SwServer extends Server
      */
     public string $logFile = '';
 
+    protected \Swoole\Http\Server $httpServer;
+
     public function init()
     {
         if (!extension_loaded('swoole')) {
             throw new \RuntimeException('The Swoole extension is required to run blink in SwServer.');
         }
-        
+
         if ($this->maxHeaderSize >= $this->outputBufferSize) {
             throw new InvalidConfigException('The outputBufferSize config should be larger than maxHeaderSize.');
         }
@@ -110,6 +119,7 @@ class SwServer extends Server
         $config['daemonize'] = $this->asDaemon;
         $config['dispatch_mode'] = $this->dispatchMode;
         $config['max_wait_time'] = $this->maxWaitTime;
+        $config['send_timeout'] = $this->sendTimeout;
 
         if ($this->numWorkers) {
             $config['worker_num'] = $this->numWorkers;
@@ -190,19 +200,21 @@ class SwServer extends Server
         }
     }
 
-    public function onWorkerStart()
+    public function onWorkerStart(\Swoole\Http\Server $server)
     {
+        $this->httpServer = $server;
+
         $this->setProcessTitle($this->name . ': worker');
 
         $this->getEventBus()->dispatch(new WorkerStarted());
 
         $router = $this->getRouter();
-        
+
         $router->mountRoutes();
 
         $this->initContaier();
     }
-    
+
     protected function setProcessTitle($title)
     {
         if (@cli_set_process_title($title) !== false) {
@@ -319,7 +331,7 @@ class SwServer extends Server
     protected function respond($response, $status, $content)
     {
         $response->status($status);
-        
+
         $maxWriteSize = $this->outputBufferSize  - $this->maxHeaderSize;
 
         if (strlen($content) <= $maxWriteSize) {
@@ -328,11 +340,21 @@ class SwServer extends Server
             $response->header('Transfer-Encoding', 'chunked');
 
             $segments = ceil(strlen($content) / $maxWriteSize);
-            
+
             for ($i = 0; $i < $segments; $i ++) {
                 $start = $i * $maxWriteSize;
                 $buffer = substr($content, $start, $maxWriteSize);
-                $n = $response->write($buffer);
+
+                $maxTries = 3;
+                do {
+                    $succeed = $response->write($buffer);
+                    $maxTries --;
+                } while (! $succeed && $maxTries > 0 && $this->httpServer->getLastError() === 10018);
+
+                if (! $succeed) {
+                    swoole_error_log(SWOOLE_LOG_ERROR, 'Failed to write data, errno: ' . $this->httpServer->getLastError());
+                    break;
+                }
             }
 
             $response->end();
