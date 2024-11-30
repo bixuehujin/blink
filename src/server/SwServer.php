@@ -58,6 +58,11 @@ class SwServer extends Server
     public int $maxHeaderSize = 4096;
 
     /**
+     * See https://wiki.swoole.com/zh-cn/#/server/setting?id=max_wait_time
+     */
+    public int $maxWaitTime = 3;
+
+    /**
      * The number of workers should be started to serve requests.
      *
      * @var int|null
@@ -104,6 +109,7 @@ class SwServer extends Server
         $config['max_request'] = $this->maxRequests;
         $config['daemonize'] = $this->asDaemon;
         $config['dispatch_mode'] = $this->dispatchMode;
+        $config['max_wait_time'] = $this->maxWaitTime;
 
         if ($this->numWorkers) {
             $config['worker_num'] = $this->numWorkers;
