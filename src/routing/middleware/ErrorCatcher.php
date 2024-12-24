@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace blink\routing\middleware;
 
+use blink\core\ErrorHandler;
 use blink\di\attributes\Inject;
 use blink\http\Response;
 use Throwable;
@@ -22,6 +23,13 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ErrorCatcher implements MiddlewareInterface
 {
+    protected ?string $errorHandler;
+
+    public function __construct(?string $errorHandler = null)
+    {
+        $this->errorHandler = $errorHandler;
+    }
+
     public static function exceptionToArray($exception)
     {
         $array = [
@@ -68,9 +76,22 @@ class ErrorCatcher implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (Throwable $e) {
+            $this->handleException($e);
+
             $resp = new Response();
             static::formatException($e, $resp);
             return $resp;
         }
+    }
+
+    protected function handleException(Throwable $e): void
+    {
+        if (! $this->errorHandler) {
+            return;
+        }
+
+        /** @var ErrorHandler $handler */
+        $handler = app()->get($this->errorHandler);
+        $handler->handleException($e);
     }
 }
