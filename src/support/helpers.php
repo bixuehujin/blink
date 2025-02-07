@@ -85,6 +85,7 @@ function response()
  *
  * @param $status
  * @param string $message
+ * @return never
  * @throws \blink\core\HttpException
  */
 function abort($status, $message = null)
