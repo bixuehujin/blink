@@ -241,6 +241,16 @@ class RequestActor
     }
 
     /**
+     * Returns the underlying response.
+     * 
+     * @return ResponseInterface
+     */
+    public function getResponse(): ResponseInterface
+    {
+        return $this->response; 
+    }
+
+    /**
      * Assert that the response contains JSON.
      *
      * @param  array|null $data
