@@ -31,6 +31,8 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
 
     public $statusText;
 
+    public $prepared = false;
+
     public static $httpStatuses = [
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -212,13 +214,14 @@ class Response extends BaseObject implements ShouldBeRefreshed, ResponseInterfac
 
     public function prepare(): void
     {
-        if ($this->data !== null) {
+        if ($this->data !== null && ! $this->prepared) {
             $content = is_string($this->data) ? $this->data : Json::encode($this->data);
             if (!is_string($this->data) && !$this->headers->has('Content-Type')) {
                 $this->headers->set('Content-Type', 'application/json');
             }
             $this->getBody()->rewind();
             $this->getBody()->write($content);
+            $this->prepared = true;
         }
     }
 }

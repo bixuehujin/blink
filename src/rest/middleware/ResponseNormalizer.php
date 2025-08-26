@@ -40,6 +40,7 @@ class ResponseNormalizer implements MiddlewareInterface
             }
             $response->getBody()->rewind();
             $response->getBody()->write($content);
+            $response->prepared = true;
         }
 
         return $response;
