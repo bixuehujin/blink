@@ -35,7 +35,7 @@ abstract class Server extends BaseObject implements ContainerAware
         return $this->getContainer()->get(EventBus::class);
     }
 
-    public function initContaier(): void
+    public function initContainer(): void
     {
         $requestClass = $this->getRequestClass();
         if ($requestClass !== Request::class) {

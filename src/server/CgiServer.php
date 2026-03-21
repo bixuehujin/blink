@@ -155,7 +155,7 @@ class CgiServer extends Server
         $router = $this->getRouter();
         $router->mountRoutes();
 
-        $this->initContaier();
+        $this->initContainer();
         
         $response = $this->handleRequest($this->extractRequest());
 

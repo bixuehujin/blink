@@ -212,7 +212,7 @@ class SwServer extends Server
 
         $router->mountRoutes();
 
-        $this->initContaier();
+        $this->initContainer();
     }
 
     protected function setProcessTitle($title)

@@ -3,6 +3,7 @@
 namespace blink\tests\server;
 
 use blink\core\BaseObject;
+use blink\di\Container;
 use blink\http\Request;
 use blink\server\SwServer;
 use blink\tests\TestCase;
@@ -94,7 +95,8 @@ class SwooleTest extends TestCase
      */
     public function testCreateRequestFromSwoole($request, $expects)
     {
-        $server = new SwServer();
+        /** @var SwServer $server */
+        $server = Container::$global->get(SwServer::class);
 
         /** @var Request $request */
         $request = $server->createRequest(new MockedSwRequest($request));

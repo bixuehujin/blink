@@ -2,6 +2,7 @@
 
 namespace blink\tests\server;
 
+use blink\di\Container;
 use blink\http\Request;
 use blink\server\CgiServer;
 use blink\tests\TestCase;
@@ -111,8 +112,11 @@ class CgiTest extends TestCase
     {
         $this->setupGlobals($request);
 
+        /** @var CgiServer $server */
+        $server = Container::$global->get(CgiServer::class);
+
         /** @var Request $request */
-        $request = (new CgiServer())->extractRequest();
+        $request = $server->extractRequest();
         $this->assertEquals($expects['url'], (string)$request->uri);
         $this->assertEquals($expects['url'], (string)$request->url());
         $this->assertEquals($expects['root'], (string)$request->root());
