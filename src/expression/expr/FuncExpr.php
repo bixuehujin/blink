@@ -28,4 +28,11 @@ class FuncExpr extends Expr
             'args' => array_map(fn (Expr $arg) => $arg->toArray(), $this->args),
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $args = array_map(fn (array $a) => Expr::fromArray($a), $data['args']);
+        $expr = new static($data['name'], $args);
+        return $expr->withCommonFields($data);
+    }
 }

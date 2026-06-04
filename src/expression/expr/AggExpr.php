@@ -28,4 +28,14 @@ class AggExpr extends Expr
             'options' => $this->options,
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $expr = new static(
+            $data['method'],
+            Expr::fromArray($data['expr']),
+            $data['options'] ?? []
+        );
+        return $expr->withCommonFields($data);
+    }
 }

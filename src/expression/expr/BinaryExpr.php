@@ -74,4 +74,14 @@ class BinaryExpr extends Expr
             'right' => $this->right->toArray(),
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $expr = new static(
+            Expr::fromArray($data['left']),
+            $data['op'],
+            Expr::fromArray($data['right'])
+        );
+        return $expr->withCommonFields($data);
+    }
 }

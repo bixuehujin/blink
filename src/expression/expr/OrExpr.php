@@ -31,4 +31,11 @@ class OrExpr extends Expr
             'exprs' => array_map(fn (Expr $expr) => $expr->toArray(), $this->exprs),
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $exprs = array_map(fn (array $e) => Expr::fromArray($e), $data['exprs']);
+        $expr = new static(...$exprs);
+        return $expr->withCommonFields($data);
+    }
 }

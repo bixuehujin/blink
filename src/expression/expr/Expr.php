@@ -20,6 +20,61 @@ abstract class Expr implements JsonSerializable
         return $expr;
     }
 
+    protected static array $types = [
+        'literal' => Literal::class,
+        'variable' => Variable::class,
+        'column' => Column::class,
+        'binary' => BinaryExpr::class,
+        'and' => AndExpr::class,
+        'or' => OrExpr::class,
+        'func' => FuncExpr::class,
+        'agg' => AggExpr::class,
+        'relation' => Relation::class,
+        'has' => HasExpr::class,
+    ];
+
+    public static function registerType(string $type, string $class): void
+    {
+        if (isset(static::$types[$type]) && static::$types[$type] !== $class) {
+            throw new \RuntimeException('Expression type already registered: ' . $type);
+        }
+
+        if (!is_subclass_of($class, Expr::class)) {
+            throw new \RuntimeException("Class {$class} must extend " . Expr::class);
+        }
+
+        static::$types[$type] = $class;
+    }
+
+    public static function replaceType(string $type, string $class): void
+    {
+        if (!is_subclass_of($class, Expr::class)) {
+            throw new \RuntimeException("Class {$class} must extend " . Expr::class);
+        }
+
+        static::$types[$type] = $class;
+    }
+
+    public static function fromArray(array $data): Expr
+    {
+        $type = $data['type'] ?? null;
+
+        if (!$type || !isset(static::$types[$type])) {
+            throw new \RuntimeException('Unknown expression type: ' . ($type ?? 'null'));
+        }
+
+        $class = static::$types[$type];
+
+        return $class::fromArray($data);
+    }
+
+    protected function withCommonFields(array $data): static
+    {
+        $this->alias = $data['alias'] ?? null;
+        $this->disabled = $data['disabled'] ?? false;
+        return $this;
+    }
+
     public function __toString(): string
     {
         return json_encode($this->toArray());

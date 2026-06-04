@@ -51,4 +51,12 @@ class Relation extends Expr
             'filter' => $this->filter ? $this->filter->toArray() : null,
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $columns = array_map(fn (array $c) => Expr::fromArray($c), $data['columns'] ?? []);
+        $filter = isset($data['filter']) ? Expr::fromArray($data['filter']) : null;
+        $expr = new static($data['name'], $columns, $filter);
+        return $expr->withCommonFields($data);
+    }
 }

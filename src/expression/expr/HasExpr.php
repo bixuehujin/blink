@@ -27,4 +27,13 @@ class HasExpr extends Expr
             'filter' => $this->filter->toArray(),
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $expr = new static(
+            $data['relation'],
+            Expr::fromArray($data['filter'])
+        );
+        return $expr->withCommonFields($data);
+    }
 }

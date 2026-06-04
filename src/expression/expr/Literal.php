@@ -22,4 +22,10 @@ class Literal extends Expr
             'value' => $this->value,
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $expr = new static($data['value']);
+        return $expr->withCommonFields($data);
+    }
 }

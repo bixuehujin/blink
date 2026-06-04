@@ -22,4 +22,10 @@ class Variable extends Expr
             'name' => $this->name,
         ];
     }
+
+    public static function fromArray(array $data): static
+    {
+        $expr = new static($data['name']);
+        return $expr->withCommonFields($data);
+    }
 }
