@@ -548,6 +548,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
     {
         $new = clone $this;
         $new->_uri = $uri;
+        $new->_params = null;
 
         if ($preserveHost && $this->headers->has('Host')) {
             return $new;
