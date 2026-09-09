@@ -538,6 +538,7 @@ class Request extends BaseObject implements ShouldBeRefreshed, ServerRequestInte
         }
 
         $this->_uri = $uri;
+        $this->_params = null;
     }
 
     /**
