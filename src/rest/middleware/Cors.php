@@ -5,6 +5,7 @@ namespace blink\rest\middleware;
 use blink\core\BaseObject;
 use blink\http\Response;
 use blink\http\Stream;
+use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -23,6 +24,8 @@ class Cors extends BaseObject implements MiddlewareInterface
     public bool   $allowCredentials = false;
     public string $exposeHeaders    = 'Authorization';
     public int    $maxAge           = 86400;
+    public bool   $enforceOrigin    = true;
+    public ?Closure $onOriginNotAllowed = null;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -39,7 +42,13 @@ class Cors extends BaseObject implements MiddlewareInterface
         }
 
         if (!$this->matchOrigin($origin, (array)$this->allowOrigins)) {
-            return $response;
+            if ($this->onOriginNotAllowed) {
+                ($this->onOriginNotAllowed)($origin, $request);
+            }
+
+            if ($this->enforceOrigin) {
+                return $response;
+            }
         }
 
         $headers = [
