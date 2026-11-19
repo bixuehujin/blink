@@ -98,6 +98,14 @@ class SwServer extends Server
      */
     public string $logFile = '';
 
+    /**
+     * Whether swoole runs each request in a coroutine.
+     *
+     * Applications reading the PHP session or the superglobals must disable it,
+     * because coroutines of the same worker share the process memory.
+     */
+    public bool $enableCoroutine = true;
+
     protected \Swoole\Http\Server $httpServer;
 
     public function init()
@@ -134,6 +142,8 @@ class SwServer extends Server
         }
 
         $config['buffer_output_size'] = $this->outputBufferSize;
+
+        $config['enable_coroutine'] = $this->enableCoroutine;
 
         return $config;
     }

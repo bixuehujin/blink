@@ -7,7 +7,7 @@ use blink\core\HttpException;
  * Helper function to get application instance or registered application services.
  *
  * @param string|class-string|null $service
- * @return \blink\di\Container
+ * @return mixed the container when $service is null, otherwise the resolved service
  */
 function app($service = null)
 {
