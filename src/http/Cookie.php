@@ -8,6 +8,7 @@
 namespace blink\http;
 
 use blink\core\BaseObject;
+use blink\core\InvalidParamException;
 
 /**
  * Class Cookie
@@ -52,13 +53,28 @@ class Cookie extends BaseObject
      */
     public bool $httpOnly = false;
 
+    /**
+     * The SameSite attribute of the cookie: Lax, Strict or None.
+     */
+    public ?string $sameSite = null;
+
+    public function init()
+    {
+        if ($this->sameSite === null) {
+            return;
+        }
+
+        if (!in_array($this->sameSite, ['Lax', 'Strict', 'None'], true)) {
+            throw new InvalidParamException('Unsupported SameSite attribute: ' . $this->sameSite);
+        }
+    }
+
     public function toString(): string
     {
         $line = "{$this->name}={$this->value}";
 
         if ($this->expire > 0) {
-            $dt = date('D, d-M-Y H:i:s T', $this->expire);
-            $line .= "; expires={$dt}";
+            $line .= '; expires=' . gmdate('D, d-M-Y H:i:s', $this->expire) . ' GMT';
         }
         if ($this->path) {
             $line .= "; path={$this->path}";
@@ -72,6 +88,9 @@ class Cookie extends BaseObject
         }
         if ($this->httpOnly) {
             $line .= '; HttpOnly';
+        }
+        if ($this->sameSite) {
+            $line .= "; SameSite={$this->sameSite}";
         }
 
         return $line;

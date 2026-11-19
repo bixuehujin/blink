@@ -320,7 +320,7 @@ class SwServer extends Server
 
         /** @var Cookie $cookie */
         foreach ($res->getCookies() as $cookie) {
-            $response->cookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+            $response->cookie($cookie->name, $cookie->value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly, $cookie->sameSite ?? '');
         }
 
         $this->respond($response, $res->getStatusCode(), $content);
